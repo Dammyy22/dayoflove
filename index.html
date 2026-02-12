@@ -72,13 +72,18 @@
       margin-bottom:14px;
       background:rgba(0,0,0,0.06);
     }
-    .photo img{
-      display:block;
-      width:100%;
-      height:auto;
-      max-height:420px;
-      object-fit:cover;
-    }
+    .photo{
+  height:360px;              /* çerçevenin sabit yüksekliği */
+}
+
+.photo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;          /* çerçeveyi doldur, gerekirse kırp */
+  object-position:center;    /* yüz/merkez ortada kalsın */
+  display:block;
+}
+
     .caption{
       padding:10px 12px;
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
