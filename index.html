@@ -12,34 +12,28 @@ function hashIndex(key, len){
   return h % len;
 }
 
-/* 📷 FOTO LİSTESİ (assets/yunis/) */
+/* 📷 FOTO LİSTESİ */
 const photos = [
   { src:"assets/yunis/01.jpg", caption:"Deneme 1" },
   { src:"assets/yunis/02.jpg", caption:"Deneme 2" },
   { src:"assets/yunis/03.jpg", caption:"Deneme 3" },
 ];
 
-/* 💌 GÜNLÜK YAZILAR */
+/* 💌 YAZILAR */
 const entries = [
   {
-    id:"LOVE-001",
-    mood:"yumuşak",
     text:`Bugün seni sevdiğimi ispatlamak için bir şey yapmam gerekmiyor.
 Sevgi bazen sessizce yanında durabilmek.`,
     source:"Dammy → Yunis",
     remember:"Bugün küçük bir şey yap: ‘iyi ki varsın’ de."
   },
   {
-    id:"LOVE-002",
-    mood:"gülümseten",
     text:`Seninle konuşurken cümlelerim düzgün değilse,
 sebebi Türkçem değil.
 Kafamın içi ‘Yunis’ diye bağırıyor.`,
     source:"Dammy → Yunis"
   },
   {
-    id:"LOVE-003",
-    mood:"derin",
     text:`Birlikte büyümek bazen kolay değil.
 Ama ben ‘kolay’ diye değil,
 ‘sen’ diye seçtim.`,
@@ -48,107 +42,59 @@ Ama ben ‘kolay’ diye değil,
   }
 ];
 
-// Script patlarsa ekranda bir şey yazsın
-window.addEventListener("error", (e) => {
-  const el = document.getElementById("msg");
-  if(el) el.textContent = "Bir şeyler bozuldu. Konsola bak (F12).";
-  console.error(e);
-});
-
 document.addEventListener("DOMContentLoaded", () => {
-  const now = istanbulNow();
-  const hour = now.getHours();
-  const isDay = (hour >= 6 && hour < 19);
-  if(isDay) document.body.classList.add("day");
+  // Tema
+  const hour = istanbulNow().getHours();
+  if(hour >= 6 && hour < 19) document.body.classList.add("day");
+
+  // Cuma dokusu (sende varsa)
+  if(istanbulNow().getDay() === 5) document.body.classList.add("friday");
 
   const key = istanbulKey();
 
-  // Chip'ler
-  const chipDayNight = document.getElementById("chipDayNight");
-  const chipKey = document.getElementById("chipKey");
-  const chipMood = document.getElementById("chipMood");
-  if(chipDayNight) chipDayNight.textContent = isDay ? "Gündüz modu" : "Gece modu";
-  if(chipKey) chipKey.textContent = `Gün: ${key}`;
-
-  // DOM
-  const msgEl = document.getElementById("msg");
-  const sourceEl = document.getElementById("source");
-  const dateEl = document.getElementById("date");
-  const rememberEl = document.getElementById("remember");
-
-  const photoCard = document.getElementById("photoCard");
-  const photoEl = document.getElementById("photo");
-  const captionEl = document.getElementById("caption");
+  // ✅ Eski şablon uyumu: önce id ile ara, yoksa class ile yakala
+  const msgEl  = document.getElementById("msg")  || document.querySelector(".msg");
+  const dateEl = document.getElementById("date") || document.querySelector(".date");
 
   if(!msgEl || !dateEl){
-    console.error("DOM eksik:", { msgEl, dateEl });
+    console.error("Hâlâ DOM eksik. Sayfada #msg ve #date yok.", { msgEl, dateEl });
     return;
   }
 
   // Günlük sabit yazı
-  let current = hashIndex(key + "|entry", entries.length);
+  const eIdx = hashIndex(key + "|entry", entries.length);
+  const entry = entries[eIdx];
 
-  function render(i){
-    const item = entries[i];
+  msgEl.textContent = entry.text;
+  dateEl.textContent = `Günün notu • ${key}`;
 
-    msgEl.textContent = item.text;
-    if(sourceEl) sourceEl.textContent = item.source ? `Kaynak: ${item.source}` : "";
-    dateEl.textContent = `• ${key}`;
-    if(chipMood) chipMood.textContent = item.mood ? `Mod: ${item.mood}` : "Mod: —";
+  // Uzun metinde font küçült
+  if(entry.text.length > 700) msgEl.style.fontSize="18px";
+  if(entry.text.length > 1000) msgEl.style.fontSize="17px";
 
-    if(rememberEl){
-      if(item.remember){
-        rememberEl.style.display = "block";
-        rememberEl.textContent = `Bugün şunu hatırla: ${item.remember}`;
-      } else {
-        rememberEl.style.display = "none";
-      }
-    }
+  // ✅ Foto göstermek istiyorsan (senin mevcut HTML’de img yoksa otomatik ekler)
+  const wrap = document.querySelector(".wrap") || document.body;
 
-    // Günlük sabit foto (entry'den bağımsız)
-    if(photoCard && photoEl && captionEl){
-      if(photos.length > 0){
-        const pIdx = hashIndex(key + "|photo", photos.length);
-        const p = photos[pIdx];
-        photoEl.src = p.src;
-        captionEl.textContent = p.caption || "Bugünün fotoğrafı";
-        photoCard.style.display = "block";
-      } else {
-        photoCard.style.display = "none";
-      }
-    }
-
-    // Uzun metin font ayarı
-    const L = item.text.length;
-    msgEl.style.fontSize = (L > 700) ? "18px" : "20px";
-    if(L > 1000) msgEl.style.fontSize = "17px";
+  // Foto alanı yoksa oluştur
+  let img = document.getElementById("lovePhoto");
+  if(!img){
+    img = document.createElement("img");
+    img.id = "lovePhoto";
+    img.style.width = "100%";
+    img.style.height = "auto";
+    img.style.maxHeight = "420px";
+    img.style.objectFit = "cover";
+    img.style.borderRadius = "16px";
+    img.style.marginBottom = "14px";
+    img.style.border = "1px solid var(--border)";
+    wrap.insertBefore(img, wrap.firstChild);
   }
 
-  render(current);
-
-  // Butonlar
-  const btnShuffle = document.getElementById("btnShuffle");
-  const btnCopy = document.getElementById("btnCopy");
-
-  if(btnShuffle){
-    btnShuffle.addEventListener("click", () => {
-      // aynı gün içinde yazıyı değiştir: “farklı bir tane”
-      current = (current + 1) % entries.length;
-      render(current);
-    });
-  }
-
-  if(btnCopy){
-    btnCopy.addEventListener("click", async () => {
-      try{
-        await navigator.clipboard.writeText(entries[current].text);
-        const old = btnCopy.textContent;
-        btnCopy.textContent = "Kopyalandı ✓";
-        setTimeout(()=>btnCopy.textContent = old, 900);
-      }catch{
-        alert("Kopyalama izni yok. Metni seçip kopyalayabilirsin.");
-      }
-    });
+  // Günlük sabit foto
+  if(photos.length > 0){
+    const pIdx = hashIndex(key + "|photo", photos.length);
+    img.src = photos[pIdx].src;
+    img.alt = "Bugünün fotoğrafı";
   }
 });
 </script>
