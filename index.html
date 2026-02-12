@@ -1,350 +1,114 @@
-<!doctype html>
-<html lang="tr">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Yunis • Günün Notu</title>
+<script>
+function istanbulNow(){
+  return new Date(new Date().toLocaleString("en-US",{timeZone:"Europe/Istanbul"}));
+}
+function istanbulKey(){
+  const n = istanbulNow();
+  return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
+}
+function hashIndex(key, len){
+  let h = 0;
+  for(let i=0;i<key.length;i++) h = (h*31 + key.charCodeAt(i)) >>> 0;
+  return h % len;
+}
 
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
+/* 📷 FOTO LİSTESİ (assets/yunis/) */
+const photos = [
+  { src:"assets/yunis/01.jpg", caption:"Deneme 1" },
+  { src:"assets/yunis/02.jpg", caption:"Deneme 2" },
+  { src:"assets/yunis/03.jpg", caption:"Deneme 3" },
+];
 
-  <style>
-    :root{
-      /* 🌙 GECE */
-      --bg1:#070b14;
-      --bg2:#101a2b;
-      --card:rgba(14, 22, 38, 0.78);
-      --text:#f3f6ff;
-      --muted:rgba(243,246,255,0.60);
-      --shadow:rgba(0,0,0,0.60);
-      --border:rgba(255,255,255,0.10);
-      --glow:rgba(255,180,220,0.16);
-      --accent:rgba(255, 160, 200, 0.95);
-      --chip:rgba(255,255,255,0.08);
-    }
-
-    /* 🌤 GÜNDÜZ */
-    body.day{
-      --bg1:#fff1f6;
-      --bg2:#f0f4ff;
-      --card:rgba(255,255,255,0.92);
-      --text:#1a1f2b;
-      --muted:rgba(26,31,43,0.60);
-      --shadow:rgba(0,0,0,0.12);
-      --border:rgba(0,0,0,0.08);
-      --glow:rgba(255,120,170,0.22);
-      --accent:rgba(200, 40, 110, 0.95);
-      --chip:rgba(0,0,0,0.06);
-    }
-
-    body{
-      margin:0;
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:18px;
-      font-family:'Cormorant Garamond', serif;
-      color:var(--text);
-      background:
-        radial-gradient(1100px 700px at 12% 12%, rgba(255,160,200,0.18) 0%, transparent 58%),
-        radial-gradient(900px 650px at 88% 20%, rgba(140,180,255,0.16) 0%, transparent 60%),
-        linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%);
-      position:relative;
-      overflow:hidden;
-    }
-
-    body::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      background-image:
-        radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,.18) 50%, transparent 51%),
-        radial-gradient(1px 1px at 30% 80%, rgba(255,255,255,.12) 50%, transparent 51%),
-        radial-gradient(1px 1px at 60% 40%, rgba(255,255,255,.16) 50%, transparent 51%),
-        radial-gradient(1px 1px at 85% 65%, rgba(255,255,255,.14) 50%, transparent 51%),
-        radial-gradient(1px 1px at 50% 10%, rgba(255,255,255,.10) 50%, transparent 51%);
-      opacity:.35;
-      pointer-events:none;
-      z-index:1;
-    }
-
-    .wrap{
-      position:relative;
-      z-index:2;
-      max-width:860px;
-      width:100%;
-      padding:26px;
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:18px;
-      box-shadow:
-        0 14px 40px var(--shadow),
-        0 0 28px var(--glow);
-      backdrop-filter:blur(10px);
-      -webkit-backdrop-filter:blur(10px);
-      animation:fadeIn .5s ease-out;
-    }
-
-    .top{
-      display:flex;
-      gap:14px;
-      align-items:flex-start;
-      justify-content:space-between;
-      flex-wrap:wrap;
-      margin-bottom:14px;
-    }
-
-    .title{
-      font-size:22px;
-      letter-spacing:.2px;
-      margin:0;
-    }
-
-    .chips{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      align-items:center;
-      margin-top:6px;
-    }
-    .chip{
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      font-size:12px;
-      padding:6px 10px;
-      border:1px solid var(--border);
-      background:var(--chip);
-      border-radius:999px;
-      color:var(--muted);
-      user-select:none;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:14px;
-    }
-
-    .photo{
-      width:100%;
-      border-radius:16px;
-      border:1px solid var(--border);
-      overflow:hidden;
-      box-shadow: 0 10px 26px rgba(0,0,0,0.20);
-      background:rgba(0,0,0,0.06);
-    }
-    .photo img{
-      display:block;
-      width:100%;
-      height:auto;
-      max-height:420px;
-      object-fit:cover;
-    }
-    .caption{
-      padding:10px 12px;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      font-size:12px;
-      color:var(--muted);
-      border-top:1px solid var(--border);
-      background:rgba(0,0,0,0.02);
-    }
-
-    .note{
-      padding:18px 16px;
-      border:1px solid var(--border);
-      border-radius:16px;
-      background:rgba(0,0,0,0.02);
-    }
-    .noteText{
-      font-size:20px;
-      line-height:1.75;
-      white-space:pre-line;
-      margin:0;
-    }
-
-    .meta{
-      margin-top:10px;
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      align-items:center;
-      justify-content:space-between;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      color:var(--muted);
-      font-size:12px;
-    }
-
-    .remember{
-      margin-top:12px;
-      padding:12px 12px;
-      border-left:3px solid var(--accent);
-      border-radius:10px;
-      background:rgba(255,255,255,0.03);
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      font-size:13px;
-      color:var(--muted);
-    }
-
-    .btnRow{
-      margin-top:14px;
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    button{
-      appearance:none;
-      border:1px solid var(--border);
-      background:rgba(255,255,255,0.06);
-      color:var(--text);
-      padding:10px 12px;
-      border-radius:12px;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      font-size:13px;
-      cursor:pointer;
-    }
-    button:hover{ filter:brightness(1.06); }
-    button:active{ transform:translateY(1px); }
-
-    @keyframes fadeIn{
-      from{opacity:0; transform:translateY(8px);}
-      to{opacity:1; transform:translateY(0);}
-    }
-  </style>
-</head>
-
-<body>
-  <div class="wrap">
-    <div class="top">
-      <div>
-        <h1 class="title" id="pageTitle">Yunis • Günün Notu</h1>
-        <div class="chips">
-          <div class="chip" id="chipDayNight">—</div>
-          <div class="chip" id="chipKey">—</div>
-        </div>
-      </div>
-      <div class="chips">
-        <div class="chip" id="chipMood">—</div>
-      </div>
-    </div>
-
-    <div class="grid">
-      <div class="photo" id="photoCard" style="display:none;">
-        <img id="photo" alt="Yunis ile bir an" />
-        <div class="caption" id="caption"></div>
-      </div>
-
-      <div class="note">
-        <p class="noteText" id="msg">Yükleniyor…</p>
-        <div class="meta">
-          <div id="source"></div>
-          <div id="date"></div>
-        </div>
-        <div class="remember" id="remember" style="display:none;"></div>
-
-        <div class="btnRow">
-          <button id="btnShuffle" type="button">Bugün farklı bir tane</button>
-          <button id="btnCopy" type="button">Metni kopyala</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-  function istanbulNow(){
-    return new Date(new Date().toLocaleString("en-US",{timeZone:"Europe/Istanbul"}));
-  }
-  function istanbulKey(){
-    const n = istanbulNow();
-    return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
-  }
-  function hashIndex(key, len){
-    let h = 0;
-    for(let i=0;i<key.length;i++) h = (h*31 + key.charCodeAt(i)) >>> 0;
-    return h % len;
-  }
-
-  // 📷 Foto listesi (assets/yunis/ klasörüne koy)
-  const photos = [
-    // örnekler:
-    // { src:"assets/yunis/01.jpg", caption:"O gün çok güldük." },
-    // { src:"assets/yunis/02.jpg", caption:"Birlikte susmak bile iyi." },
-  ];
-
-  // 💌 Günlük içerik: yazı + kaynak + opsiyonel hatırlatma + mood etiketi
-  const entries = [
-    {
-      id:"LOVE-001",
-      mood:"yumuşak",
-      text:`Bugün seni sevdiğimi ispatlamak için bir şey yapmam gerekmiyor.
+/* 💌 GÜNLÜK YAZILAR */
+const entries = [
+  {
+    id:"LOVE-001",
+    mood:"yumuşak",
+    text:`Bugün seni sevdiğimi ispatlamak için bir şey yapmam gerekmiyor.
 Sevgi bazen sessizce yanında durabilmek.`,
-      source:"Dammy → Yunis",
-      remember:"Bugün küçük bir şey yap: ‘iyi ki varsın’ de."
-    },
-    {
-      id:"LOVE-002",
-      mood:"gülümseten",
-      text:`Seninle konuşurken cümlelerim düzgün değilse,
+    source:"Dammy → Yunis",
+    remember:"Bugün küçük bir şey yap: ‘iyi ki varsın’ de."
+  },
+  {
+    id:"LOVE-002",
+    mood:"gülümseten",
+    text:`Seninle konuşurken cümlelerim düzgün değilse,
 sebebi Türkçem değil.
 Kafamın içi ‘Yunis’ diye bağırıyor.`,
-      source:"Dammy → Yunis"
-    },
-    {
-      id:"LOVE-003",
-      mood:"derin",
-      text:`Birlikte büyümek bazen kolay değil.
+    source:"Dammy → Yunis"
+  },
+  {
+    id:"LOVE-003",
+    mood:"derin",
+    text:`Birlikte büyümek bazen kolay değil.
 Ama ben ‘kolay’ diye değil,
 ‘sen’ diye seçtim.`,
-      source:"Dammy → Yunis",
-      remember:"Bugün şu soruyu sor: ‘Bunu senin için daha iyi nasıl yaparım?’"
-    }
-  ];
+    source:"Dammy → Yunis",
+    remember:"Bugün şu soruyu sor: ‘Bunu senin için daha iyi nasıl yaparım?’"
+  }
+];
 
-  // Script patlarsa ekranda hiç değilse bir şey yazsın
-  window.addEventListener("error", (e) => {
-    const el = document.getElementById("msg");
-    if(el) el.textContent = "Bir şeyler bozuldu. Konsola bak (F12).";
-    console.error(e);
-  });
+// Script patlarsa ekranda bir şey yazsın
+window.addEventListener("error", (e) => {
+  const el = document.getElementById("msg");
+  if(el) el.textContent = "Bir şeyler bozuldu. Konsola bak (F12).";
+  console.error(e);
+});
 
-  document.addEventListener("DOMContentLoaded", () => {
-    const now = istanbulNow();
-    const hour = now.getHours();
-    const isDay = (hour >= 6 && hour < 19);
-    if(isDay) document.body.classList.add("day");
+document.addEventListener("DOMContentLoaded", () => {
+  const now = istanbulNow();
+  const hour = now.getHours();
+  const isDay = (hour >= 6 && hour < 19);
+  if(isDay) document.body.classList.add("day");
 
-    document.getElementById("chipDayNight").textContent = isDay ? "Gündüz modu" : "Gece modu";
-    const key = istanbulKey();
-    document.getElementById("chipKey").textContent = `Gün: ${key}`;
+  const key = istanbulKey();
 
-    const idx = hashIndex(key, entries.length);
-    let current = idx;
+  // Chip'ler
+  const chipDayNight = document.getElementById("chipDayNight");
+  const chipKey = document.getElementById("chipKey");
+  const chipMood = document.getElementById("chipMood");
+  if(chipDayNight) chipDayNight.textContent = isDay ? "Gündüz modu" : "Gece modu";
+  if(chipKey) chipKey.textContent = `Gün: ${key}`;
 
-    const msgEl = document.getElementById("msg");
-    const sourceEl = document.getElementById("source");
-    const dateEl = document.getElementById("date");
-    const rememberEl = document.getElementById("remember");
-    const moodEl = document.getElementById("chipMood");
+  // DOM
+  const msgEl = document.getElementById("msg");
+  const sourceEl = document.getElementById("source");
+  const dateEl = document.getElementById("date");
+  const rememberEl = document.getElementById("remember");
 
-    const photoCard = document.getElementById("photoCard");
-    const photoEl = document.getElementById("photo");
-    const captionEl = document.getElementById("caption");
+  const photoCard = document.getElementById("photoCard");
+  const photoEl = document.getElementById("photo");
+  const captionEl = document.getElementById("caption");
 
-    function render(i){
-      const item = entries[i];
-      msgEl.textContent = item.text;
-      sourceEl.textContent = item.source ? `Kaynak: ${item.source}` : "";
-      dateEl.textContent = `• ${key}`;
-      moodEl.textContent = item.mood ? `Mod: ${item.mood}` : "Mod: —";
+  if(!msgEl || !dateEl){
+    console.error("DOM eksik:", { msgEl, dateEl });
+    return;
+  }
 
+  // Günlük sabit yazı
+  let current = hashIndex(key + "|entry", entries.length);
+
+  function render(i){
+    const item = entries[i];
+
+    msgEl.textContent = item.text;
+    if(sourceEl) sourceEl.textContent = item.source ? `Kaynak: ${item.source}` : "";
+    dateEl.textContent = `• ${key}`;
+    if(chipMood) chipMood.textContent = item.mood ? `Mod: ${item.mood}` : "Mod: —";
+
+    if(rememberEl){
       if(item.remember){
         rememberEl.style.display = "block";
         rememberEl.textContent = `Bugün şunu hatırla: ${item.remember}`;
       } else {
         rememberEl.style.display = "none";
       }
+    }
 
-      // Foto: varsa günlük foto da seçelim (foto listesi boşsa gizli kalır)
+    // Günlük sabit foto (entry'den bağımsız)
+    if(photoCard && photoEl && captionEl){
       if(photos.length > 0){
-        const pIdx = (hashIndex(key + "|photo", photos.length));
+        const pIdx = hashIndex(key + "|photo", photos.length);
         const p = photos[pIdx];
         photoEl.src = p.src;
         captionEl.textContent = p.caption || "Bugünün fotoğrafı";
@@ -352,32 +116,39 @@ Ama ben ‘kolay’ diye değil,
       } else {
         photoCard.style.display = "none";
       }
-
-      // Uzun metinde font küçült
-      const L = item.text.length;
-      msgEl.style.fontSize = (L > 700) ? "18px" : "20px";
-      if(L > 1000) msgEl.style.fontSize = "17px";
     }
 
-    render(current);
+    // Uzun metin font ayarı
+    const L = item.text.length;
+    msgEl.style.fontSize = (L > 700) ? "18px" : "20px";
+    if(L > 1000) msgEl.style.fontSize = "17px";
+  }
 
-    document.getElementById("btnShuffle").addEventListener("click", () => {
+  render(current);
+
+  // Butonlar
+  const btnShuffle = document.getElementById("btnShuffle");
+  const btnCopy = document.getElementById("btnCopy");
+
+  if(btnShuffle){
+    btnShuffle.addEventListener("click", () => {
+      // aynı gün içinde yazıyı değiştir: “farklı bir tane”
       current = (current + 1) % entries.length;
       render(current);
     });
+  }
 
-    document.getElementById("btnCopy").addEventListener("click", async () => {
-      const t = entries[current].text;
+  if(btnCopy){
+    btnCopy.addEventListener("click", async () => {
       try{
-        await navigator.clipboard.writeText(t);
-        const old = document.getElementById("btnCopy").textContent;
-        document.getElementById("btnCopy").textContent = "Kopyalandı ✓";
-        setTimeout(()=>document.getElementById("btnCopy").textContent = old, 900);
+        await navigator.clipboard.writeText(entries[current].text);
+        const old = btnCopy.textContent;
+        btnCopy.textContent = "Kopyalandı ✓";
+        setTimeout(()=>btnCopy.textContent = old, 900);
       }catch{
         alert("Kopyalama izni yok. Metni seçip kopyalayabilirsin.");
       }
     });
-  });
-  </script>
-</body>
-</html>
+  }
+});
+</script>
