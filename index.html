@@ -1,3 +1,121 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Yunis • Günün Notu</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg1:#07111f; --bg2:#0b1a33;
+      --card:rgba(12, 25, 46, 0.74);
+      --text:#eef3fb; --muted:rgba(238,243,251,0.55);
+      --shadow:rgba(0,0,0,0.55);
+      --border:rgba(255,255,255,0.08);
+      --glow:rgba(255,180,220,0.18);
+    }
+    body.day{
+      --bg1:#fff1f6; --bg2:#f0f4ff;
+      --card:rgba(255,255,255,0.92);
+      --text:#0f1a2b; --muted:rgba(15,26,43,0.55);
+      --shadow:rgba(0,0,0,0.12);
+      --border:rgba(0,0,0,0.08);
+      --glow:rgba(255,120,170,0.22);
+    }
+    body{
+      margin:0; min-height:100vh;
+      display:flex; align-items:center; justify-content:center;
+      padding:18px;
+      font-family:'Cormorant Garamond', serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 700px at 20% 10%, rgba(255,160,200,0.16) 0%, transparent 55%),
+        radial-gradient(900px 600px at 85% 20%, rgba(140,180,255,0.14) 0%, transparent 60%),
+        linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%);
+      position:relative;
+      overflow:hidden;
+    }
+    body::after{
+      content:"";
+      position:absolute; inset:0;
+      background-image:
+        radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,.20) 50%, transparent 51%),
+        radial-gradient(1px 1px at 30% 80%, rgba(255,255,255,.12) 50%, transparent 51%),
+        radial-gradient(1px 1px at 60% 40%, rgba(255,255,255,.16) 50%, transparent 51%),
+        radial-gradient(1px 1px at 85% 65%, rgba(255,255,255,.14) 50%, transparent 51%),
+        radial-gradient(1px 1px at 50% 10%, rgba(255,255,255,.10) 50%, transparent 51%);
+      opacity:.35;
+      pointer-events:none;
+      z-index:1;
+    }
+
+    .wrap{
+      position:relative; z-index:2;
+      max-width:860px; width:100%;
+      padding:26px;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      box-shadow: 0 14px 40px var(--shadow), 0 0 28px var(--glow);
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+    }
+
+    .photo{
+      width:100%;
+      border-radius:16px;
+      border:1px solid var(--border);
+      overflow:hidden;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.20);
+      margin-bottom:14px;
+      background:rgba(0,0,0,0.06);
+    }
+    .photo img{
+      display:block;
+      width:100%;
+      height:auto;
+      max-height:420px;
+      object-fit:cover;
+    }
+    .caption{
+      padding:10px 12px;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      font-size:12px;
+      color:var(--muted);
+      border-top:1px solid var(--border);
+      background:rgba(0,0,0,0.02);
+    }
+
+    .msg{
+      font-size:20px;
+      line-height:1.75;
+      white-space:pre-line;
+      letter-spacing:.2px;
+    }
+    .date{
+      margin-top:14px;
+      font-size:13px;
+      color:var(--muted);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <!-- FOTO -->
+    <div class="photo" id="photoCard">
+      <img id="photo" alt="Bugünün fotoğrafı" />
+      <div class="caption" id="caption">—</div>
+    </div>
+
+    <!-- METİN -->
+    <div class="msg" id="msg">Yükleniyor…</div>
+    <div class="date" id="date"></div>
+  </div>
+
 <script>
 function istanbulNow(){
   return new Date(new Date().toLocaleString("en-US",{timeZone:"Europe/Istanbul"}));
@@ -12,89 +130,63 @@ function hashIndex(key, len){
   return h % len;
 }
 
-/* 📷 FOTO LİSTESİ */
+/* Foto listesi */
 const photos = [
   { src:"assets/yunis/01.jpg", caption:"Deneme 1" },
   { src:"assets/yunis/02.jpg", caption:"Deneme 2" },
   { src:"assets/yunis/03.jpg", caption:"Deneme 3" },
 ];
 
-/* 💌 YAZILAR */
+/* Yazılar */
 const entries = [
-  {
-    text:`Bugün seni sevdiğimi ispatlamak için bir şey yapmam gerekmiyor.
-Sevgi bazen sessizce yanında durabilmek.`,
-    source:"Dammy → Yunis",
-    remember:"Bugün küçük bir şey yap: ‘iyi ki varsın’ de."
-  },
-  {
-    text:`Seninle konuşurken cümlelerim düzgün değilse,
+  { text:`Bugün seni sevdiğimi ispatlamak için bir şey yapmam gerekmiyor.
+Sevgi bazen sessizce yanında durabilmek.`, },
+  { text:`Seninle konuşurken cümlelerim düzgün değilse,
 sebebi Türkçem değil.
-Kafamın içi ‘Yunis’ diye bağırıyor.`,
-    source:"Dammy → Yunis"
-  },
-  {
-    text:`Birlikte büyümek bazen kolay değil.
-Ama ben ‘kolay’ diye değil,
-‘sen’ diye seçtim.`,
-    source:"Dammy → Yunis",
-    remember:"Bugün şu soruyu sor: ‘Bunu senin için daha iyi nasıl yaparım?’"
-  }
+Kafamın içi “Yunis” diye bağırıyor.`, },
+  { text:`Birlikte büyümek bazen kolay değil.
+Ama ben “kolay” diye değil,
+“sen” diye seçtim.`, },
 ];
 
+window.addEventListener("error", (e) => {
+  const el = document.getElementById("msg");
+  if(el) el.textContent = "Bir şeyler bozuldu. Konsola bak (F12).";
+  console.error(e);
+});
+
 document.addEventListener("DOMContentLoaded", () => {
-  // Tema
   const hour = istanbulNow().getHours();
   if(hour >= 6 && hour < 19) document.body.classList.add("day");
 
-  // Cuma dokusu (sende varsa)
-  if(istanbulNow().getDay() === 5) document.body.classList.add("friday");
-
   const key = istanbulKey();
 
-  // ✅ Eski şablon uyumu: önce id ile ara, yoksa class ile yakala
-  const msgEl  = document.getElementById("msg")  || document.querySelector(".msg");
-  const dateEl = document.getElementById("date") || document.querySelector(".date");
-
-  if(!msgEl || !dateEl){
-    console.error("Hâlâ DOM eksik. Sayfada #msg ve #date yok.", { msgEl, dateEl });
-    return;
-  }
+  const msgEl = document.getElementById("msg");
+  const dateEl = document.getElementById("date");
+  const photoEl = document.getElementById("photo");
+  const captionEl = document.getElementById("caption");
+  const photoCard = document.getElementById("photoCard");
 
   // Günlük sabit yazı
   const eIdx = hashIndex(key + "|entry", entries.length);
-  const entry = entries[eIdx];
-
-  msgEl.textContent = entry.text;
+  msgEl.textContent = entries[eIdx].text;
   dateEl.textContent = `Günün notu • ${key}`;
-
-  // Uzun metinde font küçült
-  if(entry.text.length > 700) msgEl.style.fontSize="18px";
-  if(entry.text.length > 1000) msgEl.style.fontSize="17px";
-
-  // ✅ Foto göstermek istiyorsan (senin mevcut HTML’de img yoksa otomatik ekler)
-  const wrap = document.querySelector(".wrap") || document.body;
-
-  // Foto alanı yoksa oluştur
-  let img = document.getElementById("lovePhoto");
-  if(!img){
-    img = document.createElement("img");
-    img.id = "lovePhoto";
-    img.style.width = "100%";
-    img.style.height = "auto";
-    img.style.maxHeight = "420px";
-    img.style.objectFit = "cover";
-    img.style.borderRadius = "16px";
-    img.style.marginBottom = "14px";
-    img.style.border = "1px solid var(--border)";
-    wrap.insertBefore(img, wrap.firstChild);
-  }
 
   // Günlük sabit foto
   if(photos.length > 0){
     const pIdx = hashIndex(key + "|photo", photos.length);
-    img.src = photos[pIdx].src;
-    img.alt = "Bugünün fotoğrafı";
+    photoEl.src = photos[pIdx].src;
+    captionEl.textContent = photos[pIdx].caption || "Bugünün fotoğrafı";
+    photoCard.style.display = "block";
+  } else {
+    photoCard.style.display = "none";
   }
+
+  // uzun metinde font küçült
+  const L = msgEl.textContent.length;
+  if(L > 700) msgEl.style.fontSize="18px";
+  if(L > 1000) msgEl.style.fontSize="17px";
 });
 </script>
+</body>
+</html>
