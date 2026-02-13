@@ -16,6 +16,7 @@
       --border:rgba(255,255,255,0.08);
       --glow:rgba(255,180,220,0.18);
       --chip:rgba(255,255,255,0.08);
+      --accent:rgba(255,160,200,0.95);
     }
     body.day{
       --bg1:#fff1f6; --bg2:#f0f4ff;
@@ -127,7 +128,7 @@
     .remember{
       margin-top:12px;
       padding:12px 12px;
-      border-left:3px solid rgba(255,160,200,0.95);
+      border-left:3px solid var(--accent);
       border-radius:10px;
       background:rgba(255,255,255,0.03);
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
@@ -152,7 +153,7 @@
 
     <div class="photo" id="photoCard">
       <img id="photo" alt="Bugünün fotoğrafı" />
-      <div class="caption" id="caption">—</div>
+      <div class="caption" id="caption">Foto yükleniyor…</div>
     </div>
 
     <div class="msg" id="msg">Yükleniyor…</div>
@@ -161,6 +162,7 @@
   </div>
 
 <script>
+/* ---------- ZAMAN (İSTANBUL) ---------- */
 function istanbulNow(){
   return new Date(new Date().toLocaleString("en-US",{timeZone:"Europe/Istanbul"}));
 }
@@ -168,20 +170,44 @@ function istanbulKey(){
   const n = istanbulNow();
   return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
 }
+
+/* ---------- HASH ---------- */
 function hashIndex(key, len){
   let h = 0;
   for(let i=0;i<key.length;i++) h = (h*31 + key.charCodeAt(i)) >>> 0;
   return h % len;
 }
 
-// ✅ Foto ayarı: 0001.jpg ... 0125.jpg
-const PHOTO_COUNT = 125;
-const PHOTO_PAD = 4;
-function photoPath(n){
-  return `assets/yunis/${String(n).padStart(PHOTO_PAD,'0')}.jpg`;
+/* ---------- FOTO AYAR ---------- */
+const PHOTO_COUNT = 125; // sende kaçsa
+function photoCandidates(n){
+  // Dosya adın 0001.jpg mı, 01.jpg mı, 1.jpg mı? Umursamıyoruz.
+  const a = String(n).padStart(4,'0');
+  const b = String(n).padStart(2,'0');
+  const c = String(n);
+  return [
+    `./assets/yunis/${a}.jpg`,
+    `./assets/yunis/${b}.jpg`,
+    `./assets/yunis/${c}.jpg`,
+  ];
 }
 
-// 💌 Yazılar (sen çoğaltacaksın)
+function loadFirstWorkingImage(imgEl, urls, onPicked){
+  let i = 0;
+  function tryNext(){
+    if(i >= urls.length){
+      onPicked(null);
+      return;
+    }
+    const url = urls[i++];
+    imgEl.onerror = () => tryNext();
+    imgEl.onload = () => onPicked(url);
+    imgEl.src = url;
+  }
+  tryNext();
+}
+
+/* ---------- İÇERİK ---------- */
 const entries = [
   {
     text:`Bugün seni sevdiğimi ispatlamak için bir şey yapmam gerekmiyor.
@@ -200,6 +226,7 @@ Ama ben “kolay” diye değil,
   }
 ];
 
+/* ---------- HATA KORUMA ---------- */
 window.addEventListener("error", (e) => {
   const el = document.getElementById("msg");
   if(el) el.textContent = "Bir şeyler bozuldu. Konsola bak (F12).";
@@ -213,7 +240,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if(isDay) document.body.classList.add("day");
 
   const key = istanbulKey();
-
   document.getElementById("chipDayNight").textContent = isDay ? "Gündüz" : "Gece";
   document.getElementById("chipKey").textContent = `Gün: ${key}`;
 
@@ -226,20 +252,31 @@ document.addEventListener("DOMContentLoaded", () => {
   const entry = entries[eIdx];
   msgEl.textContent = entry.text;
   dateEl.textContent = `Günün notu • ${key}`;
-
   if(entry.remember){
     rememberEl.style.display = "block";
     rememberEl.textContent = `Bugün şunu hatırla: ${entry.remember}`;
+  } else {
+    rememberEl.style.display = "none";
   }
 
-  // Günlük sabit foto
-  const pNum = hashIndex(key + "|photo", PHOTO_COUNT) + 1; // 1..125
-  document.getElementById("chipPhoto").textContent = `Foto: #${String(pNum).padStart(PHOTO_PAD,'0')}`;
+  // Günlük sabit foto numarası
+  const pNum = hashIndex(key + "|photo", PHOTO_COUNT) + 1; // 1..PHOTO_COUNT
+  document.getElementById("chipPhoto").textContent = `Foto #: ${pNum}`;
+
   const photoEl = document.getElementById("photo");
   const capEl = document.getElementById("caption");
 
-  photoEl.src = photoPath(pNum);
-  capEl.textContent = `Bugünün fotoğrafı • #${String(pNum).padStart(PHOTO_PAD,'0')}`;
+  const urls = photoCandidates(pNum);
+
+  loadFirstWorkingImage(photoEl, urls, (picked) => {
+    if(picked){
+      capEl.textContent = `Bugünün fotoğrafı • ${picked.replace("./","")}`;
+      console.log("Foto yüklendi:", picked);
+    } else {
+      capEl.textContent = `Foto bulunamadı. Aranan: ${urls.map(u=>u.replace("./","")).join(" | ")}`;
+      console.warn("Foto bulunamadı:", urls);
+    }
+  });
 
   // Uzun metin font ayarı
   const L = msgEl.textContent.length;
