@@ -61,13 +61,7 @@
       box-shadow: 0 14px 40px var(--shadow), 0 0 28px var(--glow);
       backdrop-filter:blur(10px);
       -webkit-backdrop-filter:blur(10px);
-      animation:fadeIn .5s ease-out;
     }
-    @keyframes fadeIn{
-      from{opacity:0; transform:translateY(8px);}
-      to{opacity:1; transform:translateY(0);}
-    }
-
     .top{
       display:flex; flex-wrap:wrap;
       align-items:flex-start; justify-content:space-between;
@@ -95,13 +89,13 @@
       box-shadow: 0 10px 26px rgba(0,0,0,0.20);
       margin-bottom:14px;
       background:rgba(0,0,0,0.06);
-      height:360px;                 /* ✅ sabit çerçeve */
+      height:360px;
     }
     .photo img{
       display:block;
       width:100%;
       height:100%;
-      object-fit:cover;             /* ✅ kırpıp doldur */
+      object-fit:cover;
       object-position:center;
     }
     .caption{
@@ -111,6 +105,7 @@
       color:var(--muted);
       border-top:1px solid var(--border);
       background:rgba(0,0,0,0.02);
+      word-break:break-word;
     }
 
     .msg{
@@ -162,7 +157,6 @@
   </div>
 
 <script>
-/* ---------- ZAMAN (İSTANBUL) ---------- */
 function istanbulNow(){
   return new Date(new Date().toLocaleString("en-US",{timeZone:"Europe/Istanbul"}));
 }
@@ -170,68 +164,26 @@ function istanbulKey(){
   const n = istanbulNow();
   return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
 }
-
-/* ---------- HASH ---------- */
 function hashIndex(key, len){
   let h = 0;
   for(let i=0;i<key.length;i++) h = (h*31 + key.charCodeAt(i)) >>> 0;
   return h % len;
 }
 
-/* ---------- FOTO AYAR ---------- */
-const PHOTO_COUNT = 125; // sende kaçsa
-function photoCandidates(n){
-  // Dosya adın 0001.jpg mı, 01.jpg mı, 1.jpg mı? Umursamıyoruz.
-  const a = String(n).padStart(4,'0');
-  const b = String(n).padStart(2,'0');
-  const c = String(n);
-  return [
-    `./assets/yunis/${a}.jpg`,
-    `./assets/yunis/${b}.jpg`,
-    `./assets/yunis/${c}.jpg`,
-  ];
+// ✅ absolute base path: hangi route'ta olursan ol doğru çöz
+const BASE = new URL(".", location.href).toString(); // .../ (sonunda / var)
+function photoUrl(name){
+  return BASE + "assets/yunis/" + name + ".jpg";
 }
 
-function loadFirstWorkingImage(imgEl, urls, onPicked){
-  let i = 0;
-  function tryNext(){
-    if(i >= urls.length){
-      onPicked(null);
-      return;
-    }
-    const url = urls[i++];
-    imgEl.onerror = () => tryNext();
-    imgEl.onload = () => onPicked(url);
-    imgEl.src = url;
-  }
-  tryNext();
-}
-
-/* ---------- İÇERİK ---------- */
+// İçerik
 const entries = [
-  {
-    text:`Bugün seni sevdiğimi ispatlamak için bir şey yapmam gerekmiyor.
-Sevgi bazen sessizce yanında durabilmek.`,
-    remember:"Bugün küçük bir şey yap: ‘iyi ki varsın’ de."
-  },
-  {
-    text:`Seninle konuşurken cümlelerim düzgün değilse,
-sebebi Türkçem değil.
-Kafamın içi “Yunis” diye bağırıyor.`
-  },
-  {
-    text:`Birlikte büyümek bazen kolay değil.
-Ama ben “kolay” diye değil,
-“sen” diye seçtim.`
-  }
+  { text:`Bugün seni sevdiğimi ispatlamak için bir şey yapmam gerekmiyor.\nSevgi bazen sessizce yanında durabilmek.`, remember:"Bugün küçük bir şey yap: ‘iyi ki varsın’ de." },
+  { text:`Seninle konuşurken cümlelerim düzgün değilse,\nsebebi Türkçem değil.\nKafamın içi “Yunis” diye bağırıyor.` },
+  { text:`Birlikte büyümek bazen kolay değil.\nAma ben “kolay” diye değil,\n“sen” diye seçtim.` },
 ];
 
-/* ---------- HATA KORUMA ---------- */
-window.addEventListener("error", (e) => {
-  const el = document.getElementById("msg");
-  if(el) el.textContent = "Bir şeyler bozuldu. Konsola bak (F12).";
-  console.error(e);
-});
+window.addEventListener("error", (e) => console.error(e));
 
 document.addEventListener("DOMContentLoaded", () => {
   const now = istanbulNow();
@@ -247,7 +199,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const dateEl = document.getElementById("date");
   const rememberEl = document.getElementById("remember");
 
-  // Günlük sabit yazı
   const eIdx = hashIndex(key + "|entry", entries.length);
   const entry = entries[eIdx];
   msgEl.textContent = entry.text;
@@ -255,33 +206,24 @@ document.addEventListener("DOMContentLoaded", () => {
   if(entry.remember){
     rememberEl.style.display = "block";
     rememberEl.textContent = `Bugün şunu hatırla: ${entry.remember}`;
-  } else {
-    rememberEl.style.display = "none";
   }
-
-  // Günlük sabit foto numarası
-  const pNum = hashIndex(key + "|photo", PHOTO_COUNT) + 1; // 1..PHOTO_COUNT
-  document.getElementById("chipPhoto").textContent = `Foto #: ${pNum}`;
 
   const photoEl = document.getElementById("photo");
   const capEl = document.getElementById("caption");
+  const chipPhoto = document.getElementById("chipPhoto");
 
-  const urls = photoCandidates(pNum);
+  // 🔥 TEST: önce kesin var dediğin 0001'i yükle
+  // Eğer bu bile gelmezse problem %100 deploy/path
+  const testName = "0001";
+  const testURL = photoUrl(testName);
 
-  loadFirstWorkingImage(photoEl, urls, (picked) => {
-    if(picked){
-      capEl.textContent = `Bugünün fotoğrafı • ${picked.replace("./","")}`;
-      console.log("Foto yüklendi:", picked);
-    } else {
-      capEl.textContent = `Foto bulunamadı. Aranan: ${urls.map(u=>u.replace("./","")).join(" | ")}`;
-      console.warn("Foto bulunamadı:", urls);
-    }
-  });
+  chipPhoto.textContent = `Test foto: #${testName}`;
+  capEl.textContent = `Denenen URL: ${testURL}`;
 
-  // Uzun metin font ayarı
-  const L = msgEl.textContent.length;
-  if(L > 700) msgEl.style.fontSize="18px";
-  if(L > 1000) msgEl.style.fontSize="17px";
+  photoEl.onload = () => capEl.textContent = `OK: ${testURL}`;
+  photoEl.onerror = () => capEl.textContent = `YOK (404): ${testURL} | Cloudflare deploy/branch/output dir kontrol et`;
+
+  photoEl.src = testURL;
 });
 </script>
 </body>
