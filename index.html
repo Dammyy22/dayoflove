@@ -212,7 +212,7 @@ function photoUrl(name){
 }
 
 /* ---------- FOTO AYAR ---------- */
-const PHOTO_COUNT = 125; // sende kaçsa
+const PHOTO_COUNT = 119; // sende kaçsa
 function dailyPhotoNumber(){
   const key = istanbulKey();
   return hashIndex(key + "|photo", PHOTO_COUNT) + 1; // 1..PHOTO_COUNT
