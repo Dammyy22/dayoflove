@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title> DY || The things in my heart </title>
+  <title>DY|| The things in my heart </title>
 
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
 
@@ -61,7 +61,13 @@
       box-shadow: 0 14px 40px var(--shadow), 0 0 28px var(--glow);
       backdrop-filter:blur(10px);
       -webkit-backdrop-filter:blur(10px);
+      animation:fadeIn .5s ease-out;
     }
+    @keyframes fadeIn{
+      from{opacity:0; transform:translateY(8px);}
+      to{opacity:1; transform:translateY(0);}
+    }
+
     .top{
       display:flex; flex-wrap:wrap;
       align-items:flex-start; justify-content:space-between;
@@ -89,7 +95,7 @@
       box-shadow: 0 10px 26px rgba(0,0,0,0.20);
       margin-bottom:14px;
       background:rgba(0,0,0,0.06);
-      height:360px;
+      height:360px;                 /* sabit çerçeve */
     }
     .photo img{
       display:block;
@@ -114,8 +120,8 @@
       white-space:pre-line;
       letter-spacing:.2px;
     }
-    .date{
-      margin-top:14px;
+    .meta{
+      margin-top:10px;
       font-size:13px;
       color:var(--muted);
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
@@ -129,7 +135,26 @@
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       font-size:13px;
       color:var(--muted);
+      display:none;
     }
+
+    .actions{
+      margin-top:14px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    button{
+      border:1px solid var(--border);
+      background:var(--chip);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      font-size:13px;
+      cursor:pointer;
+    }
+    button:hover{ filter:brightness(1.05); }
   </style>
 </head>
 
@@ -142,6 +167,7 @@
           <div class="chip" id="chipDayNight">—</div>
           <div class="chip" id="chipKey">—</div>
           <div class="chip" id="chipPhoto">—</div>
+          <div class="chip" id="chipCycle">—</div>
         </div>
       </div>
     </div>
@@ -152,11 +178,18 @@
     </div>
 
     <div class="msg" id="msg">Yükleniyor…</div>
-    <div class="date" id="date"></div>
-    <div class="remember" id="remember" style="display:none;"></div>
+    <div class="meta" id="source"></div>
+    <div class="remember" id="remember"></div>
+    <div class="meta" id="date"></div>
+
+    <div class="actions">
+      <button id="btnCopy">Metni kopyala</button>
+      <button id="btnReset">Mesaj döngüsünü sıfırla</button>
+    </div>
   </div>
 
 <script>
+/* ---------- ZAMAN (İSTANBUL) ---------- */
 function istanbulNow(){
   return new Date(new Date().toLocaleString("en-US",{timeZone:"Europe/Istanbul"}));
 }
@@ -164,25 +197,88 @@ function istanbulKey(){
   const n = istanbulNow();
   return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
 }
+
+/* ---------- HASH ---------- */
 function hashIndex(key, len){
   let h = 0;
   for(let i=0;i<key.length;i++) h = (h*31 + key.charCodeAt(i)) >>> 0;
   return h % len;
 }
 
-// ✅ absolute base path: hangi route'ta olursan ol doğru çöz
+/* ---------- ABSOLUTE BASE (PATH SORUNU BİTMESİN DİYE) ---------- */
 const BASE = new URL(".", location.href).toString(); // .../ (sonunda / var)
 function photoUrl(name){
   return BASE + "assets/yunis/" + name + ".jpg";
 }
 
-// İçerik
+/* ---------- FOTO AYAR ---------- */
+const PHOTO_COUNT = 125; // sende kaçsa
+function dailyPhotoNumber(){
+  const key = istanbulKey();
+  return hashIndex(key + "|photo", PHOTO_COUNT) + 1; // 1..PHOTO_COUNT
+}
+
+/* ---------- MESAJLAR (ID ŞART) ---------- */
 const entries = [
-  { text:`Bugün seni sevdiğimi ispatlamak için bir şey yapmam gerekmiyor.\nSevgi bazen sessizce yanında durabilmek.`, remember:"Bugün küçük bir şey yap: ‘iyi ki varsın’ de." },
-  { text:`Seninle konuşurken cümlelerim düzgün değilse,\nsebebi Türkçem değil.\nKafamın içi “Yunis” diye bağırıyor.` },
-  { text:`Birlikte büyümek bazen kolay değil.\nAma ben “kolay” diye değil,\n“sen” diye seçtim.` },
+  { id:"m001", text:`Bugün seni sevdiğimi ispatlamak için bir şey yapmam gerekmiyor.\nSevgi bazen sessizce yanında durabilmek.`, source:"Dammy → Yunis", remember:"Bugün küçük bir şey yap: ‘iyi ki varsın’ de." },
+  { id:"m002", text:`Seninle konuşurken cümlelerim düzgün değilse,\nsebebi Türkçem değil.\nKafamın içi “Yunis” diye bağırıyor.`, source:"Dammy → Yunis" },
+  { id:"m003", text:`Birlikte büyümek bazen kolay değil.\nAma ben “kolay” diye değil,\n“sen” diye seçtim.`, source:"Dammy → Yunis" },
+  // Buraya devam: m004, m005...
 ];
 
+/* ---------- TEKRARSIZ SEÇİM (LOCALSTORAGE) ---------- */
+const STORAGE_SEEN = "dayoflove_seen_messages_v1";
+const STORAGE_CYCLE = "dayoflove_cycle_v1";
+
+function getSeen(){
+  try{
+    return new Set(JSON.parse(localStorage.getItem(STORAGE_SEEN) || "[]"));
+  }catch{
+    return new Set();
+  }
+}
+function setSeen(setObj){
+  localStorage.setItem(STORAGE_SEEN, JSON.stringify([...setObj]));
+}
+
+function getCycle(){
+  const n = parseInt(localStorage.getItem(STORAGE_CYCLE) || "1", 10);
+  return Number.isFinite(n) && n >= 1 ? n : 1;
+}
+function setCycle(n){
+  localStorage.setItem(STORAGE_CYCLE, String(n));
+}
+
+function pickNoRepeat(entries){
+  const seen = getSeen();
+  const remaining = entries.filter(e => !seen.has(e.id));
+
+  // Hepsi bittiyse: yeni tura geç, seen sıfırla
+  if(remaining.length === 0){
+    localStorage.removeItem(STORAGE_SEEN);
+    const nextCycle = getCycle() + 1;
+    setCycle(nextCycle);
+    // yeni turda deterministik bir seçim yapalım (bugün + cycle)
+    const key = istanbulKey();
+    const idx = hashIndex(key + "|cycle:" + nextCycle, entries.length);
+    const chosen = entries[idx];
+    const freshSeen = new Set([chosen.id]);
+    setSeen(freshSeen);
+    return { chosen, remainingCount: entries.length - 1, cycle: nextCycle };
+  }
+
+  // Gösterilmemişlerden seçim (bugüne sabit)
+  const key = istanbulKey();
+  const idx = hashIndex(key + "|remain:" + remaining.length + "|cycle:" + getCycle(), remaining.length);
+  const chosen = remaining[idx];
+
+  seen.add(chosen.id);
+  setSeen(seen);
+
+  return { chosen, remainingCount: remaining.length - 1, cycle: getCycle() };
+}
+
+/* ---------- HATA KORUMA ---------- */
 window.addEventListener("error", (e) => console.error(e));
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -195,35 +291,65 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("chipDayNight").textContent = isDay ? "Gündüz" : "Gece";
   document.getElementById("chipKey").textContent = `Gün: ${key}`;
 
-  const msgEl = document.getElementById("msg");
-  const dateEl = document.getElementById("date");
-  const rememberEl = document.getElementById("remember");
+  // Mesaj seç (tekrarsız)
+  const { chosen, remainingCount, cycle } = pickNoRepeat(entries);
 
-  const eIdx = hashIndex(key + "|entry", entries.length);
-  const entry = entries[eIdx];
-  msgEl.textContent = entry.text;
+  const msgEl = document.getElementById("msg");
+  const sourceEl = document.getElementById("source");
+  const rememberEl = document.getElementById("remember");
+  const dateEl = document.getElementById("date");
+  const chipCycle = document.getElementById("chipCycle");
+
+  msgEl.textContent = chosen.text;
+  sourceEl.textContent = chosen.source ? `Kaynak: ${chosen.source}` : "";
   dateEl.textContent = `Günün notu • ${key}`;
-  if(entry.remember){
+  chipCycle.textContent = `Tur: ${cycle} • Kalan: ${remainingCount}`;
+
+  if(chosen.remember){
     rememberEl.style.display = "block";
-    rememberEl.textContent = `Bugün şunu hatırla: ${entry.remember}`;
+    rememberEl.textContent = `Bugün şunu hatırla: ${chosen.remember}`;
+  } else {
+    rememberEl.style.display = "none";
   }
 
+  // Uzun metin font ayarı
+  const L = chosen.text.length;
+  msgEl.style.fontSize = (L > 700) ? "18px" : "20px";
+  if(L > 1000) msgEl.style.fontSize = "17px";
+
+  // Foto (günlük sabit)
+  const pNum = dailyPhotoNumber();
+  const photoName = String(pNum).padStart(4,'0');
+  const url = photoUrl(photoName);
+
+  document.getElementById("chipPhoto").textContent = `Foto: #${photoName}`;
   const photoEl = document.getElementById("photo");
   const capEl = document.getElementById("caption");
-  const chipPhoto = document.getElementById("chipPhoto");
 
-  // 🔥 TEST: önce kesin var dediğin 0001'i yükle
-  // Eğer bu bile gelmezse problem %100 deploy/path
-  const testName = "0001";
-  const testURL = photoUrl(testName);
+  capEl.textContent = "Foto yükleniyor…";
+  photoEl.onload = () => capEl.textContent = `Bugünün fotoğrafı • #${photoName}`;
+  photoEl.onerror = () => capEl.textContent = `Foto bulunamadı: ${url}`;
+  photoEl.src = url;
 
-  chipPhoto.textContent = `Test foto: #${testName}`;
-  capEl.textContent = `Denenen URL: ${testURL}`;
+  // Butonlar
+  const btnCopy = document.getElementById("btnCopy");
+  btnCopy.addEventListener("click", async () => {
+    try{
+      await navigator.clipboard.writeText(chosen.text);
+      const old = btnCopy.textContent;
+      btnCopy.textContent = "Kopyalandı ✓";
+      setTimeout(()=>btnCopy.textContent = old, 900);
+    }catch{
+      alert("Kopyalama izni yok. Metni seçip kopyalayabilirsin.");
+    }
+  });
 
-  photoEl.onload = () => capEl.textContent = `OK: ${testURL}`;
-  photoEl.onerror = () => capEl.textContent = `YOK (404): ${testURL} | Cloudflare deploy/branch/output dir kontrol et`;
-
-  photoEl.src = testURL;
+  const btnReset = document.getElementById("btnReset");
+  btnReset.addEventListener("click", () => {
+    localStorage.removeItem(STORAGE_SEEN);
+    localStorage.removeItem(STORAGE_CYCLE);
+    location.reload();
+  });
 });
 </script>
 </body>
