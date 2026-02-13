@@ -15,6 +15,7 @@
       --shadow:rgba(0,0,0,0.55);
       --border:rgba(255,255,255,0.08);
       --glow:rgba(255,180,220,0.18);
+      --chip:rgba(255,255,255,0.08);
     }
     body.day{
       --bg1:#fff1f6; --bg2:#f0f4ff;
@@ -23,6 +24,7 @@
       --shadow:rgba(0,0,0,0.12);
       --border:rgba(0,0,0,0.08);
       --glow:rgba(255,120,170,0.22);
+      --chip:rgba(0,0,0,0.06);
     }
     body{
       margin:0; min-height:100vh;
@@ -34,8 +36,7 @@
         radial-gradient(1200px 700px at 20% 10%, rgba(255,160,200,0.16) 0%, transparent 55%),
         radial-gradient(900px 600px at 85% 20%, rgba(140,180,255,0.14) 0%, transparent 60%),
         linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%);
-      position:relative;
-      overflow:hidden;
+      position:relative; overflow:hidden;
     }
     body::after{
       content:"";
@@ -46,9 +47,7 @@
         radial-gradient(1px 1px at 60% 40%, rgba(255,255,255,.16) 50%, transparent 51%),
         radial-gradient(1px 1px at 85% 65%, rgba(255,255,255,.14) 50%, transparent 51%),
         radial-gradient(1px 1px at 50% 10%, rgba(255,255,255,.10) 50%, transparent 51%);
-      opacity:.35;
-      pointer-events:none;
-      z-index:1;
+      opacity:.35; pointer-events:none; z-index:1;
     }
 
     .wrap{
@@ -61,6 +60,30 @@
       box-shadow: 0 14px 40px var(--shadow), 0 0 28px var(--glow);
       backdrop-filter:blur(10px);
       -webkit-backdrop-filter:blur(10px);
+      animation:fadeIn .5s ease-out;
+    }
+    @keyframes fadeIn{
+      from{opacity:0; transform:translateY(8px);}
+      to{opacity:1; transform:translateY(0);}
+    }
+
+    .top{
+      display:flex; flex-wrap:wrap;
+      align-items:flex-start; justify-content:space-between;
+      gap:10px;
+      margin-bottom:14px;
+    }
+    .title{ margin:0; font-size:22px; letter-spacing:.2px; }
+    .chips{ display:flex; gap:8px; flex-wrap:wrap; }
+    .chip{
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      font-size:12px;
+      padding:6px 10px;
+      border:1px solid var(--border);
+      background:var(--chip);
+      border-radius:999px;
+      color:var(--muted);
+      user-select:none;
     }
 
     .photo{
@@ -71,19 +94,15 @@
       box-shadow: 0 10px 26px rgba(0,0,0,0.20);
       margin-bottom:14px;
       background:rgba(0,0,0,0.06);
+      height:360px;                 /* ✅ sabit çerçeve */
     }
-    .photo{
-  height:360px;              /* çerçevenin sabit yüksekliği */
-}
-
-.photo img{
-  width:100%;
-  height:100%;
-  object-fit:cover;          /* çerçeveyi doldur, gerekirse kırp */
-  object-position:center;    /* yüz/merkez ortada kalsın */
-  display:block;
-}
-
+    .photo img{
+      display:block;
+      width:100%;
+      height:100%;
+      object-fit:cover;             /* ✅ kırpıp doldur */
+      object-position:center;
+    }
     .caption{
       padding:10px 12px;
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
@@ -105,20 +124,40 @@
       color:var(--muted);
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
     }
+    .remember{
+      margin-top:12px;
+      padding:12px 12px;
+      border-left:3px solid rgba(255,160,200,0.95);
+      border-radius:10px;
+      background:rgba(255,255,255,0.03);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      font-size:13px;
+      color:var(--muted);
+    }
   </style>
 </head>
 
 <body>
   <div class="wrap">
-    <!-- FOTO -->
+    <div class="top">
+      <div>
+        <h1 class="title">Yunis • Günün Notu</h1>
+        <div class="chips">
+          <div class="chip" id="chipDayNight">—</div>
+          <div class="chip" id="chipKey">—</div>
+          <div class="chip" id="chipPhoto">—</div>
+        </div>
+      </div>
+    </div>
+
     <div class="photo" id="photoCard">
       <img id="photo" alt="Bugünün fotoğrafı" />
       <div class="caption" id="caption">—</div>
     </div>
 
-    <!-- METİN -->
     <div class="msg" id="msg">Yükleniyor…</div>
     <div class="date" id="date"></div>
+    <div class="remember" id="remember" style="display:none;"></div>
   </div>
 
 <script>
@@ -135,23 +174,30 @@ function hashIndex(key, len){
   return h % len;
 }
 
-/* Foto listesi */
-const photos = [
-  { src:"assets/yunis/01.jpg", caption:"Deneme 1" },
-  { src:"assets/yunis/02.jpg", caption:"Deneme 2" },
-  { src:"assets/yunis/03.jpg", caption:"Deneme 3" },
-];
+// ✅ Foto ayarı: 0001.jpg ... 0125.jpg
+const PHOTO_COUNT = 125;
+const PHOTO_PAD = 4;
+function photoPath(n){
+  return `assets/yunis/${String(n).padStart(PHOTO_PAD,'0')}.jpg`;
+}
 
-/* Yazılar */
+// 💌 Yazılar (sen çoğaltacaksın)
 const entries = [
-  { text:`Bugün seni sevdiğimi ispatlamak için bir şey yapmam gerekmiyor.
-Sevgi bazen sessizce yanında durabilmek.`, },
-  { text:`Seninle konuşurken cümlelerim düzgün değilse,
+  {
+    text:`Bugün seni sevdiğimi ispatlamak için bir şey yapmam gerekmiyor.
+Sevgi bazen sessizce yanında durabilmek.`,
+    remember:"Bugün küçük bir şey yap: ‘iyi ki varsın’ de."
+  },
+  {
+    text:`Seninle konuşurken cümlelerim düzgün değilse,
 sebebi Türkçem değil.
-Kafamın içi “Yunis” diye bağırıyor.`, },
-  { text:`Birlikte büyümek bazen kolay değil.
+Kafamın içi “Yunis” diye bağırıyor.`
+  },
+  {
+    text:`Birlikte büyümek bazen kolay değil.
 Ama ben “kolay” diye değil,
-“sen” diye seçtim.`, },
+“sen” diye seçtim.`
+  }
 ];
 
 window.addEventListener("error", (e) => {
@@ -161,33 +207,41 @@ window.addEventListener("error", (e) => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  const hour = istanbulNow().getHours();
-  if(hour >= 6 && hour < 19) document.body.classList.add("day");
+  const now = istanbulNow();
+  const hour = now.getHours();
+  const isDay = (hour >= 6 && hour < 19);
+  if(isDay) document.body.classList.add("day");
 
   const key = istanbulKey();
 
+  document.getElementById("chipDayNight").textContent = isDay ? "Gündüz" : "Gece";
+  document.getElementById("chipKey").textContent = `Gün: ${key}`;
+
   const msgEl = document.getElementById("msg");
   const dateEl = document.getElementById("date");
-  const photoEl = document.getElementById("photo");
-  const captionEl = document.getElementById("caption");
-  const photoCard = document.getElementById("photoCard");
+  const rememberEl = document.getElementById("remember");
 
   // Günlük sabit yazı
   const eIdx = hashIndex(key + "|entry", entries.length);
-  msgEl.textContent = entries[eIdx].text;
+  const entry = entries[eIdx];
+  msgEl.textContent = entry.text;
   dateEl.textContent = `Günün notu • ${key}`;
 
-  // Günlük sabit foto
-  if(photos.length > 0){
-    const pIdx = hashIndex(key + "|photo", photos.length);
-    photoEl.src = photos[pIdx].src;
-    captionEl.textContent = photos[pIdx].caption || "Bugünün fotoğrafı";
-    photoCard.style.display = "block";
-  } else {
-    photoCard.style.display = "none";
+  if(entry.remember){
+    rememberEl.style.display = "block";
+    rememberEl.textContent = `Bugün şunu hatırla: ${entry.remember}`;
   }
 
-  // uzun metinde font küçült
+  // Günlük sabit foto
+  const pNum = hashIndex(key + "|photo", PHOTO_COUNT) + 1; // 1..125
+  document.getElementById("chipPhoto").textContent = `Foto: #${String(pNum).padStart(PHOTO_PAD,'0')}`;
+  const photoEl = document.getElementById("photo");
+  const capEl = document.getElementById("caption");
+
+  photoEl.src = photoPath(pNum);
+  capEl.textContent = `Bugünün fotoğrafı • #${String(pNum).padStart(PHOTO_PAD,'0')}`;
+
+  // Uzun metin font ayarı
   const L = msgEl.textContent.length;
   if(L > 700) msgEl.style.fontSize="18px";
   if(L > 1000) msgEl.style.fontSize="17px";
