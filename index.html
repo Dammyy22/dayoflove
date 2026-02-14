@@ -1,246 +1,1064 @@
 <!doctype html>
 <html lang="tr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Bir Hediye</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Bir Hediye</title>
 
-<style>
-body{
-margin:0;
-font-family:system-ui;
-background:#070f1f;
-color:#eef3fb;
-display:flex;
-align-items:center;
-justify-content:center;
-min-height:100vh;
-}
+  <style>
+    :root{
+      --night1:#040815;
+      --night2:#08122d;
+      --night3:#0e1a3a;
 
-.card{
-width:520px;
-max-width:95%;
-background:#0d1a33;
-border-radius:20px;
-padding:18px;
-box-shadow:0 20px 70px rgba(0,0,0,.6);
-}
+      --text:#eef3fb;
+      --muted:rgba(238,243,251,0.62);
 
-.photo{
-width:100%;
-height:340px;
-object-fit:contain;
-border-radius:14px;
-background:#0003;
-}
+      --accent: 150,190,255;
+      --beat: 0;
+    }
 
-.msg{margin-top:12px;font-size:18px}
+    *{ box-sizing:border-box; }
+    body{
+      margin:0; min-height:100vh;
+      display:flex; align-items:center; justify-content:center;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      padding:18px;
+      overflow-x:hidden;
+      background:
+        radial-gradient(900px 520px at 18% 16%, rgba(255,210,140,0.14), transparent 60%),
+        radial-gradient(760px 520px at 82% 18%, rgba(var(--accent),0.14), transparent 62%),
+        radial-gradient(760px 520px at 50% 84%, rgba(255,160,210,0.10), transparent 60%),
+        linear-gradient(180deg, var(--night1), var(--night2) 55%, var(--night3));
+      position:relative;
+    }
 
-.row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-button{
-flex:1;
-padding:10px;
-border-radius:10px;
-border:none;
-cursor:pointer;
-background:#1c2d55;
-color:white;
-font-weight:700;
-}
-button:hover{background:#28407a}
+    .stars,.stars2,.stars3{ position:fixed; inset:0; pointer-events:none; z-index:0; background-repeat:repeat; mix-blend-mode: screen; }
+    .stars{
+      opacity:0.95;
+      background-image:
+        radial-gradient(1px 1px at 10px 20px, rgba(255,255,255,0.72), transparent 62%),
+        radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.55), transparent 62%),
+        radial-gradient(1px 1px at 90px 130px, rgba(255,255,255,0.46), transparent 62%),
+        radial-gradient(1px 1px at 150px 30px, rgba(255,255,255,0.62), transparent 62%),
+        radial-gradient(1px 1px at 210px 110px, rgba(255,255,255,0.44), transparent 62%),
+        radial-gradient(1px 1px at 60px 160px, rgba(255,255,255,0.56), transparent 62%),
+        radial-gradient(1px 1px at 200px 170px, rgba(255,255,255,0.42), transparent 62%);
+      background-size: 240px 200px;
+      animation: drift1 34s linear infinite;
+      filter: drop-shadow(0 0 10px rgba(255,255,255,0.14));
+    }
+    .stars2{
+      opacity:0.85;
+      background-image:
+        radial-gradient(1.6px 1.6px at 30px 50px, rgba(255,255,255,0.70), transparent 62%),
+        radial-gradient(1.6px 1.6px at 120px 90px, rgba(255,255,255,0.56), transparent 62%),
+        radial-gradient(1.6px 1.6px at 180px 140px, rgba(255,255,255,0.52), transparent 62%),
+        radial-gradient(1.6px 1.6px at 70px 140px, rgba(255,255,255,0.48), transparent 62%),
+        radial-gradient(1.6px 1.6px at 210px 40px, rgba(255,255,255,0.60), transparent 62%);
+      background-size: 320px 260px;
+      animation: drift2 52s linear infinite;
+      filter: drop-shadow(0 0 14px rgba(255,255,255,0.18));
+    }
+    .stars3{
+      opacity:0.82;
+      background-image:
+        radial-gradient(3px 3px at 60px 40px, rgba(255,255,255,0.95), transparent 64%),
+        radial-gradient(2.8px 2.8px at 160px 120px, rgba(255,255,255,0.78), transparent 64%),
+        radial-gradient(2.8px 2.8px at 220px 70px, rgba(255,255,255,0.72), transparent 64%),
+        radial-gradient(3px 3px at 90px 180px, rgba(255,255,255,0.86), transparent 64%),
+        radial-gradient(2.8px 2.8px at 260px 150px, rgba(255,255,255,0.68), transparent 64%);
+      background-size: 420px 340px;
+      animation: drift3 76s linear infinite, twinkle3 3.6s ease-in-out infinite;
+      filter: blur(0.2px) drop-shadow(0 0 18px rgba(255,255,255,0.26));
+    }
+    @keyframes drift1{ 0%{transform:translate3d(0,0,0)} 100%{transform:translate3d(-120px,80px,0)} }
+    @keyframes drift2{ 0%{transform:translate3d(0,0,0)} 100%{transform:translate3d(-90px,60px,0)} }
+    @keyframes drift3{ 0%{transform:translate3d(0,0,0)} 100%{transform:translate3d(-60px,40px,0)} }
+    @keyframes twinkle3{ 0%,100%{ opacity:0.72 } 50%{ opacity:0.98 } }
 
-.jar{
-position:fixed;
-bottom:20px;
-right:20px;
-font-size:30px;
-cursor:pointer;
-}
+    .nebula{
+      position:fixed; inset:-180px; pointer-events:none; z-index:0;
+      background:
+        radial-gradient(340px 260px at 18% 28%, rgba(255,210,140,0.16), transparent 72%),
+        radial-gradient(420px 320px at 78% 22%, rgba(var(--accent),0.18), transparent 72%),
+        radial-gradient(360px 280px at 55% 78%, rgba(255,160,210,0.14), transparent 72%);
+      filter: blur(20px);
+      opacity:0.95;
+      animation: floatNebula 10s ease-in-out infinite;
+    }
+    @keyframes floatNebula{
+      0%{ transform: translate3d(0,0,0) scale(1); }
+      50%{ transform: translate3d(-18px, 10px,0) scale(1.02); }
+      100%{ transform: translate3d(0,0,0) scale(1); }
+    }
 
-.modal{
-position:fixed;
-inset:0;
-display:none;
-align-items:center;
-justify-content:center;
-background:#0008;
-}
+    .cover{
+      position:fixed; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      padding:22px;
+      z-index:999;
+      transition: opacity 380ms ease, transform 380ms ease;
+      background: linear-gradient(180deg, rgba(5,11,22,0.94), rgba(10,19,48,0.94));
+      backdrop-filter: blur(10px);
+    }
+    .cover.hidden{ opacity:0; pointer-events:none; transform: translateY(-6px); }
+    .cover-card{
+      width:min(520px, 100%);
+      border-radius:26px;
+      border:1px solid rgba(255,255,255,0.12);
+      background: rgba(10,20,38,0.62);
+      box-shadow: 0 26px 90px rgba(0,0,0,0.45);
+      padding:18px;
+      text-align:center;
+      backdrop-filter: blur(14px);
+    }
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      color: rgba(238,243,251,0.78);
+      font-size:12px;
+    }
+    .title{ margin:14px 0 6px; font-size:26px; letter-spacing:-0.02em; }
+    .subtitle{ margin:0 0 14px; color: rgba(238,243,251,0.62); font-size:14px; }
+    .open-btn{
+      width:100%;
+      border:1px solid rgba(255,255,255,0.14);
+      background: rgba(var(--accent),0.18);
+      color:#eef3fb;
+      border-radius:16px;
+      padding:12px 14px;
+      cursor:pointer;
+      font-weight:800;
+      font-size:15px;
+      transition: background 160ms ease, transform 120ms ease;
+    }
+    .open-btn:hover{ background: rgba(var(--accent),0.26); }
+    .open-btn:active{ transform: scale(0.99); }
 
-.modal.show{display:flex}
+    .card{
+      width:min(560px, 100%);
+      border-radius:22px;
+      padding:16px;
+      background: rgba(10, 20, 38, 0.56);
+      border:1px solid rgba(255,255,255,0.12);
+      box-shadow:0 24px 85px rgba(0,0,0,0.50);
+      backdrop-filter: blur(14px);
+      opacity:0;
+      transform: translateY(6px);
+      transition: opacity 420ms ease, transform 420ms ease;
+      position:relative;
+      z-index:1;
+    }
+    .card.ready{ opacity:1; transform: translateY(0); }
 
-.box{
-background:#0e1c36;
-padding:20px;
-border-radius:18px;
-width:420px;
-max-width:95%;
-}
+    .topbar{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; flex-wrap:wrap; }
+    .pill{
+      font-size:12px;
+      color: rgba(238,243,251,0.74);
+      background: rgba(255,255,255,0.06);
+      border:1px solid rgba(255,255,255,0.12);
+      padding:6px 10px;
+      border-radius:999px;
+      user-select:none;
+      display:flex; align-items:center; gap:8px; white-space:nowrap;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.25);
+    }
+    .dot{ width:10px;height:10px;border-radius:999px; background: rgb(255,255,255); box-shadow: 0 0 0 3px rgba(255,255,255,0.14); flex:0 0 auto; }
 
-textarea{
-width:100%;
-height:90px;
-border-radius:10px;
-padding:10px;
-resize:none;
-}
+    .photo-frame{
+      width:100%;
+      height: clamp(360px, 60vh, 600px);
+      border-radius:22px;
+      position:relative;
+      padding:10px;
+      overflow:hidden;
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      border:1px solid rgba(255,255,255,0.14);
+      box-shadow:
+        0 18px 60px rgba(0,0,0,0.45),
+        0 0 0 1px rgba(255,255,255,0.06) inset,
+        0 0 calc(18px + (var(--beat) * 34px)) rgba(255,255,255, calc(0.10 + var(--beat) * 0.28));
+    }
+    .photo-frame::before{
+      content:"";
+      position:absolute; inset:-54px; border-radius:32px;
+      background:
+        radial-gradient(520px 360px at 50% 30%, rgba(255,255,255, calc(0.34 + var(--beat)*0.34)), transparent 70%),
+        radial-gradient(720px 520px at 50% 70%, rgba(255,255,255, calc(0.16 + var(--beat)*0.24)), transparent 72%);
+      filter: blur(18px);
+      opacity:0.95;
+      pointer-events:none;
+      animation: glowPulse 3.2s ease-in-out infinite;
+    }
+    .photo-frame::after{
+      content:"";
+      position:absolute; inset:-40px; border-radius:30px;
+      background:
+        repeating-linear-gradient(110deg, rgba(255,255,255,0.00) 0px, rgba(255,255,255, calc(0.10 + var(--beat)*0.10)) 18px, rgba(255,255,255,0.00) 36px),
+        linear-gradient(180deg, rgba(255,255,255, calc(0.20 + var(--beat)*0.20)) 0%, rgba(255,255,255,0.08) 35%, rgba(255,255,255,0.00) 70%),
+        radial-gradient(620px 380px at 50% 40%, rgba(var(--accent), calc(0.16 + var(--beat)*0.14)), transparent 70%);
+      filter: blur(20px);
+      opacity:0.86;
+      pointer-events:none;
+      transform: translateY(-10px);
+      animation: beamFlow 2.8s ease-in-out infinite;
+    }
+    @keyframes glowPulse{ 0%,100%{ opacity:0.78; transform: scale(1.00); } 50%{ opacity:1.00; transform: scale(1.03); } }
+    @keyframes beamFlow{ 0%{ opacity:0.55; transform: translateY(-22px) scale(1.00); } 50%{ opacity:0.95; transform: translateY(8px) scale(1.02); } 100%{ opacity:0.55; transform: translateY(-22px) scale(1.00); } }
 
-.qitem{
-background:#142448;
-padding:10px;
-border-radius:10px;
-margin-top:10px;
-position:relative;
-}
-.qdel{
-position:absolute;
-right:6px;
-top:6px;
-cursor:pointer;
-}
-.qmeta{
-font-size:12px;
-opacity:.7;
-display:flex;
-justify-content:space-between;
-margin-bottom:6px;
-}
-</style>
+    .photo{
+      width:100%; height:100%;
+      object-fit: contain; object-position:center;
+      border-radius:16px;
+      display:block;
+      user-select:none; -webkit-user-drag:none;
+      background: rgba(0,0,0,0.18);
+      filter: saturate(1.05) contrast(1.06) brightness(1.03);
+      opacity:1; transform: scale(1);
+      transition: opacity 320ms ease, transform 420ms ease;
+    }
+    .photo.fade-out{ opacity:0; transform: scale(1.01); }
+    .photo.fade-in { opacity:1; transform: scale(1); }
+
+    .msg{ margin:14px 6px 0; font-size:1.10rem; line-height:1.45; min-height:3.2em; color: rgba(238,243,251,0.92); }
+    .cursor{ display:inline-block; width:0.55ch; background: rgba(255,255,255,0.35); margin-left:2px; border-radius:6px; transform: translateY(2px); animation: blink 1s infinite; }
+    @keyframes blink{ 0%,49%{opacity:1} 50%,100%{opacity:0.15} }
+    .sub{ margin:8px 6px 0; font-size:0.9rem; color: var(--muted); }
+
+    .row{ display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
+    button{
+      flex:1;
+      border:1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.08);
+      color: rgba(238,243,251,0.92);
+      border-radius:12px;
+      padding:10px 12px;
+      cursor:pointer;
+      font-weight:650;
+      transition: background 160ms ease, transform 120ms ease;
+      min-width: 150px;
+    }
+    button:hover{ background: rgba(255,255,255,0.12); }
+    button:active{ transform: scale(0.99); }
+    .ghost{ background: rgba(255,255,255,0.06); }
+
+    .jar-fab{
+      position:fixed; left:16px; bottom:16px;
+      z-index:1200; width:92px; height:112px;
+      cursor:pointer; border:0; background: transparent; padding:0;
+      filter: drop-shadow(0 18px 35px rgba(0,0,0,0.55));
+      animation: jarFloat 4.2s ease-in-out infinite;
+    }
+    @keyframes jarFloat{ 0%,100%{ transform: translateY(0) rotate(-1.2deg); } 50%{ transform: translateY(-6px) rotate(1.2deg); } }
+    .jar-fab:active{ transform: scale(0.98); }
+    .jar-draw{ width:100%; height:100%; position:relative; }
+    .jar-draw .lid{
+      position:absolute; top:6px; left:50%; transform: translateX(-50%);
+      width:78px; height:22px; border-radius:10px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.22), rgba(255,255,255,0.08));
+      border:1px solid rgba(255,255,255,0.18);
+      box-shadow: 0 10px 18px rgba(0,0,0,0.35);
+    }
+    .jar-draw .glass{
+      position:absolute; top:26px; left:50%; transform: translateX(-50%);
+      width:86px; height:84px; border-radius:20px 20px 24px 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));
+      border:1px solid rgba(255,255,255,0.16);
+      overflow:hidden;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.05) inset;
+    }
+    .jar-draw .shine{
+      position:absolute; inset:-24px;
+      background: radial-gradient(120px 90px at 25% 20%, rgba(255,255,255,0.22), transparent 65%);
+      filter: blur(10px);
+      opacity:0.95;
+      pointer-events:none;
+    }
+    .jar-draw .lights{
+      position:absolute; inset:0;
+      background:
+        radial-gradient(10px 10px at 25% 40%, rgba(255,210,140,0.40), transparent 62%),
+        radial-gradient(12px 12px at 70% 55%, rgba(var(--accent),0.36), transparent 62%),
+        radial-gradient(10px 10px at 45% 68%, rgba(255,160,210,0.30), transparent 62%),
+        radial-gradient(9px 9px at 55% 35%, rgba(255,255,255,0.30), transparent 62%),
+        radial-gradient(8px 8px at 35% 55%, rgba(255,255,255,0.22), transparent 62%);
+      filter: blur(6px);
+      opacity:0.95;
+      animation: fairyTwinkle 3.2s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @keyframes fairyTwinkle{ 0%,100%{ opacity:0.72; transform: translateY(0); } 50%{ opacity:1; transform: translateY(-5px); } }
+    .jar-draw .note{
+      position:absolute; left:50%; top:54px; transform: translateX(-50%) rotate(-2deg);
+      width:54px; height:40px; border-radius:10px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.86));
+      border:1px solid rgba(15,23,42,0.12);
+      box-shadow: 0 10px 22px rgba(0,0,0,0.26);
+      opacity:0.92;
+    }
+    .jar-draw .note::before{
+      content:""; position:absolute; inset:8px; border-radius:8px;
+      background: repeating-linear-gradient(180deg, rgba(0,0,0,0.00) 0px, rgba(0,0,0,0.00) 10px, rgba(0,0,0,0.07) 11px);
+      opacity:0.35;
+    }
+    .jar-fab .halo{
+      position:absolute; inset:-20px; border-radius:28px;
+      background:
+        radial-gradient(120px 90px at 45% 50%, rgba(255,255,255,0.18), transparent 70%),
+        radial-gradient(140px 110px at 55% 70%, rgba(255,255,255,0.10), transparent 72%);
+      filter: blur(16px);
+      opacity:0.85;
+      pointer-events:none;
+      animation: haloPulse 3.6s ease-in-out infinite;
+    }
+    @keyframes haloPulse{ 0%,100%{ opacity:0.55; transform: scale(1); } 50%{ opacity:0.95; transform: scale(1.06); } }
+
+    .letter-modal{
+      position:fixed; inset:0;
+      display:none; align-items:center; justify-content:center;
+      padding:18px;
+      z-index:1300;
+      background: rgba(0,0,0,0.60);
+      backdrop-filter: blur(10px);
+    }
+    .letter-modal.show{ display:flex; }
+    .letter-stage{
+      width:min(560px, 100%);
+      border-radius:26px;
+      border:1px solid rgba(255,255,255,0.14);
+      background: rgba(8,14,28,0.74);
+      box-shadow: 0 30px 120px rgba(0,0,0,0.70);
+      padding:16px;
+    }
+    .paper{
+      width:100%;
+      border-radius:18px;
+      background: rgba(255,255,255,0.92);
+      color:#0f172a;
+      border:1px solid rgba(15,23,42,0.10);
+      box-shadow: 0 18px 70px rgba(0,0,0,0.35);
+      padding:16px 16px 14px;
+      transform-origin: 50% 0%;
+      transform: scaleY(0.06);
+      opacity:0;
+    }
+    .letter-modal.show .paper{ animation: paperUnfold 720ms cubic-bezier(.2,.9,.1,1) 120ms forwards; }
+    @keyframes paperUnfold{ 0%{ opacity:0; transform: scaleY(0.06); } 35%{ opacity:1; } 100%{ opacity:1; transform: scaleY(1); } }
+    .letter-text{ white-space:pre-wrap; line-height:1.55; font-size:15px; }
+    .sig{ margin-top:12px; color: rgba(15,23,42,0.62); font-weight:900; font-size:13px; }
+    .close-btn{
+      border:1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.06);
+      color: rgba(238,243,251,0.9);
+      border-radius:12px;
+      padding:8px 10px;
+      cursor:pointer;
+      font-weight:900;
+      transition: background 160ms ease, transform 120ms ease;
+    }
+    .close-btn:hover{ background: rgba(255,255,255,0.10); }
+    .close-btn:active{ transform: scale(0.99); }
+
+    /* ====== “Onun Sözleri” butonu + modal ====== */
+    .quote-fab{
+      position:fixed; right:16px; bottom:16px;
+      z-index:1200; width:92px; height:112px;
+      cursor:pointer; border:0; background: transparent; padding:0;
+      filter: drop-shadow(0 18px 35px rgba(0,0,0,0.55));
+      animation: jarFloat 4.2s ease-in-out infinite;
+    }
+
+    .quote-modal{
+      position:fixed; inset:0;
+      display:none; align-items:center; justify-content:center;
+      padding:18px;
+      z-index:1400;
+      background: rgba(0,0,0,0.60);
+      backdrop-filter: blur(10px);
+    }
+    .quote-modal.show{ display:flex; }
+    .quote-stage{
+      width:min(560px, 100%);
+      border-radius:26px;
+      border:1px solid rgba(255,255,255,0.14);
+      background: rgba(8,14,28,0.74);
+      box-shadow: 0 30px 120px rgba(0,0,0,0.70);
+      padding:16px;
+    }
+    .qinput{
+      width:100%;
+      min-height:92px;
+      resize:vertical;
+      border-radius:14px;
+      padding:12px 12px;
+      border:1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.06);
+      color: rgba(238,243,251,0.92);
+      outline:none;
+      font-size:14px;
+      line-height:1.45;
+      margin-top:10px;
+    }
+    .qinput::placeholder{ color: rgba(238,243,251,0.45); }
+    .qactions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+    .qbtn{
+      flex:1;
+      border-radius:12px;
+      padding:10px 12px;
+      font-weight:800;
+      border:1px solid rgba(255,255,255,0.14);
+      background: rgba(var(--accent),0.18);
+      color: rgba(238,243,251,0.95);
+      cursor:pointer;
+      transition: background 160ms ease, transform 120ms ease;
+      min-width: 150px;
+    }
+    .qbtn:hover{ background: rgba(var(--accent),0.26); }
+    .qbtn:active{ transform: scale(0.99); }
+    .qbtn.ghost{ background: rgba(255,255,255,0.06); }
+
+    .qlist{
+      margin-top:12px;
+      display:grid;
+      gap:10px;
+      max-height: 44vh;
+      overflow:auto;
+      padding-right: 2px;
+    }
+    .qitem{
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      padding:10px 10px 10px;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.25);
+      position:relative;
+    }
+    .qmeta{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      color: rgba(238,243,251,0.58);
+      font-size:12px;
+      margin-bottom:6px;
+    }
+    .qtext{
+      white-space:pre-wrap;
+      color: rgba(238,243,251,0.92);
+      font-size:14px;
+      line-height:1.45;
+      padding-right: 36px;
+    }
+    .qdel{
+      position:absolute; right:10px; top:10px;
+      border:1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.06);
+      color: rgba(238,243,251,0.85);
+      border-radius:10px;
+      padding:6px 8px;
+      cursor:pointer;
+      font-weight:900;
+    }
+    .qstatus{
+      margin-top:8px;
+      font-size:12px;
+      color: rgba(238,243,251,0.62);
+    }
+
+    @media (max-width:420px){
+      .jar-fab{ left:12px; bottom:12px; transform: scale(0.92); }
+      .quote-fab{ right:12px; bottom:12px; transform: scale(0.92); }
+    }
+  </style>
 </head>
 
 <body>
+  <div class="stars"></div>
+  <div class="stars2"></div>
+  <div class="stars3"></div>
+  <div class="nebula"></div>
 
-<div class="card">
-<img id="photo" class="photo">
-<div id="message" class="msg"></div>
+  <!-- Sol alt kavanoz: mektup -->
+  <button class="jar-fab" id="btnJar" title="Kavanozdaki mektup">
+    <div class="halo" aria-hidden="true"></div>
+    <div class="jar-draw" aria-hidden="true">
+      <div class="lid"></div>
+      <div class="glass">
+        <div class="shine"></div>
+        <div class="lights"></div>
+      </div>
+      <div class="note"></div>
+    </div>
+  </button>
 
-<div class="row">
-<button id="btnNew">Yeni getir</button>
-<button id="btnMusic">Müzik</button>
-</div>
-</div>
+  <!-- Sağ alt kavanoz: onun sözleri -->
+  <button class="quote-fab" id="btnQuoteJar" title="Onun sözleri kavanozu">
+    <div class="halo" aria-hidden="true"></div>
+    <div class="jar-draw" aria-hidden="true">
+      <div class="lid"></div>
+      <div class="glass">
+        <div class="shine"></div>
+        <div class="lights"></div>
+      </div>
+      <div class="note"></div>
+    </div>
+  </button>
 
-<div class="jar" id="openJar">🫙</div>
+  <!-- Mektup modal -->
+  <div class="letter-modal" id="letterModal" aria-hidden="true">
+    <div class="letter-stage" role="dialog" aria-modal="true">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;">
+        <div style="font-weight:900;letter-spacing:-0.02em;font-size:14px;color:rgba(238,243,251,0.88);">🫙 Kavanozdaki Mektup</div>
+        <button class="close-btn" id="btnLetterClose">Kapat</button>
+      </div>
+      <div class="paper" id="paper">
+        <div class="letter-text" id="letterText"></div>
+        <div class="sig" id="letterSig"></div>
+      </div>
+    </div>
+  </div>
 
-<div class="modal" id="modal">
-<div class="box">
+  <!-- Onun sözleri modal -->
+  <div class="quote-modal" id="quoteModal" aria-hidden="true">
+    <div class="quote-stage" role="dialog" aria-modal="true">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+        <div style="font-weight:900;letter-spacing:-0.02em;font-size:14px;color:rgba(238,243,251,0.88);">💌 Onun Sözleri Kavanozu</div>
+        <button class="close-btn" id="btnQuoteClose">Kapat</button>
+      </div>
 
-<textarea id="qInput" placeholder="Not yaz..."></textarea>
+      <textarea class="qinput" id="qInput" placeholder="Onun sana söylediği bir şeyi yaz..."></textarea>
 
-<div class="row">
-<button id="btnAdd">Ekle</button>
-<button id="btnRefresh">Yenile</button>
-<button id="btnClose">Kapat</button>
-</div>
+      <div class="qactions">
+        <button class="qbtn" id="btnQAdd">Kavanoza At ✨</button>
+        <button class="qbtn ghost" id="btnQRefresh">Yenile</button>
+      </div>
 
-<div id="qStatus" style="margin-top:6px;font-size:12px;opacity:.7">Durum: —</div>
-<div id="qList"></div>
+      <div class="qstatus" id="qStatus">Durum: —</div>
+      <div class="qlist" id="qList"></div>
+    </div>
+  </div>
 
-</div>
-</div>
+  <!-- Cover -->
+  <div class="cover" id="cover">
+    <div class="cover-card">
+      <div class="badge">🎁 <span>Senin için küçük bir şey</span></div>
+      <div class="title">Bir Hediyen Var</div>
+      <div class="subtitle">Açınca fotoğraf + mesaj + müzik başlar.</div>
+      <button class="open-btn" id="btnOpen">Hediyeyi Aç ✨</button>
+    </div>
+  </div>
 
-<script>
-/* ===== FOTO + MESAJ ===== */
-const msgs=[
-"Bugün de seni seviyorum.",
-"İyi ki varsın.",
-"Kalbimden geçenler: sensin.",
-"Özledim.",
-"Yanındayım."
-];
+  <!-- İçerik -->
+  <div class="card" id="card">
+    <div class="topbar">
+      <div class="pill" id="pillLeft"><span class="dot" aria-hidden="true"></span><span>Mesaj: —</span></div>
+      <div class="pill" id="pillRight"><span>Foto: —</span></div>
+      <div class="pill" id="pillMusic"><span>🎵</span><span>Müzik: Kapalı</span></div>
+    </div>
 
-function rand(a){return a[Math.floor(Math.random()*a.length)]}
+    <div class="photo-frame">
+      <img id="photo" class="photo" alt="fotoğraf" />
+    </div>
 
-function newCard(){
-photo.src=`assets/yunis/${String(Math.floor(Math.random()*119)+1).padStart(4,"0")}.jpg`;
-message.textContent=rand(msgs);
-}
+    <div class="msg" id="message"></div>
+    <div class="sub">“Yeni getir” foto+mesaj değiştirir. Müzik açıkken glow nabız gibi tepki verir.</div>
 
-btnNew.onclick=newCard;
-newCard();
+    <div class="row">
+      <button id="btnNew">Yeni getir</button>
+      <button id="btnMusic" class="ghost">🎵 Müzik aç</button>
+      <button id="btnReset" class="ghost">Listeyi sıfırla</button>
+      <button id="btnShare" class="ghost">Paylaş</button>
+    </div>
+  </div>
 
-/* ===== MÜZİK ===== */
-const audio=new Audio("assets/music.mp3");
-audio.loop=true;
-btnMusic.onclick=()=> audio.paused?audio.play():audio.pause();
+  <script>
+    /* ================== AYARLAR ================== */
+    const LETTER_TEXT =
+`Yunisim,
 
-/* ===== MODAL ===== */
-openJar.onclick=()=>modal.classList.add("show");
-btnClose.onclick=()=>modal.classList.remove("show");
+Bunu okurken nerede olursan ol, bil ki aklımın bir köşesinde hep sen varsın.
+Bazen günler karışıyor, bazen ben dağılıyorum ama seninle toparlanmayı seviyorum.
 
-/* ===== USER IDENT ===== */
-const KEY="dayoflove_author";
-let USER=localStorage.getItem(KEY)||"Yunis";
+Seni seviyorum.`;
+    const LETTER_SIGN = "— Dammy";
 
-(()=>{
-let u=new URL(location);
-if(u.searchParams.get("i")==="dammy"){
-localStorage.setItem(KEY,"Dammy");
-USER="Dammy";
-u.searchParams.delete("i");
-history.replaceState({},'',u);
-}
-})();
+    const MESSAGES = [
+      "Bugün de seni seviyorum.",
+      "Kalbimden geçenler: iyi ki varsın.",
+      "Biraz susup sarılasım var.",
+      "Gülüşün dünyayı düzeltemiyor ama beni düzeltiyor.",
+      "Yanındayım. Nokta.",
+      "İçimden sana bir cümle düşüyor: özledim."
+    ];
 
-/* ===== API ===== */
-const PAGE="yunis";
+    const PHOTO_DIR   = "assets/yunis/";
+    const PHOTO_START = 1;
+    const PHOTO_END   = 119;
 
-async function loadNotes(){
-qStatus.textContent="yükleniyor...";
-try{
-let r=await fetch(`/api/notes?page=${PAGE}`);
-let t=await r.text();
-let data=JSON.parse(t);
+    const MUSIC_SRC = "assets/music.mp3";
 
-if(!data.ok) throw 0;
+    // === hangi sayfa? ===
+    const PAGE_ID = "yunis";
 
-qList.innerHTML="";
+    // ================== YENİ: DAMMY / YUNIS cihaz kimliği ==================
+    // Dammy kendi PC/telefonunda 1 kez siteyi ?i=dammy ile açar -> cihaz "Dammy" olarak damgalanır.
+    // Dammy damgası yoksa varsayılan "Yunis".
+    const AUTHOR_KEY = "dayoflove_author";
+    let USER_NAME = localStorage.getItem(AUTHOR_KEY) || "Yunis";
 
-data.notes.forEach(n=>{
-let d=document.createElement("div");
-d.className="qitem";
-d.innerHTML=`
-<div class=qmeta>
-<span>${new Date(n.created_at).toLocaleString()}</span>
-<span>${n.author||"?"}</span>
-</div>
-<div>${n.text}</div>
-<div class=qdel data="${n.id}">✕</div>
-`;
-qList.appendChild(d);
-});
+    (() => {
+      const u = new URL(location.href);
+      const i = (u.searchParams.get("i") || "").toLowerCase();
+      if (i === "dammy") {
+        localStorage.setItem(AUTHOR_KEY, "Dammy");
+        USER_NAME = "Dammy";
+        u.searchParams.delete("i");
+        history.replaceState({}, "", u.toString());
+      }
+    })();
 
-qStatus.textContent=data.notes.length+" not";
+    /* ================== STORAGE ================== */
+    function storageOK(){
+      try{ const k="__t"; localStorage.setItem(k,"1"); localStorage.removeItem(k); return true; }
+      catch(e){ return false; }
+    }
+    const HAS_LS = storageOK();
+    const memStore = new Map();
 
-document.querySelectorAll(".qdel").forEach(b=>{
-b.onclick=async()=>{
-await fetch(`/api/notes?page=${PAGE}&id=${b.getAttribute("data")}`,{method:"DELETE"});
-loadNotes();
-};
-});
+    function lsGet(key, fallback){
+      try{
+        const raw = HAS_LS ? localStorage.getItem(key) : memStore.get(key);
+        return raw ? JSON.parse(raw) : fallback;
+      }catch(e){ return fallback; }
+    }
+    function lsSet(key, value){
+      const raw = JSON.stringify(value);
+      if(HAS_LS) localStorage.setItem(key, raw);
+      else memStore.set(key, raw);
+    }
+    function lsDel(key){
+      if(HAS_LS) localStorage.removeItem(key);
+      else memStore.delete(key);
+    }
 
-}catch{
-qStatus.textContent="bağlantı yok";
-}
-}
+    function shuffle(arr){
+      for(let i=arr.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [arr[i],arr[j]] = [arr[j],arr[i]];
+      }
+      return arr;
+    }
+    function getNextFromPool(poolKey, sourceArray){
+      let pool = lsGet(poolKey, null);
+      if(!Array.isArray(pool) || pool.length === 0){
+        pool = shuffle([...sourceArray]);
+      }
+      const next = pool.pop();
+      lsSet(poolKey, pool);
+      return next;
+    }
+    function resetPool(poolKey){ lsDel(poolKey); }
 
-btnRefresh.onclick=loadNotes;
+    /* ================== FOTO LİSTESİ ================== */
+    function pad4(n){ return String(n).padStart(4,"0"); }
+    const PHOTO_LIST = (() => {
+      const arr = [];
+      for(let i=PHOTO_START;i<=PHOTO_END;i++){
+        arr.push(PHOTO_DIR + pad4(i) + ".jpg");
+      }
+      return arr;
+    })();
 
-btnAdd.onclick=async()=>{
-let text=qInput.value.trim();
-if(!text)return;
+    /* ================== TYPEWRITER ================== */
+    let twTimer = null;
+    function typewriter(el, text, speed=16){
+      if(twTimer) clearInterval(twTimer);
+      el.innerHTML = "";
+      const span = document.createElement("span");
+      const cur = document.createElement("span");
+      cur.className = "cursor";
+      el.appendChild(span);
+      el.appendChild(cur);
 
-await fetch(`/api/notes?page=${PAGE}`,{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({text,author:USER})
-});
+      let i = 0;
+      twTimer = setInterval(() => {
+        i++;
+        span.textContent = text.slice(0, i);
+        if(i >= text.length){
+          clearInterval(twTimer);
+          twTimer = null;
+        }
+      }, speed);
+    }
 
-qInput.value="";
-loadNotes();
-};
+    /* ================== TEMA ================== */
+    function setAccent(rgb){ document.documentElement.style.setProperty("--accent", rgb); }
+    function accentFromString(str){
+      let h = 2166136261;
+      for(let i=0;i<str.length;i++){
+        h ^= str.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+      const r = 70 + (h & 0x7F);
+      const g = 70 + ((h>>8) & 0x7F);
+      const b = 70 + ((h>>16) & 0x7F);
+      return ${r},${g},${b};
+    }
 
-loadNotes();
-</script>
+    /* ================== GARANTİ FARKLI SEÇİM ================== */
+    function nextMessageDifferent(){
+      const last = lsGet("last_msg", null);
+      let chosen = null;
+      for(let t=0;t<8;t++){
+        chosen = getNextFromPool("msg_pool", MESSAGES);
+        if(chosen !== last) break;
+      }
+      lsSet("last_msg", chosen);
+      return chosen;
+    }
+    function nextPhotoDifferent(){
+      const last = lsGet("last_photo", null);
+      let chosen = null;
+      for(let t=0;t<12;t++){
+        chosen = getNextFromPool("photo_pool", PHOTO_LIST);
+        if(chosen !== last) break;
+      }
+      lsSet("last_photo", chosen);
+      return chosen;
+    }
 
+    function updatePills(){
+      const msgPool = lsGet("msg_pool", []);
+      const photoPool = lsGet("photo_pool", []);
+      const left = document.getElementById("pillLeft");
+      const right = document.getElementById("pillRight");
+      left.querySelector("span:last-child").textContent = Mesaj kaldı: ${msgPool.length || MESSAGES.length};
+      right.textContent = Foto kaldı: ${photoPool.length || PHOTO_LIST.length};
+    }
+
+    /* ================== FOTO FADE ================== */
+    const img = document.getElementById("photo");
+    let swapping = false;
+
+    async function setImgFade(photoPath){
+      if(swapping) return;
+      swapping = true;
+
+      setAccent(accentFromString(photoPath));
+
+      img.classList.add("fade-out");
+      img.classList.remove("fade-in");
+
+      await new Promise(r => setTimeout(r, 220));
+
+      const ok = await new Promise((resolve) => {
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = photoPath + "?v=" + Date.now();
+      });
+
+      if(!ok){
+        await new Promise((resolve) => {
+          img.onload = () => resolve(true);
+          img.src = PHOTO_DIR + "0001.jpg?v=" + Date.now();
+        });
+      }
+
+      img.classList.remove("fade-out");
+      img.classList.add("fade-in");
+
+      setTimeout(() => { swapping = false; }, 380);
+    }
+
+    /* ================== MÜZİK TEPKİSİ ================== */
+    const audio = new Audio(MUSIC_SRC);
+    audio.loop = true;
+    audio.preload = "auto";
+    audio.volume = lsGet("music_vol", 0.35);
+
+    let audioCtx = null, analyser = null, sourceNode = null, dataArr = null;
+    let beatRaf = null;
+    let beatSmoothed = 0;
+
+    function setBeat(v){
+      v = Math.max(0, Math.min(1, v));
+      document.documentElement.style.setProperty("--beat", v.toFixed(3));
+    }
+
+    function startBeatMeter(){
+      if(beatRaf) cancelAnimationFrame(beatRaf);
+
+      const tick = () => {
+        if(!analyser || audio.paused){
+          beatSmoothed *= 0.92;
+          setBeat(beatSmoothed);
+          beatRaf = requestAnimationFrame(tick);
+          return;
+        }
+
+        analyser.getByteTimeDomainData(dataArr);
+        let sum = 0;
+        for(let i=0;i<dataArr.length;i++){
+          const v = (dataArr[i] - 128) / 128;
+          sum += v * v;
+        }
+        const rms = Math.sqrt(sum / dataArr.length);
+
+        let beat = (rms - 0.02) * 9.0;
+        beat = Math.max(0, Math.min(1, beat));
+
+        beatSmoothed = beatSmoothed * 0.82 + beat * 0.18;
+        setBeat(beatSmoothed);
+
+        beatRaf = requestAnimationFrame(tick);
+      };
+
+      beatRaf = requestAnimationFrame(tick);
+    }
+
+    async function ensureAudioGraph(){
+      if(audioCtx) return;
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 512;
+      dataArr = new Uint8Array(analyser.fftSize);
+
+      sourceNode = audioCtx.createMediaElementSource(audio);
+      sourceNode.connect(analyser);
+      analyser.connect(audioCtx.destination);
+
+      startBeatMeter();
+    }
+
+    function setMusicUI(isOn){
+      document.getElementById("pillMusic").lastElementChild.textContent = Müzik: ${isOn ? "Açık" : "Kapalı"};
+      document.getElementById("btnMusic").textContent = isOn ? "🔇 Müzik kapat" : "🎵 Müzik aç";
+    }
+
+    async function musicOn(){
+      try{
+        await ensureAudioGraph();
+        if(audioCtx.state === "suspended") await audioCtx.resume();
+        await audio.play();
+        lsSet("music_on", true);
+        setMusicUI(true);
+      }catch(e){
+        lsSet("music_on", false);
+        setMusicUI(false);
+      }
+    }
+    function musicOff(){
+      audio.pause();
+      audio.currentTime = 0;
+      lsSet("music_on", false);
+      setMusicUI(false);
+      setBeat(0);
+    }
+    async function toggleMusic(){
+      if(!audio.paused) musicOff();
+      else await musicOn();
+    }
+
+    /* ================== RENDER ================== */
+    async function renderNew(){
+      const msg = nextMessageDifferent();
+      const photoPath = nextPhotoDifferent();
+      typewriter(document.getElementById("message"), msg, 16);
+      await setImgFade(photoPath);
+      updatePills();
+    }
+
+    /* ================== COVER AÇ ================== */
+    const cover = document.getElementById("cover");
+    const card = document.getElementById("card");
+    document.getElementById("btnOpen").addEventListener("click", async () => {
+      cover.classList.add("hidden");
+      card.classList.add("ready");
+      await renderNew();
+      await musicOn();
+    });
+
+    /* ================== MEKTUP ================== */
+    const letterModal = document.getElementById("letterModal");
+    document.getElementById("letterText").textContent = LETTER_TEXT;
+    document.getElementById("letterSig").textContent = LETTER_SIGN;
+
+    function openLetter(){
+      letterModal.classList.add("show");
+      const paper = document.getElementById("paper");
+      paper.style.animation = "none";
+      void paper.offsetHeight;
+      paper.style.animation = "";
+    }
+    function closeLetter(){ letterModal.classList.remove("show"); }
+
+    document.getElementById("btnJar").addEventListener("click", openLetter);
+    document.getElementById("btnLetterClose").addEventListener("click", closeLetter);
+    letterModal.addEventListener("click", (e) => { if(e.target === letterModal) closeLetter(); });
+    window.addEventListener("keydown", (e) => { if(e.key === "Escape" && letterModal.classList.contains("show")) closeLetter(); });
+
+    /* ================== BUTONLAR ================== */
+    updatePills();
+    setMusicUI(lsGet("music_on", false));
+
+    document.getElementById("btnNew").addEventListener("click", async () => {
+      await renderNew();
+      if(lsGet("music_on", false) && audio.paused) await musicOn();
+    });
+
+    document.getElementById("btnMusic").addEventListener("click", toggleMusic);
+
+    document.getElementById("btnReset").addEventListener("click", async () => {
+      resetPool("msg_pool");
+      resetPool("photo_pool");
+      lsDel("last_photo");
+      lsDel("last_msg");
+      await renderNew();
+    });
+
+    document.getElementById("btnShare").addEventListener("click", async () => {
+      const msg = document.getElementById("message").innerText.trim();
+      if(navigator.share){
+        try{ await navigator.share({ title:"Bir mesaj", text:msg, url:location.href }); }catch(e){}
+      }else{
+        try{ await navigator.clipboard.writeText(msg + "\n" + location.href); alert("Kopyalandı."); }
+        catch(e){ alert("Bu cihaz paylaşım/kopyalama konusunda dramayı seçmiş."); }
+      }
+    });
+
+    window.addEventListener("pageshow", async (e) => {
+      if(e.persisted && card.classList.contains("ready")){
+        await renderNew();
+      }
+    });
+
+    /* ================== ONUN SÖZLERİ (API) ================== */
+    const quoteModal = document.getElementById("quoteModal");
+    const qList = document.getElementById("qList");
+    const qInput = document.getElementById("qInput");
+    const qStatus = document.getElementById("qStatus");
+
+    function openQuotes(){
+      quoteModal.classList.add("show");
+      refreshQuotes();
+    }
+    function closeQuotes(){
+      quoteModal.classList.remove("show");
+    }
+
+    document.getElementById("btnQuoteJar").addEventListener("click", openQuotes);
+    document.getElementById("btnQuoteClose").addEventListener("click", closeQuotes);
+    quoteModal.addEventListener("click", (e) => { if(e.target === quoteModal) closeQuotes(); });
+    window.addEventListener("keydown", (e) => { if(e.key === "Escape" && quoteModal.classList.contains("show")) closeQuotes(); });
+
+    async function refreshQuotes(){
+      qStatus.textContent = "Durum: yükleniyor…";
+      try{
+        const res = await fetch(/api/notes?page=${encodeURIComponent(PAGE_ID)}, { cache: "no-store" });
+
+        // API yanlışlıkla HTML dönerse JSON parse patlamasın diye:
+        const ct = res.headers.get("content-type") || "";
+        if(!ct.includes("application/json")){
+          throw new Error("not_json");
+        }
+
+        const data = await res.json();
+        if(!data.ok) throw new Error("api_not_ok");
+
+        renderQuotes(data.notes || []);
+        qStatus.textContent = Durum: ${data.notes?.length || 0} not;
+      }catch(err){
+        qList.innerHTML = <div style="opacity:.7">Bağlanamadım. (API/JSON yok)</div>;
+        qStatus.textContent = "Durum: bağlantı yok";
+      }
+    }
+
+    function renderQuotes(notes){
+      qList.innerHTML = "";
+      if(!notes.length){
+        qList.innerHTML = <div style="opacity:.7">Henüz not yok…</div>;
+        return;
+      }
+      for(const n of notes){
+        const div = document.createElement("div");
+        div.className = "qitem";
+        div.innerHTML = `
+          <button class="qdel" data-id="${n.id}" title="Sil">✕</button>
+          <div class="qmeta">
+            <span>${new Date(n.created_at).toLocaleString()}</span>
+            <span>${n.author || "?"}</span>
+          </div>
+          <div class="qtext"></div>
+        `;
+        div.querySelector(".qtext").textContent = n.text;
+        qList.appendChild(div);
+      }
+
+      qList.querySelectorAll(".qdel").forEach(btn=>{
+        btn.addEventListener("click", async () => {
+          const id = btn.getAttribute("data-id");
+          await deleteQuote(id);
+        });
+      });
+    }
+
+    async function addQuote(){
+      const text = (qInput.value || "").replace(/\r\n/g,"\n").trim();
+      if(!text) return;
+
+      // (opsiyonel) basit limit: 400
+      if(text.length > 400){
+        qStatus.textContent = "Durum: çok uzun (400 karakter sınırı)";
+        return;
+      }
+
+      qStatus.textContent = "Durum: kaydediliyor…";
+      try{
+        const res = await fetch(/api/notes?page=${encodeURIComponent(PAGE_ID)}, {
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({ text, author: USER_NAME })
+        });
+
+        const ct = res.headers.get("content-type") || "";
+        if(!ct.includes("application/json")) throw new Error("not_json");
+
+        const data = await res.json();
+        if(!data.ok) throw new Error("save_failed");
+
+        qInput.value = "";
+        await refreshQuotes();
+      }catch(err){
+        qStatus.textContent = "Durum: kaydedilemedi";
+      }
+    }
+
+    async function deleteQuote(id){
+      qStatus.textContent = "Durum: siliniyor…";
+      try{
+        const res = await fetch(/api/notes?page=${encodeURIComponent(PAGE_ID)}&id=${encodeURIComponent(id)}, {
+          method:"DELETE"
+        });
+
+        const ct = res.headers.get("content-type") || "";
+        if(!ct.includes("application/json")) throw new Error("not_json");
+
+        const data = await res.json();
+        if(!data.ok) throw new Error("delete_failed");
+
+        await refreshQuotes();
+      }catch(err){
+        qStatus.textContent = "Durum: silinemedi";
+      }
+    }
+
+    document.getElementById("btnQAdd").addEventListener("click", addQuote);
+    document.getElementById("btnQRefresh").addEventListener("click", refreshQuotes);
+
+  </script>
 </body>
 </html>
