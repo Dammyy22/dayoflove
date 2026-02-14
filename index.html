@@ -13,9 +13,7 @@
       --muted:#475569;
       --border:rgba(15,23,42,0.10);
       --shadow:rgba(2,6,23,0.12);
-
-      /* fotoğraftan türeteceğiz */
-      --accent: 99,102,241;   /* indigo default */
+      --accent: 99,102,241; /* default */
     }
 
     *{ box-sizing:border-box; }
@@ -28,12 +26,11 @@
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       color:var(--text);
       padding:18px;
-
       background:
-        radial-gradient(900px 420px at 20% 15%, rgba(var(--accent),0.20), transparent 60%),
+        radial-gradient(900px 420px at 20% 15%, rgba(var(--accent),0.22), transparent 60%),
         radial-gradient(700px 340px at 80% 20%, rgba(var(--accent),0.14), transparent 60%),
         linear-gradient(180deg, var(--bg1), var(--bg2));
-      transition: background 500ms ease;
+      transition: background 450ms ease;
     }
 
     .card{
@@ -57,12 +54,22 @@
     .pill{
       font-size:12px;
       color: var(--muted);
-      background: rgba(255,255,255,0.7);
+      background: rgba(255,255,255,0.78);
       border:1px solid rgba(15,23,42,0.08);
       padding:6px 10px;
       border-radius:999px;
       box-shadow: 0 8px 22px rgba(2,6,23,0.06);
       user-select:none;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      white-space:nowrap;
+    }
+    .dot{
+      width:10px;height:10px;border-radius:999px;
+      background: rgb(var(--accent));
+      box-shadow: 0 0 0 3px rgba(var(--accent),0.18);
+      flex:0 0 auto;
     }
 
     .photo-frame{
@@ -80,14 +87,13 @@
       position:relative;
     }
 
-    /* subtle glow ring */
     .photo-frame::before{
       content:"";
       position:absolute;
       inset:-40px;
-      background: radial-gradient(400px 260px at 50% 30%, rgba(var(--accent),0.22), transparent 70%);
+      background: radial-gradient(420px 280px at 50% 30%, rgba(var(--accent),0.24), transparent 72%);
       filter: blur(18px);
-      opacity:0.9;
+      opacity:0.95;
       pointer-events:none;
       transition: opacity 350ms ease;
     }
@@ -102,26 +108,20 @@
       user-select:none;
       -webkit-user-drag:none;
 
-      /* geçiş */
       opacity: 0;
       transform: scale(0.995);
       transition: opacity 420ms ease, transform 420ms ease;
       position:relative;
       z-index:1;
-
       filter: saturate(1.06) contrast(1.02);
     }
-    .photo.is-visible{
-      opacity: 1;
-      transform: scale(1);
-    }
+    .photo.is-visible{ opacity:1; transform:scale(1); }
 
     .msg{
       margin:14px 6px 0;
       font-size:1.10rem;
       line-height:1.45;
-      color:var(--text);
-      min-height: 3.2em; /* typewriter sırasında zıplamasın */
+      min-height:3.2em;
     }
 
     .cursor{
@@ -135,17 +135,9 @@
     }
     @keyframes blink{ 0%,49%{opacity:1} 50%,100%{opacity:0.15} }
 
-    .sub{
-      margin:8px 6px 0;
-      font-size:0.9rem;
-      color:var(--muted);
-    }
+    .sub{ margin:8px 6px 0; font-size:0.9rem; color:var(--muted); }
 
-    .row{
-      display:flex;
-      gap:10px;
-      margin-top:12px;
-    }
+    .row{ display:flex; gap:10px; margin-top:12px; }
 
     button{
       flex:1;
@@ -160,26 +152,17 @@
     }
     button:hover{ background: rgba(var(--accent),0.16); }
     button:active{ transform: scale(0.99); }
+    .ghost{ background: rgba(255,255,255,0.74); }
 
-    .ghost{
-      background: rgba(255,255,255,0.72);
-    }
-
-    /* tiny pop anim on refresh */
-    .pop{
-      animation: pop 240ms ease;
-    }
-    @keyframes pop{
-      0%{transform: translateY(2px); opacity:0.7}
-      100%{transform: translateY(0); opacity:1}
-    }
+    .pop{ animation: pop 240ms ease; }
+    @keyframes pop{ 0%{transform: translateY(2px); opacity:0.7} 100%{transform: translateY(0); opacity:1} }
   </style>
 </head>
 <body>
   <div class="card" id="card">
     <div class="topbar">
-      <div class="pill" id="pillLeft">Mesaj: —</div>
-      <div class="pill" id="pillRight">Foto: —</div>
+      <div class="pill" id="pillLeft"><span class="dot" aria-hidden="true"></span><span>Mesaj: —</span></div>
+      <div class="pill" id="pillRight"><span>Foto: —</span></div>
     </div>
 
     <div class="photo-frame">
@@ -187,7 +170,7 @@
     </div>
 
     <div class="msg" id="message"></div>
-    <div class="sub">Yenileyince yeni mesaj + foto gelir. (Evet, gerçekten.)</div>
+    <div class="sub">Yenileyince yeni mesaj + foto gelir.</div>
 
     <div class="row">
       <button id="btnNew">Yeni getir</button>
@@ -197,37 +180,44 @@
   </div>
 
   <script>
-    // =======================
-    //  TEKRARSIZ SHUFFLE HAVUZU (localStorage)
-    // =======================
-
-    // örnek mesajlar (senin gerçek listen buraya)
+    // ====== AYARLAR ======
     const MESSAGES = [
       "Bugün de seni seviyorum.",
       "Kalbimden geçenler: iyi ki varsın.",
       "Biraz susup sarılasım var.",
       "Gülüşün dünyayı düzeltemiyor ama beni düzeltiyor.",
-      "Bazen tek cümle yeter: yanındayım.",
-      "Gözlerin var ya… tamam susuyorum."
+      "Yanındayım. Nokta.",
+      "İçimden sana bir cümle düşüyor: özledim."
     ];
 
-    const PHOTO_DIR = "assets/yunis/";
+    const PHOTO_DIR   = "assets/yunis/";
     const PHOTO_START = 1;
-    const PHOTO_END = 119; // sende kaç foto varsa
+    const PHOTO_END   = 119; // ✅ 119 foto
 
-    function pad4(n){ return String(n).padStart(4,"0"); }
+    // ====== STORAGE ======
+    function storageOK(){
+      try{ const k="__t"; localStorage.setItem(k,"1"); localStorage.removeItem(k); return true; }
+      catch(e){ return false; }
+    }
+    const HAS_LS = storageOK();
+    const memStore = new Map();
 
     function lsGet(key, fallback){
       try{
-        const v = localStorage.getItem(key);
-        return v ? JSON.parse(v) : fallback;
-      }catch(e){
-        return fallback;
-      }
+        const raw = HAS_LS ? localStorage.getItem(key) : memStore.get(key);
+        return raw ? JSON.parse(raw) : fallback;
+      }catch(e){ return fallback; }
     }
     function lsSet(key, value){
-      localStorage.setItem(key, JSON.stringify(value));
+      const raw = JSON.stringify(value);
+      if(HAS_LS) localStorage.setItem(key, raw);
+      else memStore.set(key, raw);
     }
+    function lsDel(key){
+      if(HAS_LS) localStorage.removeItem(key);
+      else memStore.delete(key);
+    }
+
     function shuffle(arr){
       for(let i=arr.length-1;i>0;i--){
         const j = Math.floor(Math.random()*(i+1));
@@ -235,6 +225,7 @@
       }
       return arr;
     }
+
     function getNextFromPool(poolKey, sourceArray){
       let pool = lsGet(poolKey, null);
       if(!Array.isArray(pool) || pool.length === 0){
@@ -244,32 +235,24 @@
       lsSet(poolKey, pool);
       return next;
     }
-    function resetPool(poolKey){
-      localStorage.removeItem(poolKey);
-    }
 
-    // =======================
-    //  FOTO LISTESI
-    // =======================
-    function buildPhotoList(){
+    function resetPool(poolKey){ lsDel(poolKey); }
+
+    // ====== FOTO LİSTESİ (119) ======
+    function pad4(n){ return String(n).padStart(4,"0"); }
+    const PHOTO_LIST = (() => {
       const arr = [];
       for(let i=PHOTO_START;i<=PHOTO_END;i++){
         arr.push(PHOTO_DIR + pad4(i) + ".jpg");
       }
       return arr;
-    }
-    const PHOTO_LIST = buildPhotoList();
+    })();
 
-    function nextMessage(){ return getNextFromPool("msg_pool", MESSAGES); }
-    function nextPhoto(){ return getNextFromPool("photo_pool", PHOTO_LIST); }
-
-    // =======================
-    //  WOW 1: TYPEWRITER
-    // =======================
+    // ====== TYPEWRITER ======
     let twTimer = null;
-    function typewriter(el, text, speed=18){
+    function typewriter(el, text, speed=16){
       if(twTimer) clearInterval(twTimer);
-      el.innerHTML = ""; // temizle
+      el.innerHTML = "";
       const span = document.createElement("span");
       const cur = document.createElement("span");
       cur.className = "cursor";
@@ -283,116 +266,155 @@
         if(i >= text.length){
           clearInterval(twTimer);
           twTimer = null;
-          // cursor kalsın, hoş
         }
       }, speed);
     }
 
-    // =======================
-    //  WOW 2: FOTOĞRAFTAN TEMA RENGİ ÇIKAR
-    // =======================
-    function setAccentFromImage(img){
+    // ====== TEMA RENGİ (HER FOTO İÇİN ZORUNLU) ======
+    function setAccent(rgb){
+      document.documentElement.style.setProperty("--accent", rgb);
+    }
+
+    // deterministik (her foto için farklı) renk üret
+    function accentFromString(str){
+      let h = 2166136261; // FNV-1a
+      for(let i=0;i<str.length;i++){
+        h ^= str.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+      // canlı ama patlamayan aralıklar
+      const r = 70 + (h & 0x7F);          // 70..197
+      const g = 70 + ((h>>8) & 0x7F);     // 70..197
+      const b = 70 + ((h>>16) & 0x7F);    // 70..197
+      return `${r},${g},${b}`;
+    }
+
+    // canvas ortalama renk al (başarısız olursa fallback)
+    function tryAccentFromImage(img){
       try{
         const c = document.createElement("canvas");
-        const ctx = c.getContext("2d", { willReadFrequently: true });
-        const w = 48, h = 48;
+        const ctx = c.getContext("2d", { willReadFrequently:true });
+        const w = 28, h = 28;
         c.width = w; c.height = h;
         ctx.drawImage(img, 0, 0, w, h);
         const data = ctx.getImageData(0,0,w,h).data;
 
-        let r=0,g=0,b=0, count=0;
+        let r=0,g=0,b=0,count=0;
         for(let i=0;i<data.length;i+=4){
           const a = data[i+3];
-          if(a < 180) continue;
-          const rr=data[i], gg=data[i+1], bb=data[i+2];
-          // çok koyu ve çok açıkları biraz ele
-          const lum = 0.2126*rr + 0.7152*gg + 0.0722*bb;
-          if(lum < 35 || lum > 235) continue;
-          r+=rr; g+=gg; b+=bb; count++;
+          if(a < 140) continue;
+          r += data[i]; g += data[i+1]; b += data[i+2];
+          count++;
         }
-        if(count < 10) return;
+        if(count < 10) return null;
 
         r = Math.round(r/count);
         g = Math.round(g/count);
         b = Math.round(b/count);
 
-        document.documentElement.style.setProperty("--accent", `${r},${g},${b}`);
+        // çok gri / çok koyuysa yine fallback'e bırak
+        const max = Math.max(r,g,b), min = Math.min(r,g,b);
+        if((max-min) < 12) return null;
+
+        return `${r},${g},${b}`;
       }catch(e){
-        // cross-origin vs. statik aynı domain olduğu için genelde sorun yok
+        return null;
       }
     }
 
-    // =======================
-    //  SAYAC (kalan)
-    // =======================
+    // ====== GARANTİ FARKLI SEÇİM ======
+    function nextMessageDifferent(){
+      const last = lsGet("last_msg", null);
+      let chosen = null;
+      for(let t=0;t<8;t++){
+        chosen = getNextFromPool("msg_pool", MESSAGES);
+        if(chosen !== last) break;
+      }
+      lsSet("last_msg", chosen);
+      return chosen;
+    }
+
+    function nextPhotoDifferent(){
+      const last = lsGet("last_photo", null);
+      let chosen = null;
+      for(let t=0;t<12;t++){
+        chosen = getNextFromPool("photo_pool", PHOTO_LIST);
+        if(chosen !== last) break;
+      }
+      lsSet("last_photo", chosen);
+      return chosen;
+    }
+
     function updatePills(){
       const msgPool = lsGet("msg_pool", []);
       const photoPool = lsGet("photo_pool", []);
-      document.getElementById("pillLeft").textContent = `Mesaj kaldı: ${msgPool.length || MESSAGES.length}`;
-      document.getElementById("pillRight").textContent = `Foto kaldı: ${photoPool.length || PHOTO_LIST.length}`;
+      const left = document.getElementById("pillLeft");
+      const right = document.getElementById("pillRight");
+      left.querySelector("span:last-child").textContent = `Mesaj kaldı: ${msgPool.length || MESSAGES.length}`;
+      right.textContent = `Foto kaldı: ${photoPool.length || PHOTO_LIST.length}`;
     }
 
-    // =======================
-    //  RENDER (yenilemede garanti değişsin)
-    // =======================
-    async function renderNew(){
+    // ====== RENDER ======
+    function renderNew(){
       const card = document.getElementById("card");
-      card.classList.remove("pop");
-      void card.offsetWidth; // reflow for animation restart
-      card.classList.add("pop");
+      card.classList.remove("pop"); void card.offsetWidth; card.classList.add("pop");
 
-      const msg = nextMessage();
-      const photoPath = nextPhoto();
+      const msg = nextMessageDifferent();
+      const photoPath = nextPhotoDifferent();
 
-      // mesajı animasyonla yaz
       typewriter(document.getElementById("message"), msg, 16);
 
-      // fotoğraf crossfade
+      // ✅ tema: her seferinde fotoPath'ten bir accent bas
+      // (canvas çalışsa da çalışmasa da değişsin)
+      setAccent(accentFromString(photoPath));
+
       const img = document.getElementById("photo");
       img.classList.remove("is-visible");
+      img.crossOrigin = "anonymous";
+
       img.onload = () => {
-        setAccentFromImage(img);
+        // canvas başarılıysa foto rengiyle override et, değilse path rengi kalır (yine değişmiş olur)
+        const fromCanvas = tryAccentFromImage(img);
+        if(fromCanvas) setAccent(fromCanvas);
         img.classList.add("is-visible");
         updatePills();
       };
+
       img.onerror = () => {
+        // eğer gerçek dosya yoksa bile farklı fallback rengi kalsın
         img.onerror = null;
-        img.src = PHOTO_DIR + "0001.jpg";
+        img.src = PHOTO_DIR + "0001.jpg?v=" + Date.now();
       };
-      img.src = photoPath;
+
+      // cache kır (özellikle mobile/in-app browser)
+      img.src = photoPath + "?v=" + Date.now();
     }
 
-    // İlk açılış: her load'da yeni seçim
+    // init
     renderNew();
 
-    // Safari/IOS bfcache: sayfaya geri dönünce aynı state'le gelebiliyor
+    // Safari bfcache: geri dönünce de değişsin
     window.addEventListener("pageshow", (e) => {
       if(e.persisted) renderNew();
     });
 
-    // butonlar
     document.getElementById("btnNew").addEventListener("click", renderNew);
 
     document.getElementById("btnReset").addEventListener("click", () => {
       resetPool("msg_pool");
       resetPool("photo_pool");
+      lsDel("last_photo");
+      lsDel("last_msg");
       renderNew();
     });
 
-    // Paylaş (destekleyen cihazlarda)
     document.getElementById("btnShare").addEventListener("click", async () => {
       const msg = document.getElementById("message").innerText.trim();
       if(navigator.share){
-        try{
-          await navigator.share({ title: "Bir mesaj", text: msg, url: location.href });
-        }catch(e){}
+        try{ await navigator.share({ title:"Bir mesaj", text:msg, url:location.href }); }catch(e){}
       }else{
-        try{
-          await navigator.clipboard.writeText(msg + "\n" + location.href);
-          alert("Kopyalandı.");
-        }catch(e){
-          alert("Paylaşım yok, kopyalama da yok. Harika cihaz.");
-        }
+        try{ await navigator.clipboard.writeText(msg + "\n" + location.href); alert("Kopyalandı."); }
+        catch(e){ alert("Bu cihaz paylaşım/kopyalama konusunda dramayı seçmiş."); }
       }
     });
   </script>
