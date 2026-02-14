@@ -19,20 +19,27 @@ export async function onRequest(context) {
     }
 
     // ================= POST =================
-    if (request.method === "POST") {
-      const body = await request.json();
-      const text = (body.text || "").trim();
+   if (request.method === "POST") {
+  const body = await request.json();
+  let text = (body.text || "");
 
-      if (!text)
-        return json({ ok: false, error: "empty_text" }, 400);
+  // Emoji dahil her şey UTF-8, burada sadece temizlik yapıyoruz
+  text = text.replace(/\r\n/g, "\n").trim();
 
-      await db
-        .prepare("INSERT INTO notes (page,text) VALUES (?,?)")
-        .bind(page, text)
-        .run();
+  // boşsa
+  if (!text) return json({ ok: false, error: "empty_text" }, 400);
 
-      return json({ ok: true });
-    }
+  // aşırı uzun spam önlemi (emoji de dahil)
+  if (text.length > 400) return json({ ok: false, error: "too_long" }, 413);
+
+  await db
+    .prepare("INSERT INTO notes (page, text, created_at) VALUES (?, ?, datetime('now'))")
+    .bind(page, text)
+    .run();
+
+  return json({ ok: true });
+}
+
 
     // ================= DELETE =================
     if (request.method === "DELETE") {
