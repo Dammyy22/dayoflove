@@ -1044,5 +1044,73 @@ Seni seviyorum.`;
     document.getElementById("btnQAdd").addEventListener("click", addQuoteSafe);
     document.getElementById("btnQRefresh").addEventListener("click", refreshQuotesSafe);
   </script>
+  <style>
+/* ===== SOL KAVANOZ → MEKTUP ŞİŞESİ ===== */
+
+/* cam formu */
+#btnJar .glass{
+  border-radius:18px 18px 26px 26px;
+  background:linear-gradient(180deg,rgba(255,255,255,0.18),rgba(255,255,255,0.05));
+}
+
+/* mantar kapak */
+#btnJar .lid{
+  background:linear-gradient(#caa472,#9b6b3d);
+  border:1px solid rgba(0,0,0,.25);
+  box-shadow:0 6px 12px rgba(0,0,0,.35);
+}
+
+/* iç rulo mektup */
+#btnJar .scroll{
+  position:absolute;
+  left:50%;
+  top:58px;
+  transform:translateX(-50%) rotate(-6deg);
+  width:46px;
+  height:26px;
+  border-radius:12px;
+  background:linear-gradient(#fff,#f3f3f3);
+  box-shadow:0 8px 20px rgba(0,0,0,.35);
+}
+
+#btnJar .scroll:before,
+#btnJar .scroll:after{
+  content:"";
+  position:absolute;
+  top:50%;
+  width:12px;
+  height:12px;
+  background:#fff;
+  border-radius:50%;
+  transform:translateY(-50%);
+}
+#btnJar .scroll:before{ left:-6px; }
+#btnJar .scroll:after{ right:-6px; }
+
+/* peri ışıklarını kapat */
+#btnJar .lights{ display:none; }
+
+/* hafif denizde sallanma efekti */
+#btnJar{
+  animation:floatBottle 4s ease-in-out infinite;
+}
+@keyframes floatBottle{
+  0%,100%{transform:translateY(0) rotate(-1deg)}
+  50%{transform:translateY(-6px) rotate(1deg)}
+}
+</style>
+
+<script>
+/* ===== SCROLL ELEMANINI OTOMATİK EKLE ===== */
+document.addEventListener("DOMContentLoaded",()=>{
+  const jar=document.querySelector("#btnJar .jar-draw");
+  if(jar && !jar.querySelector(".scroll")){
+    const s=document.createElement("div");
+    s.className="scroll";
+    jar.prepend(s);
+  }
+});
+</script>
+
 </body>
 </html>
