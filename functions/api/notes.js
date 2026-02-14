@@ -7,16 +7,8 @@ export async function onRequest(context) {
 
   try {
     // ================= GET =================
-    if (request.method === "GET") {
-      const { results } = await db
-        .prepare(
-          "SELECT id, text, created_at FROM notes WHERE page=? ORDER BY id DESC"
-        )
-        .bind(page)
-        .all();
+  SELECT id, text, author, created_at
 
-      return json({ ok: true, notes: results });
-    }
 
     // ================= POST =================
  const body = await request.json();
