@@ -6,16 +6,16 @@
   <title>NFC Sayfa</title>
   <style>
     :root{
-      /* 🌤 AÇIK TEMA */
       --bg1:#f6f8ff;
       --bg2:#eef2ff;
-
-      --card:rgba(255,255,255,0.82);
-      --text:#0f172a;      /* slate-900 */
-      --muted:#475569;     /* slate-600 */
+      --card:rgba(255,255,255,0.86);
+      --text:#0f172a;
+      --muted:#475569;
       --border:rgba(15,23,42,0.10);
       --shadow:rgba(2,6,23,0.12);
-      --glow:rgba(99,102,241,0.18); /* indigo */
+
+      /* fotoğraftan türeteceğiz */
+      --accent: 99,102,241;   /* indigo default */
     }
 
     *{ box-sizing:border-box; }
@@ -29,41 +29,70 @@
       color:var(--text);
       padding:18px;
 
-      /* açık, modern */
       background:
-        radial-gradient(900px 420px at 20% 15%, rgba(99,102,241,0.14), transparent 60%),
-        radial-gradient(700px 340px at 80% 20%, rgba(56,189,248,0.14), transparent 60%),
+        radial-gradient(900px 420px at 20% 15%, rgba(var(--accent),0.20), transparent 60%),
+        radial-gradient(700px 340px at 80% 20%, rgba(var(--accent),0.14), transparent 60%),
         linear-gradient(180deg, var(--bg1), var(--bg2));
+      transition: background 500ms ease;
     }
 
     .card{
-      width:min(520px, 100%);
+      width:min(560px, 100%);
       background:var(--card);
       border:1px solid var(--border);
-      border-radius:20px;
+      border-radius:22px;
       box-shadow:0 18px 55px var(--shadow);
       padding:16px;
       backdrop-filter: blur(12px);
     }
 
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+
+    .pill{
+      font-size:12px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.7);
+      border:1px solid rgba(15,23,42,0.08);
+      padding:6px 10px;
+      border-radius:999px;
+      box-shadow: 0 8px 22px rgba(2,6,23,0.06);
+      user-select:none;
+    }
+
     .photo-frame{
       width:100%;
-      height: clamp(340px, 58vh, 560px);
-      border-radius:18px;
+      height: clamp(360px, 60vh, 600px);
+      border-radius:20px;
       border:1px solid rgba(15,23,42,0.10);
       overflow:hidden;
-
-      /* açık çerçeve */
-      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.65));
+      background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.68));
       box-shadow: 0 14px 34px rgba(2,6,23,0.14);
       padding:10px;
-
       display:flex;
       align-items:center;
       justify-content:center;
+      position:relative;
     }
 
-    .photo-frame img{
+    /* subtle glow ring */
+    .photo-frame::before{
+      content:"";
+      position:absolute;
+      inset:-40px;
+      background: radial-gradient(400px 260px at 50% 30%, rgba(var(--accent),0.22), transparent 70%);
+      filter: blur(18px);
+      opacity:0.9;
+      pointer-events:none;
+      transition: opacity 350ms ease;
+    }
+
+    .photo{
       width:100%;
       height:100%;
       object-fit: contain;
@@ -73,16 +102,38 @@
       user-select:none;
       -webkit-user-drag:none;
 
-      /* foto daha “canlı” dursun */
-      filter: saturate(1.05) contrast(1.02);
+      /* geçiş */
+      opacity: 0;
+      transform: scale(0.995);
+      transition: opacity 420ms ease, transform 420ms ease;
+      position:relative;
+      z-index:1;
+
+      filter: saturate(1.06) contrast(1.02);
+    }
+    .photo.is-visible{
+      opacity: 1;
+      transform: scale(1);
     }
 
     .msg{
       margin:14px 6px 0;
-      font-size:1.08rem;
+      font-size:1.10rem;
       line-height:1.45;
       color:var(--text);
+      min-height: 3.2em; /* typewriter sırasında zıplamasın */
     }
+
+    .cursor{
+      display:inline-block;
+      width:0.55ch;
+      background: rgba(var(--accent),0.30);
+      margin-left:2px;
+      border-radius:6px;
+      transform: translateY(2px);
+      animation: blink 1s infinite;
+    }
+    @keyframes blink{ 0%,49%{opacity:1} 50%,100%{opacity:0.15} }
 
     .sub{
       margin:8px 6px 0;
@@ -99,48 +150,70 @@
     button{
       flex:1;
       border:1px solid rgba(15,23,42,0.12);
-      background: rgba(99,102,241,0.10);
+      background: rgba(var(--accent),0.10);
       color: var(--text);
       border-radius:12px;
       padding:10px 12px;
       cursor:pointer;
-      font-weight:600;
+      font-weight:650;
+      transition: background 160ms ease, transform 120ms ease;
     }
-    button:hover{
-      background: rgba(99,102,241,0.16);
+    button:hover{ background: rgba(var(--accent),0.16); }
+    button:active{ transform: scale(0.99); }
+
+    .ghost{
+      background: rgba(255,255,255,0.72);
+    }
+
+    /* tiny pop anim on refresh */
+    .pop{
+      animation: pop 240ms ease;
+    }
+    @keyframes pop{
+      0%{transform: translateY(2px); opacity:0.7}
+      100%{transform: translateY(0); opacity:1}
     }
   </style>
 </head>
 <body>
-  <div class="card">
+  <div class="card" id="card">
+    <div class="topbar">
+      <div class="pill" id="pillLeft">Mesaj: —</div>
+      <div class="pill" id="pillRight">Foto: —</div>
+    </div>
+
     <div class="photo-frame">
-      <img id="photo" alt="fotoğraf" />
+      <img id="photo" class="photo" alt="fotoğraf" />
     </div>
 
     <div class="msg" id="message"></div>
-    <div class="sub">Yenileyince yeni mesaj + foto gelir.</div>
+    <div class="sub">Yenileyince yeni mesaj + foto gelir. (Evet, gerçekten.)</div>
 
     <div class="row">
       <button id="btnNew">Yeni getir</button>
-      <button id="btnReset">Listeyi sıfırla</button>
+      <button id="btnReset" class="ghost">Listeyi sıfırla</button>
+      <button id="btnShare" class="ghost">Paylaş</button>
     </div>
   </div>
 
   <script>
     // =======================
-    //  MEVCUT MANTIĞI BOZMADAN
+    //  TEKRARSIZ SHUFFLE HAVUZU (localStorage)
     // =======================
 
+    // örnek mesajlar (senin gerçek listen buraya)
     const MESSAGES = [
       "Bugün de seni seviyorum.",
       "Kalbimden geçenler: iyi ki varsın.",
       "Biraz susup sarılasım var.",
-      "Gülüşün dünyayı düzeltemiyor ama beni düzeltiyor."
+      "Gülüşün dünyayı düzeltemiyor ama beni düzeltiyor.",
+      "Bazen tek cümle yeter: yanındayım.",
+      "Gözlerin var ya… tamam susuyorum."
     ];
 
     const PHOTO_DIR = "assets/yunis/";
     const PHOTO_START = 1;
-    const PHOTO_END = 60;
+    const PHOTO_END = 119; // sende kaç foto varsa
 
     function pad4(n){ return String(n).padStart(4,"0"); }
 
@@ -152,11 +225,9 @@
         return fallback;
       }
     }
-
     function lsSet(key, value){
       localStorage.setItem(key, JSON.stringify(value));
     }
-
     function shuffle(arr){
       for(let i=arr.length-1;i>0;i--){
         const j = Math.floor(Math.random()*(i+1));
@@ -164,7 +235,6 @@
       }
       return arr;
     }
-
     function getNextFromPool(poolKey, sourceArray){
       let pool = lsGet(poolKey, null);
       if(!Array.isArray(pool) || pool.length === 0){
@@ -174,15 +244,13 @@
       lsSet(poolKey, pool);
       return next;
     }
-
     function resetPool(poolKey){
       localStorage.removeItem(poolKey);
     }
 
-    function nextMessage(){
-      return getNextFromPool("msg_pool", MESSAGES);
-    }
-
+    // =======================
+    //  FOTO LISTESI
+    // =======================
     function buildPhotoList(){
       const arr = [];
       for(let i=PHOTO_START;i<=PHOTO_END;i++){
@@ -192,31 +260,140 @@
     }
     const PHOTO_LIST = buildPhotoList();
 
-    function nextPhoto(){
-      return getNextFromPool("photo_pool", PHOTO_LIST);
+    function nextMessage(){ return getNextFromPool("msg_pool", MESSAGES); }
+    function nextPhoto(){ return getNextFromPool("photo_pool", PHOTO_LIST); }
+
+    // =======================
+    //  WOW 1: TYPEWRITER
+    // =======================
+    let twTimer = null;
+    function typewriter(el, text, speed=18){
+      if(twTimer) clearInterval(twTimer);
+      el.innerHTML = ""; // temizle
+      const span = document.createElement("span");
+      const cur = document.createElement("span");
+      cur.className = "cursor";
+      el.appendChild(span);
+      el.appendChild(cur);
+
+      let i = 0;
+      twTimer = setInterval(() => {
+        i++;
+        span.textContent = text.slice(0, i);
+        if(i >= text.length){
+          clearInterval(twTimer);
+          twTimer = null;
+          // cursor kalsın, hoş
+        }
+      }, speed);
     }
 
-    function renderNew(){
+    // =======================
+    //  WOW 2: FOTOĞRAFTAN TEMA RENGİ ÇIKAR
+    // =======================
+    function setAccentFromImage(img){
+      try{
+        const c = document.createElement("canvas");
+        const ctx = c.getContext("2d", { willReadFrequently: true });
+        const w = 48, h = 48;
+        c.width = w; c.height = h;
+        ctx.drawImage(img, 0, 0, w, h);
+        const data = ctx.getImageData(0,0,w,h).data;
+
+        let r=0,g=0,b=0, count=0;
+        for(let i=0;i<data.length;i+=4){
+          const a = data[i+3];
+          if(a < 180) continue;
+          const rr=data[i], gg=data[i+1], bb=data[i+2];
+          // çok koyu ve çok açıkları biraz ele
+          const lum = 0.2126*rr + 0.7152*gg + 0.0722*bb;
+          if(lum < 35 || lum > 235) continue;
+          r+=rr; g+=gg; b+=bb; count++;
+        }
+        if(count < 10) return;
+
+        r = Math.round(r/count);
+        g = Math.round(g/count);
+        b = Math.round(b/count);
+
+        document.documentElement.style.setProperty("--accent", `${r},${g},${b}`);
+      }catch(e){
+        // cross-origin vs. statik aynı domain olduğu için genelde sorun yok
+      }
+    }
+
+    // =======================
+    //  SAYAC (kalan)
+    // =======================
+    function updatePills(){
+      const msgPool = lsGet("msg_pool", []);
+      const photoPool = lsGet("photo_pool", []);
+      document.getElementById("pillLeft").textContent = `Mesaj kaldı: ${msgPool.length || MESSAGES.length}`;
+      document.getElementById("pillRight").textContent = `Foto kaldı: ${photoPool.length || PHOTO_LIST.length}`;
+    }
+
+    // =======================
+    //  RENDER (yenilemede garanti değişsin)
+    // =======================
+    async function renderNew(){
+      const card = document.getElementById("card");
+      card.classList.remove("pop");
+      void card.offsetWidth; // reflow for animation restart
+      card.classList.add("pop");
+
       const msg = nextMessage();
       const photoPath = nextPhoto();
 
-      document.getElementById("message").textContent = msg;
+      // mesajı animasyonla yaz
+      typewriter(document.getElementById("message"), msg, 16);
 
+      // fotoğraf crossfade
       const img = document.getElementById("photo");
-      img.src = photoPath;
+      img.classList.remove("is-visible");
+      img.onload = () => {
+        setAccentFromImage(img);
+        img.classList.add("is-visible");
+        updatePills();
+      };
       img.onerror = () => {
         img.onerror = null;
         img.src = PHOTO_DIR + "0001.jpg";
       };
+      img.src = photoPath;
     }
 
+    // İlk açılış: her load'da yeni seçim
     renderNew();
 
+    // Safari/IOS bfcache: sayfaya geri dönünce aynı state'le gelebiliyor
+    window.addEventListener("pageshow", (e) => {
+      if(e.persisted) renderNew();
+    });
+
+    // butonlar
     document.getElementById("btnNew").addEventListener("click", renderNew);
+
     document.getElementById("btnReset").addEventListener("click", () => {
       resetPool("msg_pool");
       resetPool("photo_pool");
       renderNew();
+    });
+
+    // Paylaş (destekleyen cihazlarda)
+    document.getElementById("btnShare").addEventListener("click", async () => {
+      const msg = document.getElementById("message").innerText.trim();
+      if(navigator.share){
+        try{
+          await navigator.share({ title: "Bir mesaj", text: msg, url: location.href });
+        }catch(e){}
+      }else{
+        try{
+          await navigator.clipboard.writeText(msg + "\n" + location.href);
+          alert("Kopyalandı.");
+        }catch(e){
+          alert("Paylaşım yok, kopyalama da yok. Harika cihaz.");
+        }
+      }
     });
   </script>
 </body>
