@@ -6,53 +6,55 @@ export async function onRequest(context) {
   const page = url.searchParams.get("page") || "default";
 
   try {
-    // ================= GET =================
+    // GET
     if (request.method === "GET") {
-      const { results } = await db.prepare(
-        "SELECT id, text, created_at FROM notes WHERE page = ? ORDER BY id DESC"
-      ).bind(page).all();
+      const { results } = await db
+        .prepare("SELECT id, text, created_at FROM notes WHERE page = ? ORDER BY id DESC")
+        .bind(page)
+        .all();
 
       return json({ ok: true, notes: results });
     }
 
-    // ================= POST =================
+    // POST
     if (request.method === "POST") {
       const body = await request.json();
       const text = (body.text || "").trim();
       if (!text) return json({ ok: false, error: "empty" }, 400);
 
-      await db.prepare(
-        "INSERT INTO notes (page, text) VALUES (?, ?)"
-      ).bind(page, text).run();
+      await db
+        .prepare("INSERT INTO notes (page, text) VALUES (?, ?)")
+        .bind(page, text)
+        .run();
 
       return json({ ok: true });
     }
 
-    // ================= DELETE =================
+    // DELETE
     if (request.method === "DELETE") {
       const id = url.searchParams.get("id");
-      if (!id) return json({ ok: false, error: "no id" }, 400);
+      if (!id) return json({ ok: false, error: "no_id" }, 400);
 
-      await db.prepare(
-        "DELETE FROM notes WHERE id = ? AND page = ?"
-      ).bind(id, page).run();
+      await db
+        .prepare("DELETE FROM notes WHERE id = ? AND page = ?")
+        .bind(id, page)
+        .run();
 
       return json({ ok: true });
     }
 
-    return json({ ok: false, error: "method" }, 405);
-
+    return json({ ok: false, error: "method_not_allowed" }, 405);
   } catch (err) {
-    return json({
-      ok: false,
-      error: err.message || "server error"
-    }, 500);
+    return json({ ok: false, error: err?.message || "server_error" }, 500);
   }
 }
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { "content-type": "application/json" }
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+      "cache-control": "no-store"
+    }
   });
 }
