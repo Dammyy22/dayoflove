@@ -4,6 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Bir Hediye</title>
+  <script src="https://stellarium-web.org/js/stellarium-web-engine.js"></script>
+  
+
 
   <style>
     :root{
@@ -16,6 +19,14 @@
 
       --accent: 150,190,255;
       --beat: 0;
+  
+}
+        #skyCanvas{
+position:fixed;
+inset:0;
+z-index:-1;
+pointer-events:none;
+
     }
 
     *{ box-sizing:border-box; }
@@ -31,7 +42,8 @@
         radial-gradient(760px 520px at 82% 18%, rgba(var(--accent),0.14), transparent 62%),
         radial-gradient(760px 520px at 50% 84%, rgba(255,160,210,0.10), transparent 60%),
         linear-gradient(180deg, var(--night1), var(--night2) 55%, var(--night3));
-      position:relative;
+    
+
     }
 
     .stars,.stars2,.stars3{ position:fixed; inset:0; pointer-events:none; z-index:0; background-repeat:repeat; mix-blend-mode: screen; }
@@ -575,6 +587,8 @@
   <div class="stars2"></div>
   <div class="stars3"></div>
   <div class="nebula"></div>
+  <canvas id="skyCanvas"></canvas>
+
 
   <!-- Sol alt: mektup -->
   <button class="jar-fab" id="btnJar" title="Kavanozdaki mektup">
@@ -1138,6 +1152,57 @@ Seni seviyorum.`;
 
     document.getElementById("btnQAdd").addEventListener("click", addQuote);
     document.getElementById("btnQRefresh").addEventListener("click", refreshQuotes);
+    /* ================= REAL SKY ================= */
+
+const SKY_LAT = 41.0082;   // İstanbul default
+const SKY_LON = 28.9784;
+
+const SKY_DATE = new Date(); 
+// özel tarih için:
+// const SKY_DATE = new Date("2024-02-14T22:00:00");
+
+(async () => {
+
+  const canvas = document.getElementById("skyCanvas");
+
+  const stel = await StellariumWebEngine({
+    canvas: canvas,
+    show_fps: false,
+    show_credit: false,
+    allow_pan: false,
+    allow_zoom: false
+  });
+
+  stel.setLocation({
+    latitude: SKY_LAT,
+    longitude: SKY_LON,
+    elevation: 0
+  });
+
+  stel.setDate(SKY_DATE);
+
+  /* sadece yıldız + ay kalsın */
+  stel.setSetting("landscape/visible", false);
+  stel.setSetting("atmosphere/visible", false);
+  stel.setSetting("cardinals/visible", false);
+  stel.setSetting("constellation_lines/visible", false);
+  stel.setSetting("constellation_art/visible", false);
+  stel.setSetting("grid_lines/visible", false);
+
+  /* parlaklık ayarı */
+  stel.setSetting("stars/scale", 1.2);
+  stel.setSetting("milky_way/visible", true);
+  stel.setSetting("milky_way/brightness", 0.6);
+
+  /* kamera sabit yukarı baksın */
+  stel.lookAt({
+    azimuth: 180,
+    altitude: 80,
+    fov: 120
+  });
+
+})();
+
   </script>
 </body>
 </html>
