@@ -1152,53 +1152,70 @@ Seni seviyorum.`;
 
     document.getElementById("btnQAdd").addEventListener("click", addQuote);
     document.getElementById("btnQRefresh").addEventListener("click", refreshQuotes);
-  /* ================= REAL SKY ================= */
-
-const SKY_LAT = 41.0082;   // İstanbul default
+/* ================= REAL SKY (Moon forced) ================= */
+const SKY_LAT = 41.0082;   // İstanbul
 const SKY_LON = 28.9784;
 
-const SKY_DATE = new Date("2026-02-14T22:00:00+03:00"); // İstanbul gece
-
-// özel tarih için:
-// const SKY_DATE = new Date("2024-02-14T22:00:00");
+// GECEYE SABİTLE
+const SKY_DATE = new Date("2026-02-14T22:00:00+03:00");
 
 (async () => {
-  const canvas = document.getElementById("skyCanvas");
+  try {
+    if (typeof StellariumWebEngine !== "function") {
+      console.warn("StellariumWebEngine yüklenmedi.");
+      return;
+    }
 
-  const stel = await StellariumWebEngine({
-    canvas: canvas,
-    show_fps: false,
-    show_credit: false,
-    allow_pan: false,
-    allow_zoom: false
-  });
+    const canvas = document.getElementById("skyCanvas");
 
-  stel.setLocation({
-    latitude: SKY_LAT,
-    longitude: SKY_LON,
-    elevation: 0
-  });
+    function resizeCanvas() {
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width  = Math.floor(window.innerWidth * dpr);
+      canvas.height = Math.floor(window.innerHeight * dpr);
+      canvas.style.width = "100%";
+      canvas.style.height = "100%";
+    }
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
 
-  stel.setDate(SKY_DATE);
+    const stel = await StellariumWebEngine({
+      canvas,
+      show_fps: false,
+      show_credit: false,
+      allow_pan: false,
+      allow_zoom: false
+    });
 
-  /* sadece yıldız + ay kalsın */
-  stel.setSetting("landscape/visible", false);
-  stel.setSetting("atmosphere/visible", false);
-  stel.setSetting("cardinals/visible", false);
-  stel.setSetting("constellation_lines/visible", false);
-  stel.setSetting("constellation_art/visible", false);
-  stel.setSetting("grid_lines/visible", false);
+    stel.setLocation({ latitude: SKY_LAT, longitude: SKY_LON, elevation: 0 });
+    stel.setDate(SKY_DATE);
 
-  /* parlaklık ayarı */
-  stel.setSetting("stars/scale", 1.2);
-  stel.setSetting("milky_way/visible", true);
-  stel.setSetting("milky_way/brightness", 0.6);
+    // Sade gökyüzü
+    stel.setSetting("landscape/visible", false);
+    stel.setSetting("atmosphere/visible", false);
+    stel.setSetting("cardinals/visible", false);
+    stel.setSetting("constellation_lines/visible", false);
+    stel.setSetting("constellation_art/visible", false);
+    stel.setSetting("grid_lines/visible", false);
+    stel.setSetting("labels/visible", false);
 
-  /* ay'a odaklan */
-  stel.core.selectObjectByName("Moon");
-  stel.core.centerOnSelectedObject();
-  stel.core.zoomTo(1.5, 1);
+    // Yıldız + Samanyolu
+    stel.setSetting("stars/scale", 1.2);
+    stel.setSetting("milky_way/visible", true);
+    stel.setSetting("milky_way/brightness", 0.6);
+
+    // Ay'a odaklan (engine hazır olduktan sonra)
+    setTimeout(() => {
+      const ok = stel.core.selectObjectByName("Moon");
+      console.log("Moon select:", ok);
+      stel.core.centerOnSelectedObject();
+      stel.core.zoomTo(1.8, 1.2);
+    }, 600);
+
+  } catch (e) {
+    console.error("Stellarium init hata:", e);
+  }
 })();
+
 
 
   </script>
