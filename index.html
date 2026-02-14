@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Bir Hediye</title>
+
   <style>
     :root{
       --night1:#040815;
@@ -12,16 +13,19 @@
 
       --text:#eef3fb;
       --muted:rgba(238,243,251,0.62);
-      --border:rgba(255,255,255,0.10);
-      --shadow:rgba(0,0,0,0.60);
+      --border:rgba(255,255,255,0.12);
 
-      --accent: 150,190,255; /* foto bazlı değişiyor */
+      --accent: 150,190,255; /* foto bazlı */
+      --beat: 0;             /* 0..1 (müzikten) */
     }
 
     *{ box-sizing:border-box; }
     body{
-      margin:0; min-height:100vh;
-      display:flex; align-items:center; justify-content:center;
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       color:var(--text);
       padding:18px;
@@ -34,65 +38,53 @@
       position:relative;
     }
 
-    /* ⭐ YILDIZLAR (daha belirgin, bazıları çok parlak) */
-    .stars, .stars2, .stars3{
-      position:fixed; inset:0;
-      pointer-events:none; z-index:0;
-      background-repeat:repeat;
-      mix-blend-mode: screen;
-    }
-
+    /* ⭐ yıldızlar */
+    .stars,.stars2,.stars3{ position:fixed; inset:0; pointer-events:none; z-index:0; background-repeat:repeat; mix-blend-mode: screen; }
     .stars{
       opacity:0.95;
       background-image:
-        radial-gradient(1px 1px at 10px 20px, rgba(255,255,255,0.70), transparent 62%),
+        radial-gradient(1px 1px at 10px 20px, rgba(255,255,255,0.72), transparent 62%),
         radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.55), transparent 62%),
-        radial-gradient(1px 1px at 90px 130px, rgba(255,255,255,0.45), transparent 62%),
-        radial-gradient(1px 1px at 150px 30px, rgba(255,255,255,0.60), transparent 62%),
-        radial-gradient(1px 1px at 210px 110px, rgba(255,255,255,0.42), transparent 62%),
-        radial-gradient(1px 1px at 60px 160px, rgba(255,255,255,0.55), transparent 62%),
-        radial-gradient(1px 1px at 200px 170px, rgba(255,255,255,0.40), transparent 62%);
+        radial-gradient(1px 1px at 90px 130px, rgba(255,255,255,0.46), transparent 62%),
+        radial-gradient(1px 1px at 150px 30px, rgba(255,255,255,0.62), transparent 62%),
+        radial-gradient(1px 1px at 210px 110px, rgba(255,255,255,0.44), transparent 62%),
+        radial-gradient(1px 1px at 60px 160px, rgba(255,255,255,0.56), transparent 62%),
+        radial-gradient(1px 1px at 200px 170px, rgba(255,255,255,0.42), transparent 62%);
       background-size: 240px 200px;
       animation: drift1 34s linear infinite;
-      filter: drop-shadow(0 0 6px rgba(255,255,255,0.10));
+      filter: drop-shadow(0 0 10px rgba(255,255,255,0.14));
     }
-
     .stars2{
       opacity:0.85;
       background-image:
         radial-gradient(1.6px 1.6px at 30px 50px, rgba(255,255,255,0.70), transparent 62%),
-        radial-gradient(1.6px 1.6px at 120px 90px, rgba(255,255,255,0.55), transparent 62%),
-        radial-gradient(1.6px 1.6px at 180px 140px, rgba(255,255,255,0.50), transparent 62%),
-        radial-gradient(1.6px 1.6px at 70px 140px, rgba(255,255,255,0.46), transparent 62%),
-        radial-gradient(1.6px 1.6px at 210px 40px, rgba(255,255,255,0.58), transparent 62%);
+        radial-gradient(1.6px 1.6px at 120px 90px, rgba(255,255,255,0.56), transparent 62%),
+        radial-gradient(1.6px 1.6px at 180px 140px, rgba(255,255,255,0.52), transparent 62%),
+        radial-gradient(1.6px 1.6px at 70px 140px, rgba(255,255,255,0.48), transparent 62%),
+        radial-gradient(1.6px 1.6px at 210px 40px, rgba(255,255,255,0.60), transparent 62%);
       background-size: 320px 260px;
       animation: drift2 52s linear infinite;
-      filter: drop-shadow(0 0 10px rgba(255,255,255,0.14));
+      filter: drop-shadow(0 0 14px rgba(255,255,255,0.18));
     }
-
-    /* parlak yıldızlar + ışıma */
     .stars3{
-      opacity:0.80;
+      opacity:0.82;
       background-image:
-        radial-gradient(2.6px 2.6px at 60px 40px, rgba(255,255,255,0.90), transparent 64%),
-        radial-gradient(2.6px 2.6px at 160px 120px, rgba(255,255,255,0.72), transparent 64%),
-        radial-gradient(2.6px 2.6px at 220px 70px, rgba(255,255,255,0.65), transparent 64%),
-        radial-gradient(2.6px 2.6px at 90px 180px, rgba(255,255,255,0.78), transparent 64%),
-        radial-gradient(2.6px 2.6px at 260px 150px, rgba(255,255,255,0.62), transparent 64%);
+        radial-gradient(3px 3px at 60px 40px, rgba(255,255,255,0.95), transparent 64%),
+        radial-gradient(2.8px 2.8px at 160px 120px, rgba(255,255,255,0.78), transparent 64%),
+        radial-gradient(2.8px 2.8px at 220px 70px, rgba(255,255,255,0.72), transparent 64%),
+        radial-gradient(3px 3px at 90px 180px, rgba(255,255,255,0.86), transparent 64%),
+        radial-gradient(2.8px 2.8px at 260px 150px, rgba(255,255,255,0.68), transparent 64%);
       background-size: 420px 340px;
       animation: drift3 76s linear infinite, twinkle3 3.6s ease-in-out infinite;
-      filter: blur(0.25px) drop-shadow(0 0 14px rgba(255,255,255,0.22));
+      filter: blur(0.2px) drop-shadow(0 0 18px rgba(255,255,255,0.26));
     }
-
     @keyframes drift1{ 0%{transform:translate3d(0,0,0)} 100%{transform:translate3d(-120px,80px,0)} }
     @keyframes drift2{ 0%{transform:translate3d(0,0,0)} 100%{transform:translate3d(-90px,60px,0)} }
     @keyframes drift3{ 0%{transform:translate3d(0,0,0)} 100%{transform:translate3d(-60px,40px,0)} }
     @keyframes twinkle3{ 0%,100%{ opacity:0.72 } 50%{ opacity:0.98 } }
 
-    /* nebula */
     .nebula{
-      position:fixed; inset:-180px;
-      pointer-events:none; z-index:0;
+      position:fixed; inset:-180px; pointer-events:none; z-index:0;
       background:
         radial-gradient(340px 260px at 18% 28%, rgba(255,210,140,0.16), transparent 72%),
         radial-gradient(420px 320px at 78% 22%, rgba(var(--accent),0.18), transparent 72%),
@@ -107,26 +99,22 @@
       100%{ transform: translate3d(0,0,0) scale(1); }
     }
 
-    /* ===== KAPAK ===== */
+    /* cover */
     .cover{
       position:fixed; inset:0;
       display:flex; align-items:center; justify-content:center;
       padding:22px;
       z-index:999;
       transition: opacity 380ms ease, transform 380ms ease;
-      background:
-        radial-gradient(900px 520px at 15% 20%, rgba(160,180,255,0.16), transparent 60%),
-        radial-gradient(700px 420px at 80% 15%, rgba(255,210,120,0.12), transparent 62%),
-        linear-gradient(180deg, rgba(5,11,22,0.94), rgba(10,19,48,0.94));
+      background: linear-gradient(180deg, rgba(5,11,22,0.94), rgba(10,19,48,0.94));
       backdrop-filter: blur(10px);
-      overflow:hidden;
     }
     .cover.hidden{ opacity:0; pointer-events:none; transform: translateY(-6px); }
     .cover-card{
       width:min(520px, 100%);
       border-radius:26px;
       border:1px solid rgba(255,255,255,0.12);
-      background: rgba(10, 20, 38, 0.62);
+      background: rgba(10,20,38,0.62);
       box-shadow: 0 26px 90px rgba(0,0,0,0.45);
       padding:18px;
       text-align:center;
@@ -134,15 +122,6 @@
       overflow:hidden;
       backdrop-filter: blur(14px);
       color:#eef3fb;
-      z-index:1;
-    }
-    .cover-card::before{
-      content:"";
-      position:absolute; inset:-80px;
-      background: radial-gradient(520px 320px at 50% 30%, rgba(var(--accent),0.22), transparent 70%);
-      filter: blur(20px);
-      pointer-events:none;
-      opacity:0.9;
     }
     .badge{
       display:inline-flex; align-items:center; gap:8px;
@@ -152,10 +131,9 @@
       background: rgba(255,255,255,0.06);
       color: rgba(238,243,251,0.78);
       font-size:12px;
-      position:relative; z-index:1;
     }
-    .title{ margin:14px 0 6px; font-size:26px; letter-spacing:-0.02em; position:relative; z-index:1; }
-    .subtitle{ margin:0 0 14px; color: rgba(238,243,251,0.62); font-size:14px; position:relative; z-index:1; }
+    .title{ margin:14px 0 6px; font-size:26px; letter-spacing:-0.02em; }
+    .subtitle{ margin:0 0 14px; color: rgba(238,243,251,0.62); font-size:14px; }
     .open-btn{
       width:100%;
       border:1px solid rgba(255,255,255,0.14);
@@ -167,26 +145,11 @@
       font-weight:800;
       font-size:15px;
       transition: background 160ms ease, transform 120ms ease;
-      position:relative; z-index:1;
     }
     .open-btn:hover{ background: rgba(var(--accent),0.26); }
     .open-btn:active{ transform: scale(0.99); }
 
-    /* ===== KONFETİ ===== */
-    .confetti{ position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index: 998; display:none; }
-    .confetti.show{ display:block; }
-    .piece{
-      position:absolute; width:10px; height:14px; border-radius:3px;
-      background: rgb(var(--accent)); opacity:0.9;
-      animation: fall 1400ms ease-in forwards;
-    }
-    @keyframes fall{
-      0%{ transform: translateY(-20px) rotate(0deg); opacity:0; }
-      10%{ opacity:1; }
-      100%{ transform: translateY(110vh) rotate(420deg); opacity:0.0; }
-    }
-
-    /* ===== ASIL SAYFA ===== */
+    /* main card */
     .card{
       width:min(560px, 100%);
       border-radius:22px;
@@ -214,9 +177,9 @@
       border:1px solid rgba(255,255,255,0.12);
       padding:6px 10px;
       border-radius:999px;
-      box-shadow: 0 10px 28px rgba(0,0,0,0.25);
       user-select:none;
       display:flex; align-items:center; gap:8px; white-space:nowrap;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.25);
     }
     .dot{
       width:10px;height:10px;border-radius:999px;
@@ -225,47 +188,72 @@
       flex:0 0 auto;
     }
 
-    /* ===== FOTO ÇERÇEVE + PULSE + HUZME ===== */
-    .photo-frame{
+    /* ===== 7) FOTO KART FLIP SAHNESİ ===== */
+    .photo-stage{
       width:100%;
       height: clamp(360px, 60vh, 600px);
+      perspective: 1200px;
       border-radius:22px;
       position:relative;
+    }
+    .photo-card{
+      width:100%;
+      height:100%;
+      border-radius:22px;
+      position:relative;
+      transform-style: preserve-3d;
+      transition: transform 720ms cubic-bezier(.2,.9,.15,1);
+    }
+    .photo-card.is-flipping{ transform: rotateY(180deg); }
+
+    /* dış çerçeve glow + beam, ayrıca BEAT ile güçlenir */
+    .photo-shell{
+      position:absolute;
+      inset:0;
+      border-radius:22px;
       padding:10px;
       overflow:hidden;
       background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
       border:1px solid rgba(255,255,255,0.14);
       box-shadow:
         0 18px 60px rgba(0,0,0,0.45),
-        0 0 0 1px rgba(255,255,255,0.06) inset;
+        0 0 0 1px rgba(255,255,255,0.06) inset,
+        0 0 calc(22px + (var(--beat) * 30px)) rgba(255,255,255, calc(0.10 + var(--beat) * 0.25));
+      backface-visibility:hidden;
+      transform: translateZ(0);
     }
-    .photo-frame::before{
+
+    .photo-shell::before{
       content:"";
-      position:absolute; inset:-54px; border-radius:32px;
+      position:absolute;
+      inset:-54px;
+      border-radius:32px;
       background:
-        radial-gradient(520px 360px at 50% 30%, rgba(255,255,255,0.44), transparent 70%),
-        radial-gradient(720px 520px at 50% 70%, rgba(255,255,255,0.24), transparent 72%);
+        radial-gradient(520px 360px at 50% 30%, rgba(255,255,255, calc(0.36 + var(--beat)*0.30)), transparent 70%),
+        radial-gradient(720px 520px at 50% 70%, rgba(255,255,255, calc(0.18 + var(--beat)*0.22)), transparent 72%);
       filter: blur(18px);
       opacity:0.95;
       pointer-events:none;
       animation: glowPulse 3.2s ease-in-out infinite;
     }
-    .photo-frame::after{
+    .photo-shell::after{
       content:"";
-      position:absolute; inset:-40px; border-radius:30px;
+      position:absolute;
+      inset:-40px;
+      border-radius:30px;
       background:
         repeating-linear-gradient(
           110deg,
           rgba(255,255,255,0.00) 0px,
-          rgba(255,255,255,0.14) 18px,
+          rgba(255,255,255, calc(0.10 + var(--beat)*0.10)) 18px,
           rgba(255,255,255,0.00) 36px
         ),
         linear-gradient(180deg,
-          rgba(255,255,255,0.26) 0%,
+          rgba(255,255,255, calc(0.22 + var(--beat)*0.18)) 0%,
           rgba(255,255,255,0.08) 35%,
           rgba(255,255,255,0.00) 70%
         ),
-        radial-gradient(620px 380px at 50% 40%, rgba(var(--accent),0.18), transparent 70%);
+        radial-gradient(620px 380px at 50% 40%, rgba(var(--accent), calc(0.16 + var(--beat)*0.14)), transparent 70%);
       filter: blur(20px);
       opacity:0.86;
       pointer-events:none;
@@ -284,18 +272,39 @@
 
     .photo{
       width:100%; height:100%;
-      object-fit: contain; object-position:center;
+      object-fit: contain;
+      object-position:center;
       border-radius:16px;
       display:block;
-      user-select:none; -webkit-user-drag:none;
-      opacity:0; transform: scale(0.995);
-      transition: opacity 420ms ease, transform 420ms ease;
-      position:relative; z-index:1;
-      filter: saturate(1.05) contrast(1.06) brightness(1.03);
+      user-select:none;
+      -webkit-user-drag:none;
       background: rgba(0,0,0,0.18);
+      filter: saturate(1.05) contrast(1.06) brightness(1.03);
     }
-    .photo.is-visible{ opacity:1; transform:scale(1); }
 
+    /* front/back yüzler */
+    .face.front{ transform: rotateY(0deg); }
+    .face.back { transform: rotateY(180deg); }
+
+    .face{
+      position:absolute;
+      inset:0;
+      backface-visibility:hidden;
+      border-radius:22px;
+    }
+
+    /* küçük “kart parıltısı” */
+    .sparkle{
+      position:absolute;
+      inset:-80px;
+      pointer-events:none;
+      background: radial-gradient(520px 320px at 20% 20%, rgba(var(--accent),0.16), transparent 70%);
+      filter: blur(18px);
+      opacity:0.85;
+      mix-blend-mode: screen;
+    }
+
+    /* mesaj */
     .msg{ margin:14px 6px 0; font-size:1.10rem; line-height:1.45; min-height:3.2em; color: rgba(238,243,251,0.92); }
     .cursor{
       display:inline-block; width:0.55ch;
@@ -305,6 +314,7 @@
       animation: blink 1s infinite;
     }
     @keyframes blink{ 0%,49%{opacity:1} 50%,100%{opacity:0.15} }
+
     .sub{ margin:8px 6px 0; font-size:0.9rem; color: var(--muted); }
 
     .row{ display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
@@ -324,7 +334,7 @@
     button:active{ transform: scale(0.99); }
     .ghost{ background: rgba(255,255,255,0.06); }
 
-    /* ===== SOL ALT KAVANOZ (animasyonlu, emoji değil) ===== */
+    /* Sol alt kavanoz */
     .jar-fab{
       position:fixed;
       left:16px;
@@ -344,15 +354,9 @@
       50%{ transform: translateY(-6px) rotate(1.2deg); }
     }
     .jar-fab:active{ transform: scale(0.98); }
-
-    .jar-draw{
-      width:100%;
-      height:100%;
-      position:relative;
-    }
+    .jar-draw{ width:100%; height:100%; position:relative; }
     .jar-draw .lid{
-      position:absolute;
-      top:6px; left:50%;
+      position:absolute; top:6px; left:50%;
       transform: translateX(-50%);
       width:78px; height:22px;
       border-radius:10px;
@@ -361,8 +365,7 @@
       box-shadow: 0 10px 18px rgba(0,0,0,0.35);
     }
     .jar-draw .glass{
-      position:absolute;
-      top:26px; left:50%;
+      position:absolute; top:26px; left:50%;
       transform: translateX(-50%);
       width:86px; height:84px;
       border-radius:20px 20px 24px 24px;
@@ -414,7 +417,6 @@
       background: repeating-linear-gradient(180deg, rgba(0,0,0,0.00) 0px, rgba(0,0,0,0.00) 10px, rgba(0,0,0,0.07) 11px);
       opacity:0.35;
     }
-
     .jar-fab .halo{
       position:absolute;
       inset:-20px;
@@ -432,7 +434,7 @@
       50%{ opacity:0.95; transform: scale(1.06); }
     }
 
-    /* ===== MEKTUP MODAL ===== */
+    /* mektup modal */
     .letter-modal{
       position:fixed; inset:0;
       display:none; align-items:center; justify-content:center;
@@ -442,59 +444,16 @@
       backdrop-filter: blur(10px);
     }
     .letter-modal.show{ display:flex; }
-
     .letter-stage{
       width:min(560px, 100%);
-      position:relative;
       border-radius:26px;
       border:1px solid rgba(255,255,255,0.14);
       background: rgba(8,14,28,0.74);
       box-shadow: 0 30px 120px rgba(0,0,0,0.70);
       padding:16px;
-      overflow:hidden;
     }
-    .letter-stage::before{
-      content:"";
-      position:absolute; inset:-90px;
-      background:
-        radial-gradient(520px 320px at 20% 20%, rgba(255,210,140,0.16), transparent 72%),
-        radial-gradient(520px 320px at 80% 25%, rgba(var(--accent),0.18), transparent 72%),
-        radial-gradient(520px 320px at 50% 85%, rgba(255,160,210,0.14), transparent 72%);
-      filter: blur(18px);
-      opacity:0.95;
-      pointer-events:none;
-    }
-    .letter-top{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:10px;
-      position:relative; z-index:1;
-      margin-bottom:10px;
-    }
-    .letter-title{
-      font-weight:900;
-      letter-spacing:-0.02em;
-      font-size:14px;
-      color: rgba(238,243,251,0.88);
-      display:flex; align-items:center; gap:8px;
-    }
-    .close-btn{
-      border:1px solid rgba(255,255,255,0.14);
-      background: rgba(255,255,255,0.06);
-      color: rgba(238,243,251,0.9);
-      border-radius:12px;
-      padding:8px 10px;
-      cursor:pointer;
-      font-weight:900;
-      transition: background 160ms ease, transform 120ms ease;
-    }
-    .close-btn:hover{ background: rgba(255,255,255,0.10); }
-    .close-btn:active{ transform: scale(0.99); }
-
     .paper{
-      position:relative;
-      z-index:1;
-      width: min(520px, 100%);
-      margin: 8px auto 0;
+      width:100%;
       border-radius:18px;
       background: rgba(255,255,255,0.92);
       color:#0f172a;
@@ -513,37 +472,34 @@
       35%{ opacity:1; }
       100%{ opacity:1; transform: scaleY(1); }
     }
-    .paper::before{
-      content:"";
-      position:absolute; inset:12px;
-      border-radius:14px;
-      background:
-        repeating-linear-gradient(180deg,
-          rgba(0,0,0,0.00) 0px,
-          rgba(0,0,0,0.00) 12px,
-          rgba(0,0,0,0.06) 13px
-        );
-      opacity:0.32;
-      pointer-events:none;
+    .letter-text{ white-space:pre-wrap; line-height:1.55; font-size:15px; }
+    .sig{ margin-top:12px; color: rgba(15,23,42,0.62); font-weight:900; font-size:13px; }
+    .close-btn{
+      border:1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.06);
+      color: rgba(238,243,251,0.9);
+      border-radius:12px;
+      padding:8px 10px;
+      cursor:pointer;
+      font-weight:900;
+      transition: background 160ms ease, transform 120ms ease;
     }
-    .letter-text{ position:relative; z-index:1; white-space:pre-wrap; line-height:1.55; font-size:15px; }
-    .sig{ position:relative; z-index:1; margin-top:12px; color: rgba(15,23,42,0.62); font-weight:900; font-size:13px; }
+    .close-btn:hover{ background: rgba(255,255,255,0.10); }
+    .close-btn:active{ transform: scale(0.99); }
 
-    /* küçük ekranlarda buton çakışmasın */
     @media (max-width:420px){
       .jar-fab{ left:12px; bottom:12px; transform: scale(0.92); }
     }
   </style>
 </head>
+
 <body>
   <div class="stars"></div>
   <div class="stars2"></div>
   <div class="stars3"></div>
   <div class="nebula"></div>
 
-  <div class="confetti" id="confetti"></div>
-
-  <!-- SOL ALT KAVANOZ -->
+  <!-- Sol alt kavanoz -->
   <button class="jar-fab" id="btnJar" title="Kavanozdaki mektup">
     <div class="halo" aria-hidden="true"></div>
     <div class="jar-draw" aria-hidden="true">
@@ -556,14 +512,13 @@
     </div>
   </button>
 
-  <!-- MEKTUP MODAL -->
+  <!-- Mektup modal -->
   <div class="letter-modal" id="letterModal" aria-hidden="true">
-    <div class="letter-stage" id="letterStage" role="dialog" aria-modal="true">
-      <div class="letter-top">
-        <div class="letter-title">🫙 Kavanozdaki Mektup</div>
+    <div class="letter-stage" role="dialog" aria-modal="true">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;">
+        <div style="font-weight:900;letter-spacing:-0.02em;font-size:14px;color:rgba(238,243,251,0.88);">🫙 Kavanozdaki Mektup</div>
         <button class="close-btn" id="btnLetterClose">Kapat</button>
       </div>
-
       <div class="paper" id="paper">
         <div class="letter-text" id="letterText"></div>
         <div class="sig" id="letterSig"></div>
@@ -571,7 +526,7 @@
     </div>
   </div>
 
-  <!-- KAPAK -->
+  <!-- Cover -->
   <div class="cover" id="cover">
     <div class="cover-card">
       <div class="badge">🎁 <span>Senin için küçük bir şey</span></div>
@@ -581,7 +536,7 @@
     </div>
   </div>
 
-  <!-- İÇERİK -->
+  <!-- İçerik -->
   <div class="card" id="card">
     <div class="topbar">
       <div class="pill" id="pillLeft"><span class="dot" aria-hidden="true"></span><span>Mesaj: —</span></div>
@@ -589,12 +544,28 @@
       <div class="pill" id="pillMusic"><span>🎵</span><span>Müzik: Kapalı</span></div>
     </div>
 
-    <div class="photo-frame">
-      <img id="photo" class="photo" alt="fotoğraf" />
+    <!-- 7) Flip kart sahnesi -->
+    <div class="photo-stage">
+      <div class="photo-card" id="photoCard">
+        <!-- FRONT -->
+        <div class="face front">
+          <div class="photo-shell">
+            <div class="sparkle"></div>
+            <img id="photoFront" class="photo" alt="fotoğraf" />
+          </div>
+        </div>
+        <!-- BACK -->
+        <div class="face back">
+          <div class="photo-shell">
+            <div class="sparkle"></div>
+            <img id="photoBack" class="photo" alt="fotoğraf" />
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="msg" id="message"></div>
-    <div class="sub">Yenileyince yeni mesaj + foto gelir.</div>
+    <div class="sub">“Yeni getir” kart gibi devrilerek değiştirir. Müzik açıkken glow nabız atar.</div>
 
     <div class="row">
       <button id="btnNew">Yeni getir</button>
@@ -605,21 +576,16 @@
   </div>
 
   <script>
-    // === SEN BURAYI DÜZENLE ===
+    /* ================== AYARLAR ================== */
     const LETTER_TEXT =
 `Yunisim,
 
 Bunu okurken nerede olursan ol, bil ki aklımın bir köşesinde hep sen varsın.
 Bazen günler karışıyor, bazen ben dağılıyorum ama seninle toparlanmayı seviyorum.
 
-Bu kavanozun içinde sakladığım şey bir “mektup” gibi dursa da aslında:
-Benim içimde büyüyen “iyi ki”lerin toplamı.
-
 Seni seviyorum.`;
-
     const LETTER_SIGN = "— Dammy";
 
-    // ====== AYARLAR ======
     const MESSAGES = [
       "Bugün de seni seviyorum.",
       "Kalbimden geçenler: iyi ki varsın.",
@@ -635,7 +601,7 @@ Seni seviyorum.`;
 
     const MUSIC_SRC = "assets/music.mp3";
 
-    // ====== STORAGE ======
+    /* ================== STORAGE ================== */
     function storageOK(){
       try{ const k="__t"; localStorage.setItem(k,"1"); localStorage.removeItem(k); return true; }
       catch(e){ return false; }
@@ -677,7 +643,7 @@ Seni seviyorum.`;
     }
     function resetPool(poolKey){ lsDel(poolKey); }
 
-    // ====== FOTO LİSTESİ ======
+    /* ================== FOTO LİSTESİ ================== */
     function pad4(n){ return String(n).padStart(4,"0"); }
     const PHOTO_LIST = (() => {
       const arr = [];
@@ -687,7 +653,7 @@ Seni seviyorum.`;
       return arr;
     })();
 
-    // ====== TYPEWRITER ======
+    /* ================== TYPEWRITER ================== */
     let twTimer = null;
     function typewriter(el, text, speed=16){
       if(twTimer) clearInterval(twTimer);
@@ -709,7 +675,7 @@ Seni seviyorum.`;
       }, speed);
     }
 
-    // ====== TEMA (HER FOTO) ======
+    /* ================== TEMA ================== */
     function setAccent(rgb){ document.documentElement.style.setProperty("--accent", rgb); }
     function accentFromString(str){
       let h = 2166136261;
@@ -722,36 +688,8 @@ Seni seviyorum.`;
       const b = 70 + ((h>>16) & 0x7F);
       return `${r},${g},${b}`;
     }
-    function tryAccentFromImage(img){
-      try{
-        const c = document.createElement("canvas");
-        const ctx = c.getContext("2d", { willReadFrequently:true });
-        const w = 28, h = 28;
-        c.width = w; c.height = h;
-        ctx.drawImage(img, 0, 0, w, h);
-        const data = ctx.getImageData(0,0,w,h).data;
 
-        let r=0,g=0,b=0,count=0;
-        for(let i=0;i<data.length;i+=4){
-          const a = data[i+3];
-          if(a < 120) continue;
-          r += data[i]; g += data[i+1]; b += data[i+2];
-          count++;
-        }
-        if(count < 10) return null;
-
-        r = Math.round(r/count);
-        g = Math.round(g/count);
-        b = Math.round(b/count);
-
-        const max = Math.max(r,g,b), min = Math.min(r,g,b);
-        if((max-min) < 10) return null;
-
-        return `${r},${g},${b}`;
-      }catch(e){ return null; }
-    }
-
-    // ====== GARANTİ FARKLI SEÇİM ======
+    /* ================== GARANTİ FARKLI SEÇİM ================== */
     function nextMessageDifferent(){
       const last = lsGet("last_msg", null);
       let chosen = null;
@@ -782,18 +720,118 @@ Seni seviyorum.`;
       right.textContent = `Foto kaldı: ${photoPool.length || PHOTO_LIST.length}`;
     }
 
-    // ====== MÜZİK ======
+    /* ================== 7) FLIP FOTO GEÇİŞİ ================== */
+    const photoCard = document.getElementById("photoCard");
+    const imgFront = document.getElementById("photoFront");
+    const imgBack  = document.getElementById("photoBack");
+
+    let showingFront = true;
+    let flipping = false;
+
+    function setImgSafe(imgEl, src){
+      return new Promise((resolve) => {
+        imgEl.onload = () => resolve(true);
+        imgEl.onerror = () => resolve(false);
+        imgEl.src = src;
+      });
+    }
+
+    async function flipToNewPhoto(photoPath){
+      if(flipping) return;
+      flipping = true;
+
+      setAccent(accentFromString(photoPath));
+
+      const targetImg = showingFront ? imgBack : imgFront;
+      const ok = await setImgSafe(targetImg, photoPath + "?v=" + Date.now());
+      if(!ok){
+        await setImgSafe(targetImg, PHOTO_DIR + "0001.jpg?v=" + Date.now());
+      }
+
+      // Flip animasyonu
+      photoCard.classList.toggle("is-flipping", showingFront);
+      photoCard.classList.toggle("is-flipping", !showingFront);
+
+      // Basit ve güvenli: animasyon süresiyle senkron
+      setTimeout(() => {
+        showingFront = !showingFront;
+        flipping = false;
+      }, 760);
+    }
+
+    /* ================== 8) MÜZİK TEPKİSİ (BEAT) ================== */
     const audio = new Audio(MUSIC_SRC);
     audio.loop = true;
     audio.preload = "auto";
     audio.volume = lsGet("music_vol", 0.35);
 
+    let audioCtx = null, analyser = null, sourceNode = null, dataArr = null;
+    let beatRaf = null;
+    let beatSmoothed = 0;
+
+    function setBeat(v){
+      // 0..1 clamp
+      v = Math.max(0, Math.min(1, v));
+      document.documentElement.style.setProperty("--beat", v.toFixed(3));
+    }
+
+    function startBeatMeter(){
+      if(beatRaf) cancelAnimationFrame(beatRaf);
+
+      const tick = () => {
+        if(!analyser || audio.paused){
+          beatSmoothed *= 0.92;
+          setBeat(beatSmoothed);
+          beatRaf = requestAnimationFrame(tick);
+          return;
+        }
+
+        analyser.getByteTimeDomainData(dataArr);
+        // RMS
+        let sum = 0;
+        for(let i=0;i<dataArr.length;i++){
+          const v = (dataArr[i] - 128) / 128;
+          sum += v * v;
+        }
+        const rms = Math.sqrt(sum / dataArr.length);
+
+        // güçlendirme: düşük sesi öldür, orta-üstü şişir
+        let beat = (rms - 0.02) * 9.0; // hassasiyet
+        beat = Math.max(0, Math.min(1, beat));
+
+        // smoothing
+        beatSmoothed = beatSmoothed * 0.82 + beat * 0.18;
+        setBeat(beatSmoothed);
+
+        beatRaf = requestAnimationFrame(tick);
+      };
+
+      beatRaf = requestAnimationFrame(tick);
+    }
+
+    async function ensureAudioGraph(){
+      if(audioCtx) return;
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 512;
+      dataArr = new Uint8Array(analyser.fftSize);
+
+      sourceNode = audioCtx.createMediaElementSource(audio);
+      sourceNode.connect(analyser);
+      analyser.connect(audioCtx.destination);
+
+      startBeatMeter();
+    }
+
     function setMusicUI(isOn){
       document.getElementById("pillMusic").lastElementChild.textContent = `Müzik: ${isOn ? "Açık" : "Kapalı"}`;
       document.getElementById("btnMusic").textContent = isOn ? "🔇 Müzik kapat" : "🎵 Müzik aç";
     }
+
     async function musicOn(){
       try{
+        await ensureAudioGraph();
+        if(audioCtx.state === "suspended") await audioCtx.resume();
         await audio.play();
         lsSet("music_on", true);
         setMusicUI(true);
@@ -807,120 +845,69 @@ Seni seviyorum.`;
       audio.currentTime = 0;
       lsSet("music_on", false);
       setMusicUI(false);
+      setBeat(0);
     }
     async function toggleMusic(){
       if(!audio.paused) musicOff();
       else await musicOn();
     }
 
-    // ====== KONFETİ ======
-    function popConfetti(){
-      const layer = document.getElementById("confetti");
-      layer.innerHTML = "";
-      layer.classList.add("show");
-      const n = 22;
-      for(let i=0;i<n;i++){
-        const p = document.createElement("div");
-        p.className = "piece";
-        p.style.left = (Math.random()*100) + "vw";
-        p.style.animationDelay = (Math.random()*120) + "ms";
-        p.style.opacity = (0.6 + Math.random()*0.4).toFixed(2);
-        p.style.background = `rgba(var(--accent),${(0.75+Math.random()*0.25).toFixed(2)})`;
-        layer.appendChild(p);
-      }
-      setTimeout(() => {
-        layer.classList.remove("show");
-        layer.innerHTML = "";
-      }, 1600);
-    }
-
-    // ====== RENDER ======
-    function renderNew(){
+    /* ================== RENDER ================== */
+    async function renderNew(){
       const msg = nextMessageDifferent();
       const photoPath = nextPhotoDifferent();
       typewriter(document.getElementById("message"), msg, 16);
-
-      setAccent(accentFromString(photoPath));
-
-      const img = document.getElementById("photo");
-      img.classList.remove("is-visible");
-      img.crossOrigin = "anonymous";
-
-      img.onload = () => {
-        const fromCanvas = tryAccentFromImage(img);
-        if(fromCanvas) setAccent(fromCanvas);
-        img.classList.add("is-visible");
-        updatePills();
-      };
-
-      img.onerror = () => {
-        img.onerror = null;
-        img.src = PHOTO_DIR + "0001.jpg?v=" + Date.now();
-      };
-
-      img.src = photoPath + "?v=" + Date.now();
+      await flipToNewPhoto(photoPath);
+      updatePills();
     }
 
-    // ====== KAPAK AÇ ======
+    /* ================== COVER AÇ ================== */
     const cover = document.getElementById("cover");
     const card = document.getElementById("card");
-    document.getElementById("btnOpen").addEventListener("click", () => {
+    document.getElementById("btnOpen").addEventListener("click", async () => {
       cover.classList.add("hidden");
       card.classList.add("ready");
-      popConfetti();
-      renderNew();
-      musicOn();
+      await renderNew();
+      await musicOn(); // müzik + beat
     });
 
-    // ====== MEKTUP ======
+    /* ================== MEKTUP ================== */
     const letterModal = document.getElementById("letterModal");
-    const letterStage = document.getElementById("letterStage");
-    const btnJar = document.getElementById("btnJar");
-    const btnLetterClose = document.getElementById("btnLetterClose");
-
     document.getElementById("letterText").textContent = LETTER_TEXT;
     document.getElementById("letterSig").textContent = LETTER_SIGN;
 
     function openLetter(){
       letterModal.classList.add("show");
-      letterModal.setAttribute("aria-hidden", "false");
-      // animasyon reset
+      // anim reset
       const paper = document.getElementById("paper");
       paper.style.animation = "none";
       void paper.offsetHeight;
       paper.style.animation = "";
     }
-    function closeLetter(){
-      letterModal.classList.remove("show");
-      letterModal.setAttribute("aria-hidden", "true");
-    }
+    function closeLetter(){ letterModal.classList.remove("show"); }
 
-    btnJar.addEventListener("click", openLetter);
-    btnLetterClose.addEventListener("click", closeLetter);
+    document.getElementById("btnJar").addEventListener("click", openLetter);
+    document.getElementById("btnLetterClose").addEventListener("click", closeLetter);
+    letterModal.addEventListener("click", (e) => { if(e.target === letterModal) closeLetter(); });
+    window.addEventListener("keydown", (e) => { if(e.key === "Escape" && letterModal.classList.contains("show")) closeLetter(); });
 
-    letterModal.addEventListener("click", (e) => {
-      if(e.target === letterModal) closeLetter();
-    });
-    window.addEventListener("keydown", (e) => {
-      if(e.key === "Escape" && letterModal.classList.contains("show")) closeLetter();
-    });
-
-    // ====== BUTONLAR ======
+    /* ================== BUTONLAR ================== */
     updatePills();
     setMusicUI(lsGet("music_on", false));
 
-    document.getElementById("btnNew").addEventListener("click", () => {
-      renderNew();
-      if(lsGet("music_on", false) && audio.paused) musicOn();
+    document.getElementById("btnNew").addEventListener("click", async () => {
+      await renderNew();
+      if(lsGet("music_on", false) && audio.paused) await musicOn();
     });
+
     document.getElementById("btnMusic").addEventListener("click", toggleMusic);
 
-    document.getElementById("btnReset").addEventListener("click", () => {
+    document.getElementById("btnReset").addEventListener("click", async () => {
       resetPool("msg_pool");
       resetPool("photo_pool");
       lsDel("last_photo");
       lsDel("last_msg");
-      renderNew();
+      await renderNew();
     });
 
     document.getElementById("btnShare").addEventListener("click", async () => {
@@ -933,9 +920,10 @@ Seni seviyorum.`;
       }
     });
 
-    window.addEventListener("pageshow", (e) => {
-      if(e.persisted){
-        if(card.classList.contains("ready")) renderNew();
+    // BFCache dönüşlerinde aynı foto takılmasın
+    window.addEventListener("pageshow", async (e) => {
+      if(e.persisted && card.classList.contains("ready")){
+        await renderNew();
       }
     });
   </script>
