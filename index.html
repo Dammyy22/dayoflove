@@ -13,16 +13,12 @@
       --muted:#475569;
       --border:rgba(15,23,42,0.10);
       --shadow:rgba(2,6,23,0.12);
-      --accent: 99,102,241; /* default */
+      --accent: 99,102,241;
     }
-
     *{ box-sizing:border-box; }
     body{
-      margin:0;
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
+      margin:0; min-height:100vh;
+      display:flex; align-items:center; justify-content:center;
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       color:var(--text);
       padding:18px;
@@ -32,7 +28,6 @@
         linear-gradient(180deg, var(--bg1), var(--bg2));
       transition: background 450ms ease;
     }
-
     .card{
       width:min(560px, 100%);
       background:var(--card);
@@ -42,28 +37,19 @@
       padding:16px;
       backdrop-filter: blur(12px);
     }
-
     .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom:10px;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px; margin-bottom:10px; flex-wrap:wrap;
     }
-
     .pill{
-      font-size:12px;
-      color: var(--muted);
+      font-size:12px; color: var(--muted);
       background: rgba(255,255,255,0.78);
       border:1px solid rgba(15,23,42,0.08);
       padding:6px 10px;
       border-radius:999px;
       box-shadow: 0 8px 22px rgba(2,6,23,0.06);
       user-select:none;
-      display:flex;
-      align-items:center;
-      gap:8px;
-      white-space:nowrap;
+      display:flex; align-items:center; gap:8px; white-space:nowrap;
     }
     .dot{
       width:10px;height:10px;border-radius:999px;
@@ -81,55 +67,36 @@
       background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.68));
       box-shadow: 0 14px 34px rgba(2,6,23,0.14);
       padding:10px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
+      display:flex; align-items:center; justify-content:center;
       position:relative;
     }
-
     .photo-frame::before{
       content:"";
-      position:absolute;
-      inset:-40px;
+      position:absolute; inset:-40px;
       background: radial-gradient(420px 280px at 50% 30%, rgba(var(--accent),0.24), transparent 72%);
       filter: blur(18px);
       opacity:0.95;
       pointer-events:none;
       transition: opacity 350ms ease;
     }
-
     .photo{
-      width:100%;
-      height:100%;
-      object-fit: contain;
-      object-position:center;
+      width:100%; height:100%;
+      object-fit: contain; object-position:center;
       border-radius:14px;
       display:block;
-      user-select:none;
-      -webkit-user-drag:none;
-
-      opacity: 0;
-      transform: scale(0.995);
+      user-select:none; -webkit-user-drag:none;
+      opacity:0; transform: scale(0.995);
       transition: opacity 420ms ease, transform 420ms ease;
-      position:relative;
-      z-index:1;
+      position:relative; z-index:1;
       filter: saturate(1.06) contrast(1.02);
     }
     .photo.is-visible{ opacity:1; transform:scale(1); }
 
-    .msg{
-      margin:14px 6px 0;
-      font-size:1.10rem;
-      line-height:1.45;
-      min-height:3.2em;
-    }
-
+    .msg{ margin:14px 6px 0; font-size:1.10rem; line-height:1.45; min-height:3.2em; }
     .cursor{
-      display:inline-block;
-      width:0.55ch;
+      display:inline-block; width:0.55ch;
       background: rgba(var(--accent),0.30);
-      margin-left:2px;
-      border-radius:6px;
+      margin-left:2px; border-radius:6px;
       transform: translateY(2px);
       animation: blink 1s infinite;
     }
@@ -137,8 +104,7 @@
 
     .sub{ margin:8px 6px 0; font-size:0.9rem; color:var(--muted); }
 
-    .row{ display:flex; gap:10px; margin-top:12px; }
-
+    .row{ display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
     button{
       flex:1;
       border:1px solid rgba(15,23,42,0.12);
@@ -149,6 +115,7 @@
       cursor:pointer;
       font-weight:650;
       transition: background 160ms ease, transform 120ms ease;
+      min-width: 150px;
     }
     button:hover{ background: rgba(var(--accent),0.16); }
     button:active{ transform: scale(0.99); }
@@ -163,6 +130,7 @@
     <div class="topbar">
       <div class="pill" id="pillLeft"><span class="dot" aria-hidden="true"></span><span>Mesaj: —</span></div>
       <div class="pill" id="pillRight"><span>Foto: —</span></div>
+      <div class="pill" id="pillMusic"><span>🎵</span><span>Müzik: Kapalı</span></div>
     </div>
 
     <div class="photo-frame">
@@ -174,6 +142,7 @@
 
     <div class="row">
       <button id="btnNew">Yeni getir</button>
+      <button id="btnMusic" class="ghost">🎵 Müzik aç</button>
       <button id="btnReset" class="ghost">Listeyi sıfırla</button>
       <button id="btnShare" class="ghost">Paylaş</button>
     </div>
@@ -193,6 +162,8 @@
     const PHOTO_DIR   = "assets/yunis/";
     const PHOTO_START = 1;
     const PHOTO_END   = 119; // ✅ 119 foto
+
+    const MUSIC_SRC = "assets/music.mp3"; // ✅ bunu koy
 
     // ====== STORAGE ======
     function storageOK(){
@@ -270,26 +241,23 @@
       }, speed);
     }
 
-    // ====== TEMA RENGİ (HER FOTO İÇİN ZORUNLU) ======
+    // ====== TEMA RENGİ (HER FOTO) ======
     function setAccent(rgb){
       document.documentElement.style.setProperty("--accent", rgb);
     }
 
-    // deterministik (her foto için farklı) renk üret
     function accentFromString(str){
       let h = 2166136261; // FNV-1a
       for(let i=0;i<str.length;i++){
         h ^= str.charCodeAt(i);
         h = Math.imul(h, 16777619);
       }
-      // canlı ama patlamayan aralıklar
-      const r = 70 + (h & 0x7F);          // 70..197
-      const g = 70 + ((h>>8) & 0x7F);     // 70..197
-      const b = 70 + ((h>>16) & 0x7F);    // 70..197
+      const r = 70 + (h & 0x7F);
+      const g = 70 + ((h>>8) & 0x7F);
+      const b = 70 + ((h>>16) & 0x7F);
       return `${r},${g},${b}`;
     }
 
-    // canvas ortalama renk al (başarısız olursa fallback)
     function tryAccentFromImage(img){
       try{
         const c = document.createElement("canvas");
@@ -302,7 +270,7 @@
         let r=0,g=0,b=0,count=0;
         for(let i=0;i<data.length;i+=4){
           const a = data[i+3];
-          if(a < 140) continue;
+          if(a < 120) continue;
           r += data[i]; g += data[i+1]; b += data[i+2];
           count++;
         }
@@ -312,9 +280,8 @@
         g = Math.round(g/count);
         b = Math.round(b/count);
 
-        // çok gri / çok koyuysa yine fallback'e bırak
         const max = Math.max(r,g,b), min = Math.min(r,g,b);
-        if((max-min) < 12) return null;
+        if((max-min) < 10) return null;
 
         return `${r},${g},${b}`;
       }catch(e){
@@ -354,6 +321,39 @@
       right.textContent = `Foto kaldı: ${photoPool.length || PHOTO_LIST.length}`;
     }
 
+    // ====== MÜZİK ======
+    const audio = new Audio(MUSIC_SRC);
+    audio.loop = true;
+    audio.preload = "auto";
+    audio.volume = lsGet("music_vol", 0.35);
+
+    function setMusicUI(isOn){
+      document.getElementById("pillMusic").lastElementChild.textContent = `Müzik: ${isOn ? "Açık" : "Kapalı"}`;
+      document.getElementById("btnMusic").textContent = isOn ? "🔇 Müzik kapat" : "🎵 Müzik aç";
+    }
+
+    async function musicOn(){
+      try{
+        await audio.play();
+        lsSet("music_on", true);
+        setMusicUI(true);
+      }catch(e){
+        // autoplay bloklandıysa UI'yi yine doğru gösterme, gerçekten çalmadı
+        lsSet("music_on", false);
+        setMusicUI(false);
+      }
+    }
+    function musicOff(){
+      audio.pause();
+      audio.currentTime = 0;
+      lsSet("music_on", false);
+      setMusicUI(false);
+    }
+    async function toggleMusic(){
+      if(!audio.paused) musicOff();
+      else await musicOn();
+    }
+
     // ====== RENDER ======
     function renderNew(){
       const card = document.getElementById("card");
@@ -364,8 +364,7 @@
 
       typewriter(document.getElementById("message"), msg, 16);
 
-      // ✅ tema: her seferinde fotoPath'ten bir accent bas
-      // (canvas çalışsa da çalışmasa da değişsin)
+      // ✅ tema: daha yüklenmeden bile değişsin
       setAccent(accentFromString(photoPath));
 
       const img = document.getElementById("photo");
@@ -373,32 +372,36 @@
       img.crossOrigin = "anonymous";
 
       img.onload = () => {
-        // canvas başarılıysa foto rengiyle override et, değilse path rengi kalır (yine değişmiş olur)
         const fromCanvas = tryAccentFromImage(img);
-        if(fromCanvas) setAccent(fromCanvas);
+        if(fromCanvas) setAccent(fromCanvas); // çalışırsa daha “foto uyumlu”
         img.classList.add("is-visible");
         updatePills();
       };
 
       img.onerror = () => {
-        // eğer gerçek dosya yoksa bile farklı fallback rengi kalsın
         img.onerror = null;
         img.src = PHOTO_DIR + "0001.jpg?v=" + Date.now();
       };
 
-      // cache kır (özellikle mobile/in-app browser)
       img.src = photoPath + "?v=" + Date.now();
     }
 
     // init
+    updatePills();
+    setMusicUI(lsGet("music_on", false));
+
     renderNew();
 
-    // Safari bfcache: geri dönünce de değişsin
-    window.addEventListener("pageshow", (e) => {
-      if(e.persisted) renderNew();
+    // Yenilemede de değişsin (bfcache)
+    window.addEventListener("pageshow", (e) => { if(e.persisted) renderNew(); });
+
+    document.getElementById("btnNew").addEventListener("click", () => {
+      renderNew();
+      // kullanıcı etkileşimi yakalanmışken, müzik açıksa çalmayı dene
+      if(lsGet("music_on", false) && audio.paused) musicOn();
     });
 
-    document.getElementById("btnNew").addEventListener("click", renderNew);
+    document.getElementById("btnMusic").addEventListener("click", toggleMusic);
 
     document.getElementById("btnReset").addEventListener("click", () => {
       resetPool("msg_pool");
@@ -417,6 +420,9 @@
         catch(e){ alert("Bu cihaz paylaşım/kopyalama konusunda dramayı seçmiş."); }
       }
     });
+
+    // Sayfa ilk kez açıldığında: kullanıcı daha dokunmamışsa müzik zaten başlayamaz.
+    // Ama kullanıcı dokunursa ve "music_on=true" ise yukarıdaki yerlerde play deniyoruz.
   </script>
 </body>
 </html>
