@@ -364,7 +364,6 @@
     .close-btn:hover{ background: rgba(255,255,255,0.10); }
     .close-btn:active{ transform: scale(0.99); }
 
-    /* ====== “Onun Sözleri” butonu + modal ====== */
     .quote-fab{
       position:fixed; right:16px; bottom:16px;
       z-index:1200; width:92px; height:112px;
@@ -482,7 +481,6 @@
   <div class="stars3"></div>
   <div class="nebula"></div>
 
-  <!-- Sol alt kavanoz: mektup -->
   <button class="jar-fab" id="btnJar" title="Kavanozdaki mektup">
     <div class="halo" aria-hidden="true"></div>
     <div class="jar-draw" aria-hidden="true">
@@ -495,7 +493,6 @@
     </div>
   </button>
 
-  <!-- Sağ alt kavanoz: onun sözleri -->
   <button class="quote-fab" id="btnQuoteJar" title="Onun sözleri kavanozu">
     <div class="halo" aria-hidden="true"></div>
     <div class="jar-draw" aria-hidden="true">
@@ -508,7 +505,6 @@
     </div>
   </button>
 
-  <!-- Mektup modal -->
   <div class="letter-modal" id="letterModal" aria-hidden="true">
     <div class="letter-stage" role="dialog" aria-modal="true">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;">
@@ -522,7 +518,6 @@
     </div>
   </div>
 
-  <!-- Onun sözleri modal -->
   <div class="quote-modal" id="quoteModal" aria-hidden="true">
     <div class="quote-stage" role="dialog" aria-modal="true">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
@@ -542,7 +537,6 @@
     </div>
   </div>
 
-  <!-- Cover -->
   <div class="cover" id="cover">
     <div class="cover-card">
       <div class="badge">🎁 <span>Senin için küçük bir şey</span></div>
@@ -552,7 +546,6 @@
     </div>
   </div>
 
-  <!-- İçerik -->
   <div class="card" id="card">
     <div class="topbar">
       <div class="pill" id="pillLeft"><span class="dot" aria-hidden="true"></span><span>Mesaj: —</span></div>
@@ -576,6 +569,11 @@
   </div>
 
   <script>
+    // ===== Crash guard: bir hata olursa en azından ekranda gör =====
+    window.addEventListener("error", (e) => {
+      console.error("JS ERROR:", e?.message, e?.filename, e?.lineno);
+    });
+
     /* ================== AYARLAR ================== */
     const LETTER_TEXT =
 `Yunisim,
@@ -600,17 +598,12 @@ Seni seviyorum.`;
     const PHOTO_END   = 119;
 
     const MUSIC_SRC = "assets/music.mp3";
-
-    // === hangi sayfa? ===
     const PAGE_ID = "yunis";
 
-    // ================== YENİ: DAMMY / YUNIS cihaz kimliği ==================
-    // Dammy kendi PC/telefonunda 1 kez siteyi ?i=dammy ile açar -> cihaz "Dammy" olarak damgalanır.
-    // Dammy damgası yoksa varsayılan "Yunis".
+    // ===== DAMMY / YUNIS cihaz kimliği =====
     const AUTHOR_KEY = "dayoflove_author";
     let USER_NAME = localStorage.getItem(AUTHOR_KEY) || "Yunis";
-
-    (() => {
+    try{
       const u = new URL(location.href);
       const i = (u.searchParams.get("i") || "").toLowerCase();
       if (i === "dammy") {
@@ -619,7 +612,7 @@ Seni seviyorum.`;
         u.searchParams.delete("i");
         history.replaceState({}, "", u.toString());
       }
-    })();
+    }catch(_){}
 
     /* ================== STORAGE ================== */
     function storageOK(){
@@ -663,7 +656,6 @@ Seni seviyorum.`;
     }
     function resetPool(poolKey){ lsDel(poolKey); }
 
-    /* ================== FOTO LİSTESİ ================== */
     function pad4(n){ return String(n).padStart(4,"0"); }
     const PHOTO_LIST = (() => {
       const arr = [];
@@ -695,7 +687,6 @@ Seni seviyorum.`;
       }, speed);
     }
 
-    /* ================== TEMA ================== */
     function setAccent(rgb){ document.documentElement.style.setProperty("--accent", rgb); }
     function accentFromString(str){
       let h = 2166136261;
@@ -706,10 +697,9 @@ Seni seviyorum.`;
       const r = 70 + (h & 0x7F);
       const g = 70 + ((h>>8) & 0x7F);
       const b = 70 + ((h>>16) & 0x7F);
-      return ${r},${g},${b};
+      return `${r},${g},${b}`;
     }
 
-    /* ================== GARANTİ FARKLI SEÇİM ================== */
     function nextMessageDifferent(){
       const last = lsGet("last_msg", null);
       let chosen = null;
@@ -736,11 +726,10 @@ Seni seviyorum.`;
       const photoPool = lsGet("photo_pool", []);
       const left = document.getElementById("pillLeft");
       const right = document.getElementById("pillRight");
-      left.querySelector("span:last-child").textContent = Mesaj kaldı: ${msgPool.length || MESSAGES.length};
-      right.textContent = Foto kaldı: ${photoPool.length || PHOTO_LIST.length};
+      left.querySelector("span:last-child").textContent = `Mesaj kaldı: ${msgPool.length || MESSAGES.length}`;
+      right.textContent = `Foto kaldı: ${photoPool.length || PHOTO_LIST.length}`;
     }
 
-    /* ================== FOTO FADE ================== */
     const img = document.getElementById("photo");
     let swapping = false;
 
@@ -774,7 +763,7 @@ Seni seviyorum.`;
       setTimeout(() => { swapping = false; }, 380);
     }
 
-    /* ================== MÜZİK TEPKİSİ ================== */
+    /* ================== MÜZİK ================== */
     const audio = new Audio(MUSIC_SRC);
     audio.loop = true;
     audio.preload = "auto";
@@ -835,7 +824,7 @@ Seni seviyorum.`;
     }
 
     function setMusicUI(isOn){
-      document.getElementById("pillMusic").lastElementChild.textContent = Müzik: ${isOn ? "Açık" : "Kapalı"};
+      document.getElementById("pillMusic").lastElementChild.textContent = `Müzik: ${isOn ? "Açık" : "Kapalı"}`;
       document.getElementById("btnMusic").textContent = isOn ? "🔇 Müzik kapat" : "🎵 Müzik aç";
     }
 
@@ -863,7 +852,6 @@ Seni seviyorum.`;
       else await musicOn();
     }
 
-    /* ================== RENDER ================== */
     async function renderNew(){
       const msg = nextMessageDifferent();
       const photoPath = nextPhotoDifferent();
@@ -872,9 +860,9 @@ Seni seviyorum.`;
       updatePills();
     }
 
-    /* ================== COVER AÇ ================== */
     const cover = document.getElementById("cover");
     const card = document.getElementById("card");
+
     document.getElementById("btnOpen").addEventListener("click", async () => {
       cover.classList.add("hidden");
       card.classList.add("ready");
@@ -882,7 +870,6 @@ Seni seviyorum.`;
       await musicOn();
     });
 
-    /* ================== MEKTUP ================== */
     const letterModal = document.getElementById("letterModal");
     document.getElementById("letterText").textContent = LETTER_TEXT;
     document.getElementById("letterSig").textContent = LETTER_SIGN;
@@ -899,9 +886,7 @@ Seni seviyorum.`;
     document.getElementById("btnJar").addEventListener("click", openLetter);
     document.getElementById("btnLetterClose").addEventListener("click", closeLetter);
     letterModal.addEventListener("click", (e) => { if(e.target === letterModal) closeLetter(); });
-    window.addEventListener("keydown", (e) => { if(e.key === "Escape" && letterModal.classList.contains("show")) closeLetter(); });
 
-    /* ================== BUTONLAR ================== */
     updatePills();
     setMusicUI(lsGet("music_on", false));
 
@@ -930,13 +915,7 @@ Seni seviyorum.`;
       }
     });
 
-    window.addEventListener("pageshow", async (e) => {
-      if(e.persisted && card.classList.contains("ready")){
-        await renderNew();
-      }
-    });
-
-    /* ================== ONUN SÖZLERİ (API) ================== */
+    /* ================== NOT SİSTEMİ (İZOLE) ================== */
     const quoteModal = document.getElementById("quoteModal");
     const qList = document.getElementById("qList");
     const qInput = document.getElementById("qInput");
@@ -944,7 +923,7 @@ Seni seviyorum.`;
 
     function openQuotes(){
       quoteModal.classList.add("show");
-      refreshQuotes();
+      refreshQuotesSafe();
     }
     function closeQuotes(){
       quoteModal.classList.remove("show");
@@ -953,34 +932,32 @@ Seni seviyorum.`;
     document.getElementById("btnQuoteJar").addEventListener("click", openQuotes);
     document.getElementById("btnQuoteClose").addEventListener("click", closeQuotes);
     quoteModal.addEventListener("click", (e) => { if(e.target === quoteModal) closeQuotes(); });
-    window.addEventListener("keydown", (e) => { if(e.key === "Escape" && quoteModal.classList.contains("show")) closeQuotes(); });
+
+    async function refreshQuotesSafe(){
+      try{ await refreshQuotes(); }
+      catch(err){
+        console.error("NOTS ERROR:", err);
+        qStatus.textContent = "Durum: bağlantı yok";
+        qList.innerHTML = `<div style="opacity:.7">Not sistemi hata verdi (ama sayfa çalışmaya devam ediyor).</div>`;
+      }
+    }
 
     async function refreshQuotes(){
       qStatus.textContent = "Durum: yükleniyor…";
-      try{
-        const res = await fetch(/api/notes?page=${encodeURIComponent(PAGE_ID)}, { cache: "no-store" });
+      const res = await fetch(`/api/notes?page=${encodeURIComponent(PAGE_ID)}`, { cache: "no-store" });
+      const ct = res.headers.get("content-type") || "";
+      if(!ct.includes("application/json")) throw new Error("api_not_json");
 
-        // API yanlışlıkla HTML dönerse JSON parse patlamasın diye:
-        const ct = res.headers.get("content-type") || "";
-        if(!ct.includes("application/json")){
-          throw new Error("not_json");
-        }
-
-        const data = await res.json();
-        if(!data.ok) throw new Error("api_not_ok");
-
-        renderQuotes(data.notes || []);
-        qStatus.textContent = Durum: ${data.notes?.length || 0} not;
-      }catch(err){
-        qList.innerHTML = <div style="opacity:.7">Bağlanamadım. (API/JSON yok)</div>;
-        qStatus.textContent = "Durum: bağlantı yok";
-      }
+      const data = await res.json();
+      if(!data.ok) throw new Error("api_not_ok");
+      renderQuotes(data.notes || []);
+      qStatus.textContent = `Durum: ${data.notes?.length || 0} not`;
     }
 
     function renderQuotes(notes){
       qList.innerHTML = "";
       if(!notes.length){
-        qList.innerHTML = <div style="opacity:.7">Henüz not yok…</div>;
+        qList.innerHTML = `<div style="opacity:.7">Henüz not yok…</div>`;
         return;
       }
       for(const n of notes){
@@ -1001,64 +978,62 @@ Seni seviyorum.`;
       qList.querySelectorAll(".qdel").forEach(btn=>{
         btn.addEventListener("click", async () => {
           const id = btn.getAttribute("data-id");
-          await deleteQuote(id);
+          await deleteQuoteSafe(id);
         });
       });
+    }
+
+    async function addQuoteSafe(){
+      try{ await addQuote(); }
+      catch(err){
+        console.error("ADD NOTE ERROR:", err);
+        qStatus.textContent = "Durum: kaydedilemedi";
+      }
+    }
+    async function deleteQuoteSafe(id){
+      try{ await deleteQuote(id); }
+      catch(err){
+        console.error("DEL NOTE ERROR:", err);
+        qStatus.textContent = "Durum: silinemedi";
+      }
     }
 
     async function addQuote(){
       const text = (qInput.value || "").replace(/\r\n/g,"\n").trim();
       if(!text) return;
-
-      // (opsiyonel) basit limit: 400
-      if(text.length > 400){
-        qStatus.textContent = "Durum: çok uzun (400 karakter sınırı)";
-        return;
-      }
+      if(text.length > 400){ qStatus.textContent = "Durum: çok uzun (400 karakter)"; return; }
 
       qStatus.textContent = "Durum: kaydediliyor…";
-      try{
-        const res = await fetch(/api/notes?page=${encodeURIComponent(PAGE_ID)}, {
-          method:"POST",
-          headers:{ "Content-Type":"application/json" },
-          body: JSON.stringify({ text, author: USER_NAME })
-        });
+      const res = await fetch(`/api/notes?page=${encodeURIComponent(PAGE_ID)}`, {
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify({ text, author: USER_NAME })
+      });
 
-        const ct = res.headers.get("content-type") || "";
-        if(!ct.includes("application/json")) throw new Error("not_json");
+      const ct = res.headers.get("content-type") || "";
+      if(!ct.includes("application/json")) throw new Error("api_not_json");
 
-        const data = await res.json();
-        if(!data.ok) throw new Error("save_failed");
+      const data = await res.json();
+      if(!data.ok) throw new Error("save_failed");
 
-        qInput.value = "";
-        await refreshQuotes();
-      }catch(err){
-        qStatus.textContent = "Durum: kaydedilemedi";
-      }
+      qInput.value = "";
+      await refreshQuotesSafe();
     }
 
     async function deleteQuote(id){
       qStatus.textContent = "Durum: siliniyor…";
-      try{
-        const res = await fetch(/api/notes?page=${encodeURIComponent(PAGE_ID)}&id=${encodeURIComponent(id)}, {
-          method:"DELETE"
-        });
+      const res = await fetch(`/api/notes?page=${encodeURIComponent(PAGE_ID)}&id=${encodeURIComponent(id)}`, { method:"DELETE" });
 
-        const ct = res.headers.get("content-type") || "";
-        if(!ct.includes("application/json")) throw new Error("not_json");
+      const ct = res.headers.get("content-type") || "";
+      if(!ct.includes("application/json")) throw new Error("api_not_json");
 
-        const data = await res.json();
-        if(!data.ok) throw new Error("delete_failed");
-
-        await refreshQuotes();
-      }catch(err){
-        qStatus.textContent = "Durum: silinemedi";
-      }
+      const data = await res.json();
+      if(!data.ok) throw new Error("delete_failed");
+      await refreshQuotesSafe();
     }
 
-    document.getElementById("btnQAdd").addEventListener("click", addQuote);
-    document.getElementById("btnQRefresh").addEventListener("click", refreshQuotes);
-
+    document.getElementById("btnQAdd").addEventListener("click", addQuoteSafe);
+    document.getElementById("btnQRefresh").addEventListener("click", refreshQuotesSafe);
   </script>
 </body>
 </html>
