@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>NFC Sayfa</title>
+  <title>Bir Hediye</title>
   <style>
     :root{
       --bg1:#f6f8ff;
@@ -16,6 +16,7 @@
       --accent: 99,102,241;
     }
     *{ box-sizing:border-box; }
+
     body{
       margin:0; min-height:100vh;
       display:flex; align-items:center; justify-content:center;
@@ -27,7 +28,118 @@
         radial-gradient(700px 340px at 80% 20%, rgba(var(--accent),0.14), transparent 60%),
         linear-gradient(180deg, var(--bg1), var(--bg2));
       transition: background 450ms ease;
+      overflow-x:hidden;
     }
+
+    /* ===== HEDİYE KAPAK ===== */
+    .cover{
+      position:fixed;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:22px;
+      background:
+        radial-gradient(900px 420px at 20% 15%, rgba(var(--accent),0.24), transparent 60%),
+        radial-gradient(700px 340px at 80% 20%, rgba(var(--accent),0.16), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,0.92), rgba(245,248,255,0.92));
+      backdrop-filter: blur(10px);
+      z-index:999;
+      transition: opacity 380ms ease, transform 380ms ease;
+    }
+    .cover.hidden{
+      opacity:0;
+      pointer-events:none;
+      transform: translateY(-6px);
+    }
+    .cover-card{
+      width:min(520px, 100%);
+      border-radius:26px;
+      border:1px solid rgba(15,23,42,0.10);
+      background: rgba(255,255,255,0.86);
+      box-shadow: 0 22px 70px rgba(2,6,23,0.14);
+      padding:18px;
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+    }
+    .cover-card::before{
+      content:"";
+      position:absolute;
+      inset:-60px;
+      background: radial-gradient(480px 300px at 50% 30%, rgba(var(--accent),0.20), transparent 70%);
+      filter: blur(18px);
+      pointer-events:none;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(15,23,42,0.10);
+      background: rgba(255,255,255,0.8);
+      color: var(--muted);
+      font-size:12px;
+      position:relative;
+      z-index:1;
+    }
+    .title{
+      margin:14px 0 6px;
+      font-size:26px;
+      letter-spacing:-0.02em;
+      position:relative;
+      z-index:1;
+    }
+    .subtitle{
+      margin:0 0 14px;
+      color:var(--muted);
+      font-size:14px;
+      position:relative;
+      z-index:1;
+    }
+    .open-btn{
+      width:100%;
+      border:1px solid rgba(15,23,42,0.12);
+      background: rgba(var(--accent),0.12);
+      color: var(--text);
+      border-radius:16px;
+      padding:12px 14px;
+      cursor:pointer;
+      font-weight:750;
+      font-size:15px;
+      transition: background 160ms ease, transform 120ms ease;
+      position:relative;
+      z-index:1;
+    }
+    .open-btn:hover{ background: rgba(var(--accent),0.18); }
+    .open-btn:active{ transform: scale(0.99); }
+
+    /* ===== KONFETİ (kısa) ===== */
+    .confetti{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      z-index: 998;
+      display:none;
+    }
+    .confetti.show{ display:block; }
+    .piece{
+      position:absolute;
+      width:10px; height:14px;
+      border-radius:3px;
+      background: rgb(var(--accent));
+      opacity:0.9;
+      animation: fall 1400ms ease-in forwards;
+    }
+    @keyframes fall{
+      0%{ transform: translateY(-20px) rotate(0deg); opacity:0; }
+      10%{ opacity:1; }
+      100%{ transform: translateY(110vh) rotate(420deg); opacity:0.0; }
+    }
+
+    /* ===== ASIL SAYFA ===== */
     .card{
       width:min(560px, 100%);
       background:var(--card);
@@ -36,7 +148,15 @@
       box-shadow:0 18px 55px var(--shadow);
       padding:16px;
       backdrop-filter: blur(12px);
+      opacity:0;
+      transform: translateY(6px);
+      transition: opacity 420ms ease, transform 420ms ease;
     }
+    .card.ready{
+      opacity:1;
+      transform: translateY(0);
+    }
+
     .topbar{
       display:flex; align-items:center; justify-content:space-between;
       gap:10px; margin-bottom:10px; flex-wrap:wrap;
@@ -126,6 +246,20 @@
   </style>
 </head>
 <body>
+  <!-- Konfeti katmanı -->
+  <div class="confetti" id="confetti"></div>
+
+  <!-- Kapak (boş sayfa hissini öldürür) -->
+  <div class="cover" id="cover">
+    <div class="cover-card">
+      <div class="badge">🎁 <span>Senin için küçük bir şey</span></div>
+      <div class="title">Bir Hediyen Var</div>
+      <div class="subtitle">Açınca fotoğraf + mesaj + müzik başlar.</div>
+      <button class="open-btn" id="btnOpen">Hediyeyi Aç ✨</button>
+    </div>
+  </div>
+
+  <!-- Asıl içerik -->
   <div class="card" id="card">
     <div class="topbar">
       <div class="pill" id="pillLeft"><span class="dot" aria-hidden="true"></span><span>Mesaj: —</span></div>
@@ -161,9 +295,9 @@
 
     const PHOTO_DIR   = "assets/yunis/";
     const PHOTO_START = 1;
-    const PHOTO_END   = 119; // ✅ 119 foto
+    const PHOTO_END   = 119;
 
-    const MUSIC_SRC = "assets/music.mp3"; // ✅ bunu koy
+    const MUSIC_SRC = "assets/music.mp3";
 
     // ====== STORAGE ======
     function storageOK(){
@@ -209,7 +343,7 @@
 
     function resetPool(poolKey){ lsDel(poolKey); }
 
-    // ====== FOTO LİSTESİ (119) ======
+    // ====== FOTO LİSTESİ ======
     function pad4(n){ return String(n).padStart(4,"0"); }
     const PHOTO_LIST = (() => {
       const arr = [];
@@ -241,11 +375,10 @@
       }, speed);
     }
 
-    // ====== TEMA RENGİ (HER FOTO) ======
+    // ====== TEMA (HER FOTO) ======
     function setAccent(rgb){
       document.documentElement.style.setProperty("--accent", rgb);
     }
-
     function accentFromString(str){
       let h = 2166136261; // FNV-1a
       for(let i=0;i<str.length;i++){
@@ -257,7 +390,6 @@
       const b = 70 + ((h>>16) & 0x7F);
       return `${r},${g},${b}`;
     }
-
     function tryAccentFromImage(img){
       try{
         const c = document.createElement("canvas");
@@ -284,9 +416,7 @@
         if((max-min) < 10) return null;
 
         return `${r},${g},${b}`;
-      }catch(e){
-        return null;
-      }
+      }catch(e){ return null; }
     }
 
     // ====== GARANTİ FARKLI SEÇİM ======
@@ -300,7 +430,6 @@
       lsSet("last_msg", chosen);
       return chosen;
     }
-
     function nextPhotoDifferent(){
       const last = lsGet("last_photo", null);
       let chosen = null;
@@ -331,14 +460,12 @@
       document.getElementById("pillMusic").lastElementChild.textContent = `Müzik: ${isOn ? "Açık" : "Kapalı"}`;
       document.getElementById("btnMusic").textContent = isOn ? "🔇 Müzik kapat" : "🎵 Müzik aç";
     }
-
     async function musicOn(){
       try{
         await audio.play();
         lsSet("music_on", true);
         setMusicUI(true);
       }catch(e){
-        // autoplay bloklandıysa UI'yi yine doğru gösterme, gerçekten çalmadı
         lsSet("music_on", false);
         setMusicUI(false);
       }
@@ -354,6 +481,30 @@
       else await musicOn();
     }
 
+    // ====== KONFETİ ======
+    function popConfetti(){
+      const layer = document.getElementById("confetti");
+      layer.innerHTML = "";
+      layer.classList.add("show");
+
+      const n = 22;
+      for(let i=0;i<n;i++){
+        const p = document.createElement("div");
+        p.className = "piece";
+        p.style.left = (Math.random()*100) + "vw";
+        p.style.animationDelay = (Math.random()*120) + "ms";
+        p.style.transform = `translateY(-20px) rotate(${Math.random()*180}deg)`;
+        p.style.opacity = (0.6 + Math.random()*0.4).toFixed(2);
+        p.style.background = `rgba(var(--accent),${(0.75+Math.random()*0.25).toFixed(2)})`;
+        layer.appendChild(p);
+      }
+
+      setTimeout(() => {
+        layer.classList.remove("show");
+        layer.innerHTML = "";
+      }, 1600);
+    }
+
     // ====== RENDER ======
     function renderNew(){
       const card = document.getElementById("card");
@@ -364,7 +515,7 @@
 
       typewriter(document.getElementById("message"), msg, 16);
 
-      // ✅ tema: daha yüklenmeden bile değişsin
+      // tema: yüklenmeden bile değişsin
       setAccent(accentFromString(photoPath));
 
       const img = document.getElementById("photo");
@@ -373,7 +524,7 @@
 
       img.onload = () => {
         const fromCanvas = tryAccentFromImage(img);
-        if(fromCanvas) setAccent(fromCanvas); // çalışırsa daha “foto uyumlu”
+        if(fromCanvas) setAccent(fromCanvas);
         img.classList.add("is-visible");
         updatePills();
       };
@@ -386,21 +537,30 @@
       img.src = photoPath + "?v=" + Date.now();
     }
 
-    // init
+    // ====== KAPAK AÇILIŞI ======
+    const cover = document.getElementById("cover");
+    const card = document.getElementById("card");
+    const btnOpen = document.getElementById("btnOpen");
+
+    function openGift(){
+      cover.classList.add("hidden");
+      card.classList.add("ready");
+      popConfetti();
+      renderNew();
+      // hediye açılınca müzik otomatik denensin
+      musicOn();
+    }
+
+    btnOpen.addEventListener("click", openGift);
+
+    // init UI
     updatePills();
     setMusicUI(lsGet("music_on", false));
 
-    renderNew();
-
-    // Yenilemede de değişsin (bfcache)
-    window.addEventListener("pageshow", (e) => { if(e.persisted) renderNew(); });
-
     document.getElementById("btnNew").addEventListener("click", () => {
       renderNew();
-      // kullanıcı etkileşimi yakalanmışken, müzik açıksa çalmayı dene
       if(lsGet("music_on", false) && audio.paused) musicOn();
     });
-
     document.getElementById("btnMusic").addEventListener("click", toggleMusic);
 
     document.getElementById("btnReset").addEventListener("click", () => {
@@ -421,8 +581,13 @@
       }
     });
 
-    // Sayfa ilk kez açıldığında: kullanıcı daha dokunmamışsa müzik zaten başlayamaz.
-    // Ama kullanıcı dokunursa ve "music_on=true" ise yukarıdaki yerlerde play deniyoruz.
+    // Safari bfcache: geri dönünce kapak kalır, içerik saçmalamasın
+    window.addEventListener("pageshow", (e) => {
+      if(e.persisted){
+        // kapak açıksa sorun yok, açıksa içerik yeniden render
+        if(card.classList.contains("ready")) renderNew();
+      }
+    });
   </script>
 </body>
 </html>
