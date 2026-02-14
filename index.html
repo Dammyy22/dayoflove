@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>DY|| The things in my heart</title>
+  <title>Yunis • Not & Foto</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
 
@@ -50,7 +50,6 @@
         radial-gradient(1px 1px at 50% 10%, rgba(255,255,255,.10) 50%, transparent 51%);
       opacity:.35; pointer-events:none; z-index:1;
     }
-
     .wrap{
       position:relative; z-index:2;
       max-width:860px; width:100%;
@@ -67,7 +66,6 @@
       from{opacity:0; transform:translateY(8px);}
       to{opacity:1; transform:translateY(0);}
     }
-
     .top{
       display:flex; flex-wrap:wrap;
       align-items:flex-start; justify-content:space-between;
@@ -86,7 +84,6 @@
       color:var(--muted);
       user-select:none;
     }
-
     .photo{
       width:100%;
       border-radius:16px;
@@ -95,7 +92,7 @@
       box-shadow: 0 10px 26px rgba(0,0,0,0.20);
       margin-bottom:14px;
       background:rgba(0,0,0,0.06);
-      height:360px;                 /* sabit çerçeve */
+      height:360px;
     }
     .photo img{
       display:block;
@@ -113,7 +110,6 @@
       background:rgba(0,0,0,0.02);
       word-break:break-word;
     }
-
     .msg{
       font-size:20px;
       line-height:1.75;
@@ -137,7 +133,6 @@
       color:var(--muted);
       display:none;
     }
-
     .actions{
       margin-top:14px;
       display:flex;
@@ -162,193 +157,183 @@
   <div class="wrap">
     <div class="top">
       <div>
-        <h1 class="title">DY|| The things in my heart</h1>
+        <h1 class="title">Yunis • Not & Foto</h1>
         <div class="chips">
           <div class="chip" id="chipDayNight">—</div>
-          <div class="chip" id="chipKey">—</div>
-          <div class="chip" id="chipPhoto">—</div>
-          <div class="chip" id="chipCycle">—</div>
+          <div class="chip" id="chipMsg">Mesaj: —</div>
+          <div class="chip" id="chipPhoto">Foto: —</div>
+          <div class="chip" id="chipStats">—</div>
         </div>
       </div>
     </div>
 
-    <div class="photo" id="photoCard">
-      <img id="photo" alt="Bugünün fotoğrafı" />
+    <div class="photo">
+      <img id="photo" alt="Seçilen fotoğraf" />
       <div class="caption" id="caption">Foto yükleniyor…</div>
     </div>
 
     <div class="msg" id="msg">Yükleniyor…</div>
     <div class="meta" id="source"></div>
     <div class="remember" id="remember"></div>
-    <div class="meta" id="date"></div>
 
     <div class="actions">
       <button id="btnCopy">Metni kopyala</button>
-      <button id="btnReset">Mesaj döngüsünü sıfırla</button>
+      <button id="btnReset">Mesaj + Foto döngüsünü sıfırla</button>
+      <button id="btnNext">Yenilemeden yeni seçim</button>
     </div>
   </div>
 
 <script>
-/* ---------- ZAMAN (İSTANBUL) ---------- */
+/* ---------- ZAMAN / TEMA ---------- */
 function istanbulNow(){
   return new Date(new Date().toLocaleString("en-US",{timeZone:"Europe/Istanbul"}));
 }
-function istanbulKey(){
-  const n = istanbulNow();
-  return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
-}
 
-/* ---------- HASH ---------- */
-function hashIndex(key, len){
-  let h = 0;
-  for(let i=0;i<key.length;i++) h = (h*31 + key.charCodeAt(i)) >>> 0;
-  return h % len;
+/* ---------- FOTO URL (ROOT) ---------- */
+function photoUrlFromRoot(photoName4){
+  return `${location.origin}/assets/yunis/${photoName4}.jpg`;
 }
-
-/* ---------- ABSOLUTE BASE (PATH SORUNU BİTMESİN DİYE) ---------- */
-const BASE = new URL(".", location.href).toString(); // .../ (sonunda / var)
-function photoUrl(name){
-  return BASE + "assets/yunis/" + name + ".jpg";
-}
-
-/* ---------- FOTO AYAR ---------- */
-const PHOTO_COUNT = 119; // sende kaçsa
-function dailyPhotoNumber(){
-  const key = istanbulKey();
-  return hashIndex(key + "|photo", PHOTO_COUNT) + 1; // 1..PHOTO_COUNT
-}
+function pad4(n){ return String(n).padStart(4,'0'); }
 
 /* ---------- MESAJLAR (ID ŞART) ---------- */
 const entries = [
   { id:"m001", text:`Bugün seni sevdiğimi ispatlamak için bir şey yapmam gerekmiyor.\nSevgi bazen sessizce yanında durabilmek.`, source:"Dammy → Yunis", remember:"Bugün küçük bir şey yap: ‘iyi ki varsın’ de." },
   { id:"m002", text:`Seninle konuşurken cümlelerim düzgün değilse,\nsebebi Türkçem değil.\nKafamın içi “Yunis” diye bağırıyor.`, source:"Dammy → Yunis" },
   { id:"m003", text:`Birlikte büyümek bazen kolay değil.\nAma ben “kolay” diye değil,\n“sen” diye seçtim.`, source:"Dammy → Yunis" },
-  // Buraya devam: m004, m005...
+  // ... m004, m005...
 ];
 
-/* ---------- TEKRARSIZ SEÇİM (LOCALSTORAGE) ---------- */
-const STORAGE_SEEN = "dayoflove_seen_messages_v1";
-const STORAGE_CYCLE = "dayoflove_cycle_v1";
+/* ---------- FOTO SAYISI ---------- */
+const PHOTO_COUNT = 125; // kaç foto varsa
 
-function getSeen(){
+/* ---------- TORBA (SHUFFLE BAG) ---------- */
+// Mantık: Bir torba listesi tutuyoruz. Her seçimde bir tane "pop".
+// Torba boşalınca yeniden doldurup karıştırıyoruz.
+// Böylece "hepsi bitmeden tekrar yok".
+
+function shuffleInPlace(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j = Math.floor(Math.random() * (i+1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+function bagPop(storageKey, freshList){
+  // freshList: ["m001","m002"...] veya [1..125]
+  let bag;
   try{
-    return new Set(JSON.parse(localStorage.getItem(STORAGE_SEEN) || "[]"));
+    bag = JSON.parse(localStorage.getItem(storageKey) || "null");
   }catch{
-    return new Set();
-  }
-}
-function setSeen(setObj){
-  localStorage.setItem(STORAGE_SEEN, JSON.stringify([...setObj]));
-}
-
-function getCycle(){
-  const n = parseInt(localStorage.getItem(STORAGE_CYCLE) || "1", 10);
-  return Number.isFinite(n) && n >= 1 ? n : 1;
-}
-function setCycle(n){
-  localStorage.setItem(STORAGE_CYCLE, String(n));
-}
-
-function pickNoRepeat(entries){
-  const seen = getSeen();
-  const remaining = entries.filter(e => !seen.has(e.id));
-
-  // Hepsi bittiyse: yeni tura geç, seen sıfırla
-  if(remaining.length === 0){
-    localStorage.removeItem(STORAGE_SEEN);
-    const nextCycle = getCycle() + 1;
-    setCycle(nextCycle);
-    // yeni turda deterministik bir seçim yapalım (bugün + cycle)
-    const key = istanbulKey();
-    const idx = hashIndex(key + "|cycle:" + nextCycle, entries.length);
-    const chosen = entries[idx];
-    const freshSeen = new Set([chosen.id]);
-    setSeen(freshSeen);
-    return { chosen, remainingCount: entries.length - 1, cycle: nextCycle };
+    bag = null;
   }
 
-  // Gösterilmemişlerden seçim (bugüne sabit)
-  const key = istanbulKey();
-  const idx = hashIndex(key + "|remain:" + remaining.length + "|cycle:" + getCycle(), remaining.length);
-  const chosen = remaining[idx];
+  // yoksa veya boşsa yeniden oluştur
+  if(!Array.isArray(bag) || bag.length === 0){
+    bag = [...freshList];
+    shuffleInPlace(bag);
+  }
 
-  seen.add(chosen.id);
-  setSeen(seen);
-
-  return { chosen, remainingCount: remaining.length - 1, cycle: getCycle() };
+  const picked = bag.pop(); // son eleman
+  localStorage.setItem(storageKey, JSON.stringify(bag));
+  return { picked, remaining: bag.length, total: freshList.length };
 }
 
-/* ---------- HATA KORUMA ---------- */
-window.addEventListener("error", (e) => console.error(e));
+/* ---------- SEÇİM ---------- */
+const MSG_BAG_KEY = "dayoflove_msg_bag_v1";
+const PHOTO_BAG_KEY = "dayoflove_photo_bag_v1";
 
-document.addEventListener("DOMContentLoaded", () => {
+function pickMessage(){
+  const ids = entries.map(e => e.id);
+  const r = bagPop(MSG_BAG_KEY, ids);
+  const entry = entries.find(e => e.id === r.picked);
+  return { entry, stats: r };
+}
+
+function pickPhotoNumber(){
+  const nums = Array.from({length: PHOTO_COUNT}, (_,i) => i+1);
+  return bagPop(PHOTO_BAG_KEY, nums);
+}
+
+/* ---------- RENDER ---------- */
+function renderOnce(){
+  // tema
   const now = istanbulNow();
   const hour = now.getHours();
   const isDay = (hour >= 6 && hour < 19);
-  if(isDay) document.body.classList.add("day");
-
-  const key = istanbulKey();
+  document.body.classList.toggle("day", isDay);
   document.getElementById("chipDayNight").textContent = isDay ? "Gündüz" : "Gece";
-  document.getElementById("chipKey").textContent = `Gün: ${key}`;
 
-  // Mesaj seç (tekrarsız)
-  const { chosen, remainingCount, cycle } = pickNoRepeat(entries);
-
-  const msgEl = document.getElementById("msg");
-  const sourceEl = document.getElementById("source");
+  // mesaj
+  const { entry, stats: msgStats } = pickMessage();
+  document.getElementById("msg").textContent = entry?.text || "Mesaj bulunamadı.";
+  document.getElementById("source").textContent = entry?.source ? `Kaynak: ${entry.source}` : "";
   const rememberEl = document.getElementById("remember");
-  const dateEl = document.getElementById("date");
-  const chipCycle = document.getElementById("chipCycle");
-
-  msgEl.textContent = chosen.text;
-  sourceEl.textContent = chosen.source ? `Kaynak: ${chosen.source}` : "";
-  dateEl.textContent = `Günün notu • ${key}`;
-  chipCycle.textContent = `Tur: ${cycle} • Kalan: ${remainingCount}`;
-
-  if(chosen.remember){
+  if(entry?.remember){
     rememberEl.style.display = "block";
-    rememberEl.textContent = `Bugün şunu hatırla: ${chosen.remember}`;
+    rememberEl.textContent = `Bugün şunu hatırla: ${entry.remember}`;
   } else {
     rememberEl.style.display = "none";
   }
 
-  // Uzun metin font ayarı
-  const L = chosen.text.length;
+  // foto
+  const photoEl = document.getElementById("photo");
+  const capEl = document.getElementById("caption");
+  const photoStats = pickPhotoNumber();
+  const name = pad4(photoStats.picked);
+  const url = photoUrlFromRoot(name);
+
+  capEl.textContent = "Foto yükleniyor…";
+  photoEl.onload = () => capEl.textContent = `Foto • #${name}`;
+  photoEl.onerror = () => {
+    // seçilen yoksa 0001'e düş
+    const fb = "0001";
+    const fbUrl = photoUrlFromRoot(fb);
+    capEl.textContent = `Bulunamadı: #${name} → Yedek #${fb}`;
+    photoEl.onerror = () => capEl.textContent = `Foto yok: #${name} ve #${fb}`;
+    photoEl.src = fbUrl;
+  };
+  photoEl.src = url;
+
+  // chipler
+  document.getElementById("chipMsg").textContent = `Mesaj: ${entry?.id || "—"}`;
+  document.getElementById("chipPhoto").textContent = `Foto: #${name}`;
+  document.getElementById("chipStats").textContent =
+    `Mesaj kalan: ${msgStats.remaining}/${msgStats.total} • Foto kalan: ${photoStats.remaining}/${photoStats.total}`;
+
+  // uzun metin font
+  const L = (entry?.text || "").length;
+  const msgEl = document.getElementById("msg");
   msgEl.style.fontSize = (L > 700) ? "18px" : "20px";
   if(L > 1000) msgEl.style.fontSize = "17px";
 
-  // Foto (günlük sabit)
-  const pNum = dailyPhotoNumber();
-  const photoName = String(pNum).padStart(4,'0');
-  const url = photoUrl(photoName);
+  // copy butonu metni güncellemek için closure kullanıyoruz
+  window.__lastTextToCopy = entry?.text || "";
+}
 
-  document.getElementById("chipPhoto").textContent = `Foto: #${photoName}`;
-  const photoEl = document.getElementById("photo");
-  const capEl = document.getElementById("caption");
+document.addEventListener("DOMContentLoaded", () => {
+  renderOnce();
 
-  capEl.textContent = "Foto yükleniyor…";
-  photoEl.onload = () => capEl.textContent = `Bugünün fotoğrafı • #${photoName}`;
-  photoEl.onerror = () => capEl.textContent = `Foto bulunamadı: ${url}`;
-  photoEl.src = url;
-
-  // Butonlar
-  const btnCopy = document.getElementById("btnCopy");
-  btnCopy.addEventListener("click", async () => {
+  document.getElementById("btnCopy").addEventListener("click", async () => {
     try{
-      await navigator.clipboard.writeText(chosen.text);
-      const old = btnCopy.textContent;
-      btnCopy.textContent = "Kopyalandı ✓";
-      setTimeout(()=>btnCopy.textContent = old, 900);
+      await navigator.clipboard.writeText(window.__lastTextToCopy || "");
+      const btn = document.getElementById("btnCopy");
+      const old = btn.textContent;
+      btn.textContent = "Kopyalandı ✓";
+      setTimeout(()=>btn.textContent = old, 900);
     }catch{
       alert("Kopyalama izni yok. Metni seçip kopyalayabilirsin.");
     }
   });
 
-  const btnReset = document.getElementById("btnReset");
-  btnReset.addEventListener("click", () => {
-    localStorage.removeItem(STORAGE_SEEN);
-    localStorage.removeItem(STORAGE_CYCLE);
+  document.getElementById("btnReset").addEventListener("click", () => {
+    localStorage.removeItem(MSG_BAG_KEY);
+    localStorage.removeItem(PHOTO_BAG_KEY);
     location.reload();
+  });
+
+  document.getElementById("btnNext").addEventListener("click", () => {
+    // yenilemeden yeni seçim
+    renderOnce();
   });
 });
 </script>
