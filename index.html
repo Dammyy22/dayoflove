@@ -13,7 +13,6 @@
 
       --text:#eef3fb;
       --muted:rgba(238,243,251,0.62);
-      --border:rgba(255,255,255,0.12);
 
       --accent: 150,190,255; /* foto bazlı */
       --beat: 0;             /* 0..1 (müzikten) */
@@ -21,11 +20,8 @@
 
     *{ box-sizing:border-box; }
     body{
-      margin:0;
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
+      margin:0; min-height:100vh;
+      display:flex; align-items:center; justify-content:center;
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       color:var(--text);
       padding:18px;
@@ -118,10 +114,7 @@
       box-shadow: 0 26px 90px rgba(0,0,0,0.45);
       padding:18px;
       text-align:center;
-      position:relative;
-      overflow:hidden;
       backdrop-filter: blur(14px);
-      color:#eef3fb;
     }
     .badge{
       display:inline-flex; align-items:center; gap:8px;
@@ -149,7 +142,7 @@
     .open-btn:hover{ background: rgba(var(--accent),0.26); }
     .open-btn:active{ transform: scale(0.99); }
 
-    /* main card */
+    /* card */
     .card{
       width:min(560px, 100%);
       border-radius:22px;
@@ -188,29 +181,12 @@
       flex:0 0 auto;
     }
 
-    /* ===== 7) FOTO KART FLIP SAHNESİ ===== */
-    .photo-stage{
+    /* foto çerçeve + BEAT glow */
+    .photo-frame{
       width:100%;
       height: clamp(360px, 60vh, 600px);
-      perspective: 1200px;
       border-radius:22px;
       position:relative;
-    }
-    .photo-card{
-      width:100%;
-      height:100%;
-      border-radius:22px;
-      position:relative;
-      transform-style: preserve-3d;
-      transition: transform 720ms cubic-bezier(.2,.9,.15,1);
-    }
-    .photo-card.is-flipping{ transform: rotateY(180deg); }
-
-    /* dış çerçeve glow + beam, ayrıca BEAT ile güçlenir */
-    .photo-shell{
-      position:absolute;
-      inset:0;
-      border-radius:22px;
       padding:10px;
       overflow:hidden;
       background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
@@ -218,29 +194,22 @@
       box-shadow:
         0 18px 60px rgba(0,0,0,0.45),
         0 0 0 1px rgba(255,255,255,0.06) inset,
-        0 0 calc(22px + (var(--beat) * 30px)) rgba(255,255,255, calc(0.10 + var(--beat) * 0.25));
-      backface-visibility:hidden;
-      transform: translateZ(0);
+        0 0 calc(18px + (var(--beat) * 34px)) rgba(255,255,255, calc(0.10 + var(--beat) * 0.28));
     }
-
-    .photo-shell::before{
+    .photo-frame::before{
       content:"";
-      position:absolute;
-      inset:-54px;
-      border-radius:32px;
+      position:absolute; inset:-54px; border-radius:32px;
       background:
-        radial-gradient(520px 360px at 50% 30%, rgba(255,255,255, calc(0.36 + var(--beat)*0.30)), transparent 70%),
-        radial-gradient(720px 520px at 50% 70%, rgba(255,255,255, calc(0.18 + var(--beat)*0.22)), transparent 72%);
+        radial-gradient(520px 360px at 50% 30%, rgba(255,255,255, calc(0.34 + var(--beat)*0.34)), transparent 70%),
+        radial-gradient(720px 520px at 50% 70%, rgba(255,255,255, calc(0.16 + var(--beat)*0.24)), transparent 72%);
       filter: blur(18px);
       opacity:0.95;
       pointer-events:none;
       animation: glowPulse 3.2s ease-in-out infinite;
     }
-    .photo-shell::after{
+    .photo-frame::after{
       content:"";
-      position:absolute;
-      inset:-40px;
-      border-radius:30px;
+      position:absolute; inset:-40px; border-radius:30px;
       background:
         repeating-linear-gradient(
           110deg,
@@ -249,7 +218,7 @@
           rgba(255,255,255,0.00) 36px
         ),
         linear-gradient(180deg,
-          rgba(255,255,255, calc(0.22 + var(--beat)*0.18)) 0%,
+          rgba(255,255,255, calc(0.20 + var(--beat)*0.20)) 0%,
           rgba(255,255,255,0.08) 35%,
           rgba(255,255,255,0.00) 70%
         ),
@@ -270,41 +239,22 @@
       100%{ opacity:0.55; transform: translateY(-22px) scale(1.00); }
     }
 
+    /* 7 yerine şık: FADE + HAFİF ZOOM */
     .photo{
       width:100%; height:100%;
-      object-fit: contain;
-      object-position:center;
+      object-fit: contain; object-position:center;
       border-radius:16px;
       display:block;
-      user-select:none;
-      -webkit-user-drag:none;
+      user-select:none; -webkit-user-drag:none;
       background: rgba(0,0,0,0.18);
       filter: saturate(1.05) contrast(1.06) brightness(1.03);
+      opacity:1;
+      transform: scale(1);
+      transition: opacity 320ms ease, transform 420ms ease;
     }
+    .photo.fade-out{ opacity:0; transform: scale(1.01); }
+    .photo.fade-in { opacity:1; transform: scale(1); }
 
-    /* front/back yüzler */
-    .face.front{ transform: rotateY(0deg); }
-    .face.back { transform: rotateY(180deg); }
-
-    .face{
-      position:absolute;
-      inset:0;
-      backface-visibility:hidden;
-      border-radius:22px;
-    }
-
-    /* küçük “kart parıltısı” */
-    .sparkle{
-      position:absolute;
-      inset:-80px;
-      pointer-events:none;
-      background: radial-gradient(520px 320px at 20% 20%, rgba(var(--accent),0.16), transparent 70%);
-      filter: blur(18px);
-      opacity:0.85;
-      mix-blend-mode: screen;
-    }
-
-    /* mesaj */
     .msg{ margin:14px 6px 0; font-size:1.10rem; line-height:1.45; min-height:3.2em; color: rgba(238,243,251,0.92); }
     .cursor{
       display:inline-block; width:0.55ch;
@@ -314,7 +264,6 @@
       animation: blink 1s infinite;
     }
     @keyframes blink{ 0%,49%{opacity:1} 50%,100%{opacity:0.15} }
-
     .sub{ margin:8px 6px 0; font-size:0.9rem; color: var(--muted); }
 
     .row{ display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
@@ -336,39 +285,25 @@
 
     /* Sol alt kavanoz */
     .jar-fab{
-      position:fixed;
-      left:16px;
-      bottom:16px;
-      z-index:1200;
-      width:92px;
-      height:112px;
-      cursor:pointer;
-      border:0;
-      background: transparent;
-      padding:0;
+      position:fixed; left:16px; bottom:16px;
+      z-index:1200; width:92px; height:112px;
+      cursor:pointer; border:0; background: transparent; padding:0;
       filter: drop-shadow(0 18px 35px rgba(0,0,0,0.55));
       animation: jarFloat 4.2s ease-in-out infinite;
     }
-    @keyframes jarFloat{
-      0%,100%{ transform: translateY(0) rotate(-1.2deg); }
-      50%{ transform: translateY(-6px) rotate(1.2deg); }
-    }
+    @keyframes jarFloat{ 0%,100%{ transform: translateY(0) rotate(-1.2deg); } 50%{ transform: translateY(-6px) rotate(1.2deg); } }
     .jar-fab:active{ transform: scale(0.98); }
     .jar-draw{ width:100%; height:100%; position:relative; }
     .jar-draw .lid{
-      position:absolute; top:6px; left:50%;
-      transform: translateX(-50%);
-      width:78px; height:22px;
-      border-radius:10px;
+      position:absolute; top:6px; left:50%; transform: translateX(-50%);
+      width:78px; height:22px; border-radius:10px;
       background: linear-gradient(180deg, rgba(255,255,255,0.22), rgba(255,255,255,0.08));
       border:1px solid rgba(255,255,255,0.18);
       box-shadow: 0 10px 18px rgba(0,0,0,0.35);
     }
     .jar-draw .glass{
-      position:absolute; top:26px; left:50%;
-      transform: translateX(-50%);
-      width:86px; height:84px;
-      border-radius:20px 20px 24px 24px;
+      position:absolute; top:26px; left:50%; transform: translateX(-50%);
+      width:86px; height:84px; border-radius:20px 20px 24px 24px;
       background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));
       border:1px solid rgba(255,255,255,0.16);
       overflow:hidden;
@@ -394,33 +329,22 @@
       animation: fairyTwinkle 3.2s ease-in-out infinite;
       pointer-events:none;
     }
-    @keyframes fairyTwinkle{
-      0%,100%{ opacity:0.72; transform: translateY(0); }
-      50%{ opacity:1; transform: translateY(-5px); }
-    }
+    @keyframes fairyTwinkle{ 0%,100%{ opacity:0.72; transform: translateY(0); } 50%{ opacity:1; transform: translateY(-5px); } }
     .jar-draw .note{
-      position:absolute;
-      left:50%;
-      top:54px;
-      transform: translateX(-50%) rotate(-2deg);
-      width:54px; height:40px;
-      border-radius:10px;
+      position:absolute; left:50%; top:54px; transform: translateX(-50%) rotate(-2deg);
+      width:54px; height:40px; border-radius:10px;
       background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.86));
       border:1px solid rgba(15,23,42,0.12);
       box-shadow: 0 10px 22px rgba(0,0,0,0.26);
       opacity:0.92;
     }
     .jar-draw .note::before{
-      content:"";
-      position:absolute; inset:8px;
-      border-radius:8px;
+      content:""; position:absolute; inset:8px; border-radius:8px;
       background: repeating-linear-gradient(180deg, rgba(0,0,0,0.00) 0px, rgba(0,0,0,0.00) 10px, rgba(0,0,0,0.07) 11px);
       opacity:0.35;
     }
     .jar-fab .halo{
-      position:absolute;
-      inset:-20px;
-      border-radius:28px;
+      position:absolute; inset:-20px; border-radius:28px;
       background:
         radial-gradient(120px 90px at 45% 50%, rgba(255,255,255,0.18), transparent 70%),
         radial-gradient(140px 110px at 55% 70%, rgba(255,255,255,0.10), transparent 72%);
@@ -429,10 +353,7 @@
       pointer-events:none;
       animation: haloPulse 3.6s ease-in-out infinite;
     }
-    @keyframes haloPulse{
-      0%,100%{ opacity:0.55; transform: scale(1); }
-      50%{ opacity:0.95; transform: scale(1.06); }
-    }
+    @keyframes haloPulse{ 0%,100%{ opacity:0.55; transform: scale(1); } 50%{ opacity:0.95; transform: scale(1.06); } }
 
     /* mektup modal */
     .letter-modal{
@@ -464,14 +385,8 @@
       transform: scaleY(0.06);
       opacity:0;
     }
-    .letter-modal.show .paper{
-      animation: paperUnfold 720ms cubic-bezier(.2,.9,.1,1) 120ms forwards;
-    }
-    @keyframes paperUnfold{
-      0%{ opacity:0; transform: scaleY(0.06); }
-      35%{ opacity:1; }
-      100%{ opacity:1; transform: scaleY(1); }
-    }
+    .letter-modal.show .paper{ animation: paperUnfold 720ms cubic-bezier(.2,.9,.1,1) 120ms forwards; }
+    @keyframes paperUnfold{ 0%{ opacity:0; transform: scaleY(0.06); } 35%{ opacity:1; } 100%{ opacity:1; transform: scaleY(1); } }
     .letter-text{ white-space:pre-wrap; line-height:1.55; font-size:15px; }
     .sig{ margin-top:12px; color: rgba(15,23,42,0.62); font-weight:900; font-size:13px; }
     .close-btn{
@@ -544,28 +459,12 @@
       <div class="pill" id="pillMusic"><span>🎵</span><span>Müzik: Kapalı</span></div>
     </div>
 
-    <!-- 7) Flip kart sahnesi -->
-    <div class="photo-stage">
-      <div class="photo-card" id="photoCard">
-        <!-- FRONT -->
-        <div class="face front">
-          <div class="photo-shell">
-            <div class="sparkle"></div>
-            <img id="photoFront" class="photo" alt="fotoğraf" />
-          </div>
-        </div>
-        <!-- BACK -->
-        <div class="face back">
-          <div class="photo-shell">
-            <div class="sparkle"></div>
-            <img id="photoBack" class="photo" alt="fotoğraf" />
-          </div>
-        </div>
-      </div>
+    <div class="photo-frame">
+      <img id="photo" class="photo" alt="fotoğraf" />
     </div>
 
     <div class="msg" id="message"></div>
-    <div class="sub">“Yeni getir” kart gibi devrilerek değiştirir. Müzik açıkken glow nabız atar.</div>
+    <div class="sub">“Yeni getir” foto+mesaj değiştirir. Müzik açıkken glow nabız gibi tepki verir.</div>
 
     <div class="row">
       <button id="btnNew">Yeni getir</button>
@@ -720,43 +619,40 @@ Seni seviyorum.`;
       right.textContent = `Foto kaldı: ${photoPool.length || PHOTO_LIST.length}`;
     }
 
-    /* ================== 7) FLIP FOTO GEÇİŞİ ================== */
-    const photoCard = document.getElementById("photoCard");
-    const imgFront = document.getElementById("photoFront");
-    const imgBack  = document.getElementById("photoBack");
+    /* ================== 7) FOTO DEĞİŞİMİ: FADE ================== */
+    const img = document.getElementById("photo");
+    let swapping = false;
 
-    let showingFront = true;
-    let flipping = false;
-
-    function setImgSafe(imgEl, src){
-      return new Promise((resolve) => {
-        imgEl.onload = () => resolve(true);
-        imgEl.onerror = () => resolve(false);
-        imgEl.src = src;
-      });
-    }
-
-    async function flipToNewPhoto(photoPath){
-      if(flipping) return;
-      flipping = true;
+    async function setImgFade(photoPath){
+      if(swapping) return;
+      swapping = true;
 
       setAccent(accentFromString(photoPath));
 
-      const targetImg = showingFront ? imgBack : imgFront;
-      const ok = await setImgSafe(targetImg, photoPath + "?v=" + Date.now());
+      img.classList.add("fade-out");
+      img.classList.remove("fade-in");
+
+      // fade-out tamamlanırken yeni resmi yükle
+      await new Promise(r => setTimeout(r, 220));
+
+      const ok = await new Promise((resolve) => {
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = photoPath + "?v=" + Date.now();
+      });
+
       if(!ok){
-        await setImgSafe(targetImg, PHOTO_DIR + "0001.jpg?v=" + Date.now());
+        await new Promise((resolve) => {
+          img.onload = () => resolve(true);
+          img.src = PHOTO_DIR + "0001.jpg?v=" + Date.now();
+        });
       }
 
-      // Flip animasyonu
-      photoCard.classList.toggle("is-flipping", showingFront);
-      photoCard.classList.toggle("is-flipping", !showingFront);
+      // fade-in
+      img.classList.remove("fade-out");
+      img.classList.add("fade-in");
 
-      // Basit ve güvenli: animasyon süresiyle senkron
-      setTimeout(() => {
-        showingFront = !showingFront;
-        flipping = false;
-      }, 760);
+      setTimeout(() => { swapping = false; }, 380);
     }
 
     /* ================== 8) MÜZİK TEPKİSİ (BEAT) ================== */
@@ -770,7 +666,6 @@ Seni seviyorum.`;
     let beatSmoothed = 0;
 
     function setBeat(v){
-      // 0..1 clamp
       v = Math.max(0, Math.min(1, v));
       document.documentElement.style.setProperty("--beat", v.toFixed(3));
     }
@@ -787,7 +682,6 @@ Seni seviyorum.`;
         }
 
         analyser.getByteTimeDomainData(dataArr);
-        // RMS
         let sum = 0;
         for(let i=0;i<dataArr.length;i++){
           const v = (dataArr[i] - 128) / 128;
@@ -795,11 +689,9 @@ Seni seviyorum.`;
         }
         const rms = Math.sqrt(sum / dataArr.length);
 
-        // güçlendirme: düşük sesi öldür, orta-üstü şişir
-        let beat = (rms - 0.02) * 9.0; // hassasiyet
+        let beat = (rms - 0.02) * 9.0;
         beat = Math.max(0, Math.min(1, beat));
 
-        // smoothing
         beatSmoothed = beatSmoothed * 0.82 + beat * 0.18;
         setBeat(beatSmoothed);
 
@@ -857,7 +749,7 @@ Seni seviyorum.`;
       const msg = nextMessageDifferent();
       const photoPath = nextPhotoDifferent();
       typewriter(document.getElementById("message"), msg, 16);
-      await flipToNewPhoto(photoPath);
+      await setImgFade(photoPath);
       updatePills();
     }
 
@@ -868,7 +760,7 @@ Seni seviyorum.`;
       cover.classList.add("hidden");
       card.classList.add("ready");
       await renderNew();
-      await musicOn(); // müzik + beat
+      await musicOn();
     });
 
     /* ================== MEKTUP ================== */
@@ -878,7 +770,6 @@ Seni seviyorum.`;
 
     function openLetter(){
       letterModal.classList.add("show");
-      // anim reset
       const paper = document.getElementById("paper");
       paper.style.animation = "none";
       void paper.offsetHeight;
@@ -920,7 +811,6 @@ Seni seviyorum.`;
       }
     });
 
-    // BFCache dönüşlerinde aynı foto takılmasın
     window.addEventListener("pageshow", async (e) => {
       if(e.persisted && card.classList.contains("ready")){
         await renderNew();
