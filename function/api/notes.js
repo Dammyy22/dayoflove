@@ -1,74 +1,58 @@
-
 export async function onRequest(context) {
   const { request, env } = context;
-
-  // CORS (tarayıcı kaprisleri)
-  if (request.method === "OPTIONS") {
-    return new Response(null, {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET,POST,DELETE,OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
-      },
-    });
-  }
+  const db = env.dayoflove_db;
 
   const url = new URL(request.url);
-  const page = (url.searchParams.get("page") || "default").slice(0, 64);
+  const page = url.searchParams.get("page") || "default";
 
-  const json = (obj, status = 200) =>
-    new Response(JSON.stringify(obj), {
-      status,
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        "Access-Control-Allow-Origin": "*",
-      },
-    });
+  try {
+    // ================= GET =================
+    if (request.method === "GET") {
+      const { results } = await db.prepare(
+        "SELECT id, text, created_at FROM notes WHERE page = ? ORDER BY id DESC"
+      ).bind(page).all();
 
-  // GET: notları getir
-  if (request.method === "GET") {
-    const limit = Math.min(200, Math.max(1, Number(url.searchParams.get("limit") || 120)));
-    const { results } = await env.DB
-      .prepare(
-        "SELECT id, text, created_at FROM notes WHERE page=? ORDER BY created_at DESC LIMIT ?"
-      )
-      .bind(page, limit)
-      .all();
+      return json({ ok: true, notes: results });
+    }
 
-    return json({ ok: true, page, notes: results || [] });
+    // ================= POST =================
+    if (request.method === "POST") {
+      const body = await request.json();
+      const text = (body.text || "").trim();
+      if (!text) return json({ ok: false, error: "empty" }, 400);
+
+      await db.prepare(
+        "INSERT INTO notes (page, text) VALUES (?, ?)"
+      ).bind(page, text).run();
+
+      return json({ ok: true });
+    }
+
+    // ================= DELETE =================
+    if (request.method === "DELETE") {
+      const id = url.searchParams.get("id");
+      if (!id) return json({ ok: false, error: "no id" }, 400);
+
+      await db.prepare(
+        "DELETE FROM notes WHERE id = ? AND page = ?"
+      ).bind(id, page).run();
+
+      return json({ ok: true });
+    }
+
+    return json({ ok: false, error: "method" }, 405);
+
+  } catch (err) {
+    return json({
+      ok: false,
+      error: err.message || "server error"
+    }, 500);
   }
+}
 
-  // POST: not ekle
-  if (request.method === "POST") {
-    const body = await request.json().catch(() => null);
-    const text = String(body?.text ?? "").trim();
-
-    if (!text) return json({ ok: false, error: "empty" }, 400);
-    if (text.length > 800) return json({ ok: false, error: "too_long" }, 400);
-
-    const id = crypto.randomUUID();
-    const created_at = Date.now();
-
-    await env.DB
-      .prepare("INSERT INTO notes (id, page, text, created_at) VALUES (?, ?, ?, ?)")
-      .bind(id, page, text, created_at)
-      .run();
-
-    return json({ ok: true, id, created_at });
-  }
-
-  // DELETE: tek not sil
-  if (request.method === "DELETE") {
-    const id = (url.searchParams.get("id") || "").trim();
-    if (!id) return json({ ok: false, error: "missing_id" }, 400);
-
-    await env.DB
-      .prepare("DELETE FROM notes WHERE page=? AND id=?")
-      .bind(page, id)
-      .run();
-
-    return json({ ok: true });
-  }
-
-  return json({ ok: false, error: "method_not_al
-::contentReference[oaicite:0]{index=0}
+function json(data, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { "content-type": "application/json" }
+  });
+}
