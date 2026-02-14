@@ -579,7 +579,31 @@ pointer-events:none;
       0%,100%{ transform: translateX(-50%) rotate(45deg) scale(1); }
       50%{ transform: translateX(-50%) rotate(45deg) scale(1.08); }
     }
+     /* BURAYA YAPIŞTIR 👇 */
+   @media (max-width:520px){
+     .jar-fab,.quote-fab{
+       width:76px;
+       height:92px;
+     }
+
+     .jar-fab{
+       left:12px;
+       bottom:calc(12px + env(safe-area-inset-bottom));
+     }
+
+     .quote-fab{
+       right:12px;
+       bottom:calc(12px + env(safe-area-inset-bottom));
+     }
+   }
+
+   @media (max-width:380px){
+     .quote-fab{
+       bottom:calc(92px + 18px + env(safe-area-inset-bottom));
+     }
+   }
   </style>
+  
 </head>
 
 <body>
