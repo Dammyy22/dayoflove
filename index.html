@@ -561,17 +561,68 @@
     }
 
     /* İç rulo kağıt */
-    #btnJar .bottle-scroll{
-      position:absolute;
-      left:50%;
-      top:44px;
-      transform:translateX(-50%) rotate(-8deg);
-      width:46px;
-      height:24px;
-      border-radius:12px;
-      background: linear-gradient(#fff,#f2f2f2);
-      box-shadow:0 10px 20px rgba(0,0,0,0.30);
-      border:1px solid rgba(15,23,42,0.10);
+   /* ====== Şişe içindeki rulo kağıdı "sararmış / eski" yap ====== */
+#btnJar .bottle-scroll{
+  background:
+    /* hafif kir/benek */
+    radial-gradient(12px 10px at 18% 30%, rgba(120,70,25,0.18), transparent 70%),
+    radial-gradient(14px 12px at 72% 58%, rgba(120,70,25,0.14), transparent 70%),
+    radial-gradient(10px 8px  at 46% 78%, rgba(120,70,25,0.12), transparent 70%),
+
+    /* kağıt dokusu */
+    repeating-linear-gradient(
+      0deg,
+      rgba(90,60,20,0.00) 0px,
+      rgba(90,60,20,0.00) 7px,
+      rgba(90,60,20,0.06) 8px
+    ),
+
+    /* ana sarımtırak ton */
+    linear-gradient(180deg, #fff1c7, #f2d9a2) !important;
+
+  border: 1px solid rgba(80,50,20,0.22) !important;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.30) !important;
+}
+
+/* rulo uçlarını da sarart + kenar koyulaştır */
+#btnJar .bottle-scroll::before,
+#btnJar .bottle-scroll::after{
+  background:
+    radial-gradient(circle at 35% 35%, rgba(255,255,255,0.55), transparent 60%),
+    linear-gradient(180deg, #fff1c7, #f2d9a2) !important;
+  border: 1px solid rgba(80,50,20,0.18) !important;
+}
+
+/* rulo kenarlarında "yanık/eskimiş" efekti */
+#btnJar .bottle-scroll{
+  position:absolute;
+}
+#btnJar .bottle-scroll::marker{ display:none; } /* boş */
+#btnJar .bottle-scroll{
+  outline: none;
+}
+#btnJar .bottle-scroll{
+  filter: saturate(1.03) contrast(1.02);
+}
+#btnJar .bottle-scroll{
+  /* kenar vignette */
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.18),
+    inset 0 0 18px rgba(120,70,25,0.16),
+    0 10px 20px rgba(0,0,0,0.30) !important;
+}
+
+/* iç çizgiler (varsa) daha doğal ve ince görünsün */
+#btnJar .bottle-scroll .lines{
+  opacity:0.28 !important;
+  background: repeating-linear-gradient(
+    180deg,
+    rgba(70,45,15,0.00) 0px,
+    rgba(70,45,15,0.00) 8px,
+    rgba(70,45,15,0.08) 9px
+  ) !important;
+}
+
     }
     #btnJar .bottle-scroll::before,
     #btnJar .bottle-scroll::after{
