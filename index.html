@@ -815,6 +815,52 @@ Seni seviyorum.`;
       if(e.persisted && card.classList.contains("ready")){
         await renderNew();
       }
+      <div id="noteJar" style="
+position:fixed;
+right:20px;
+bottom:20px;
+width:300px;
+background:rgba(10,15,35,.85);
+border:1px solid rgba(255,255,255,.1);
+border-radius:20px;
+padding:15px;
+backdrop-filter:blur(10px);
+z-index:9999;
+">
+
+<div style="font-weight:bold;margin-bottom:8px">Onun Sözleri 💌</div>
+
+<textarea id="noteInput"
+placeholder="Onun sana söylediği bir şeyi yaz..."
+style="
+width:100%;
+height:70px;
+border-radius:10px;
+border:none;
+padding:10px;
+resize:none;
+outline:none;
+margin-bottom:8px;
+"></textarea>
+
+<button onclick="addNote()" style="
+width:100%;
+padding:10px;
+border-radius:10px;
+border:none;
+cursor:pointer;
+background:#ff7ac8;
+color:white;
+font-weight:bold;
+margin-bottom:10px;
+">
+Kavanoza At ✨
+</button>
+
+<div id="noteList" style="max-height:200px;overflow:auto"></div>
+
+</div>
+
     });
   </script>
 </body>
