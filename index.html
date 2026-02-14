@@ -491,7 +491,7 @@
       display:none !important;
     }
 
-    /* Şişe */
+    /* Şişe container */
     #btnJar .bottle{
       position:absolute;
       left:50%;
@@ -512,26 +512,9 @@
       width:28px;
       height:26px;
       border-radius:14px 14px 10px 10px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.22), rgba(255,255,255,0.06));
+      background: linear-gradient(180deg, rgba(255,255,255,0.22), rgba(255,255,255,0.06));
       border:1px solid rgba(255,255,255,0.18);
       box-shadow:0 10px 18px rgba(0,0,0,0.35);
-    }
-
-    /* Şişe gövde */
-    #btnJar .bottle-body{
-      position:absolute;
-      inset:10px 0 0 0;
-      border-radius:22px 22px 28px 28px;
-      background:
-        radial-gradient(80px 50px at 30% 25%, rgba(255,255,255,0.18), transparent 65%),
-        radial-gradient(90px 60px at 70% 35%, rgba(255,255,255,0.10), transparent 70%),
-        linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.04));
-      border:1px solid rgba(255,255,255,0.18);
-      box-shadow:
-        0 18px 36px rgba(0,0,0,0.45),
-        0 0 0 1px rgba(255,255,255,0.06) inset;
-      overflow:hidden;
     }
 
     /* Mantar */
@@ -560,70 +543,51 @@
       opacity:0.45;
     }
 
-    /* İç rulo kağıt */
-   /* ====== Şişe içindeki rulo kağıdı "sararmış / eski" yap ====== */
-#btnJar .bottle-scroll{
-  background:
-    /* hafif kir/benek */
-    radial-gradient(12px 10px at 18% 30%, rgba(120,70,25,0.18), transparent 70%),
-    radial-gradient(14px 12px at 72% 58%, rgba(120,70,25,0.14), transparent 70%),
-    radial-gradient(10px 8px  at 46% 78%, rgba(120,70,25,0.12), transparent 70%),
-
-    /* kağıt dokusu */
-    repeating-linear-gradient(
-      0deg,
-      rgba(90,60,20,0.00) 0px,
-      rgba(90,60,20,0.00) 7px,
-      rgba(90,60,20,0.06) 8px
-    ),
-
-    /* ana sarımtırak ton */
-    linear-gradient(180deg, #fff1c7, #f2d9a2) !important;
-
-  border: 1px solid rgba(80,50,20,0.22) !important;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.30) !important;
-}
-
-/* rulo uçlarını da sarart + kenar koyulaştır */
-#btnJar .bottle-scroll::before,
-#btnJar .bottle-scroll::after{
-  background:
-    radial-gradient(circle at 35% 35%, rgba(255,255,255,0.55), transparent 60%),
-    linear-gradient(180deg, #fff1c7, #f2d9a2) !important;
-  border: 1px solid rgba(80,50,20,0.18) !important;
-}
-
-/* rulo kenarlarında "yanık/eskimiş" efekti */
-#btnJar .bottle-scroll{
-  position:absolute;
-}
-#btnJar .bottle-scroll::marker{ display:none; } /* boş */
-#btnJar .bottle-scroll{
-  outline: none;
-}
-#btnJar .bottle-scroll{
-  filter: saturate(1.03) contrast(1.02);
-}
-#btnJar .bottle-scroll{
-  /* kenar vignette */
-  box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,0.18),
-    inset 0 0 18px rgba(120,70,25,0.16),
-    0 10px 20px rgba(0,0,0,0.30) !important;
-}
-
-/* iç çizgiler (varsa) daha doğal ve ince görünsün */
-#btnJar .bottle-scroll .lines{
-  opacity:0.28 !important;
-  background: repeating-linear-gradient(
-    180deg,
-    rgba(70,45,15,0.00) 0px,
-    rgba(70,45,15,0.00) 8px,
-    rgba(70,45,15,0.08) 9px
-  ) !important;
-}
-
+    /* Şişe gövde */
+    #btnJar .bottle-body{
+      position:absolute;
+      inset:10px 0 0 0;
+      border-radius:22px 22px 28px 28px;
+      background:
+        radial-gradient(80px 50px at 30% 25%, rgba(255,255,255,0.18), transparent 65%),
+        radial-gradient(90px 60px at 70% 35%, rgba(255,255,255,0.10), transparent 70%),
+        linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.04));
+      border:1px solid rgba(255,255,255,0.18);
+      box-shadow:
+        0 18px 36px rgba(0,0,0,0.45),
+        0 0 0 1px rgba(255,255,255,0.06) inset;
+      overflow:hidden;
     }
+
+    /* İç rulo kağıt (PARŞÖMEN) */
+    #btnJar .bottle-scroll{
+      position:absolute;
+      left:50%;
+      top:34px;
+      transform:translateX(-50%) rotate(-6deg);
+      width:48px;
+      height:36px;
+      border-radius:12px;
+      background:
+        radial-gradient(12px 10px at 18% 30%, rgba(120,70,25,0.18), transparent 70%),
+        radial-gradient(14px 12px at 72% 58%, rgba(120,70,25,0.14), transparent 70%),
+        radial-gradient(10px 8px  at 46% 78%, rgba(120,70,25,0.12), transparent 70%),
+        repeating-linear-gradient(
+          0deg,
+          rgba(90,60,20,0.00) 0px,
+          rgba(90,60,20,0.00) 7px,
+          rgba(90,60,20,0.06) 8px
+        ),
+        linear-gradient(180deg, #fff1c7, #f2d9a2);
+      border:1px solid rgba(80,50,20,0.22);
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.18),
+        inset 0 0 18px rgba(120,70,25,0.16),
+        0 10px 20px rgba(0,0,0,0.30);
+      filter:saturate(1.03) contrast(1.02);
+    }
+
+    /* rulo uçları */
     #btnJar .bottle-scroll::before,
     #btnJar .bottle-scroll::after{
       content:"";
@@ -633,24 +597,26 @@
       width:12px;
       height:12px;
       border-radius:50%;
-      background:#fff;
-      border:1px solid rgba(15,23,42,0.08);
+      background:
+        radial-gradient(circle at 35% 35%, rgba(255,255,255,0.55), transparent 60%),
+        linear-gradient(180deg, #fff1c7, #f2d9a2);
+      border:1px solid rgba(80,50,20,0.18);
     }
     #btnJar .bottle-scroll::before{ left:-7px; }
     #btnJar .bottle-scroll::after{ right:-7px; }
 
-    /* Kağıt çizgisi */
+    /* Kağıt çizgileri */
     #btnJar .bottle-scroll .lines{
       position:absolute;
       inset:6px 10px;
       border-radius:8px;
       background: repeating-linear-gradient(
         180deg,
-        rgba(0,0,0,0.00) 0px,
-        rgba(0,0,0,0.00) 7px,
-        rgba(0,0,0,0.07) 8px
+        rgba(70,45,15,0.00) 0px,
+        rgba(70,45,15,0.00) 7px,
+        rgba(70,45,15,0.08) 8px
       );
-      opacity:0.35;
+      opacity:0.28;
       pointer-events:none;
     }
 
@@ -679,7 +645,6 @@
   <button class="jar-fab" id="btnJar" title="Kavanozdaki mektup">
     <div class="halo" aria-hidden="true"></div>
     <div class="jar-draw" aria-hidden="true">
-      <!-- Şişe DOM'u JS ile eklenecek -->
       <div class="lid"></div>
       <div class="glass">
         <div class="shine"></div>
