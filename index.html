@@ -9,15 +9,10 @@
       --night1:#040815;
       --night2:#08122d;
       --night3:#0e1a3a;
-
       --text:#eef3fb;
       --muted:rgba(238,243,251,0.62);
-      --border:rgba(255,255,255,0.10);
-      --shadow:rgba(0,0,0,0.60);
-
-      --accent: 150,190,255; /* foto bazlı değişiyor */
+      --accent: 150,190,255;
     }
-
     *{ box-sizing:border-box; }
     body{
       margin:0; min-height:100vh;
@@ -34,65 +29,53 @@
       position:relative;
     }
 
-    /* ⭐ YILDIZLAR (daha belirgin, bazıları çok parlak) */
-    .stars, .stars2, .stars3{
-      position:fixed; inset:0;
-      pointer-events:none; z-index:0;
-      background-repeat:repeat;
-      mix-blend-mode: screen;
-    }
-
+    /* stars stronger */
+    .stars, .stars2, .stars3{ position:fixed; inset:0; pointer-events:none; z-index:0; background-repeat:repeat; mix-blend-mode: screen; }
     .stars{
       opacity:0.95;
       background-image:
-        radial-gradient(1px 1px at 10px 20px, rgba(255,255,255,0.70), transparent 62%),
+        radial-gradient(1px 1px at 10px 20px, rgba(255,255,255,0.72), transparent 62%),
         radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.55), transparent 62%),
-        radial-gradient(1px 1px at 90px 130px, rgba(255,255,255,0.45), transparent 62%),
-        radial-gradient(1px 1px at 150px 30px, rgba(255,255,255,0.60), transparent 62%),
-        radial-gradient(1px 1px at 210px 110px, rgba(255,255,255,0.42), transparent 62%),
-        radial-gradient(1px 1px at 60px 160px, rgba(255,255,255,0.55), transparent 62%),
-        radial-gradient(1px 1px at 200px 170px, rgba(255,255,255,0.40), transparent 62%);
+        radial-gradient(1px 1px at 90px 130px, rgba(255,255,255,0.46), transparent 62%),
+        radial-gradient(1px 1px at 150px 30px, rgba(255,255,255,0.62), transparent 62%),
+        radial-gradient(1px 1px at 210px 110px, rgba(255,255,255,0.44), transparent 62%),
+        radial-gradient(1px 1px at 60px 160px, rgba(255,255,255,0.56), transparent 62%),
+        radial-gradient(1px 1px at 200px 170px, rgba(255,255,255,0.42), transparent 62%);
       background-size: 240px 200px;
       animation: drift1 34s linear infinite;
-      filter: drop-shadow(0 0 6px rgba(255,255,255,0.10));
+      filter: drop-shadow(0 0 10px rgba(255,255,255,0.14));
     }
-
     .stars2{
       opacity:0.85;
       background-image:
         radial-gradient(1.6px 1.6px at 30px 50px, rgba(255,255,255,0.70), transparent 62%),
-        radial-gradient(1.6px 1.6px at 120px 90px, rgba(255,255,255,0.55), transparent 62%),
-        radial-gradient(1.6px 1.6px at 180px 140px, rgba(255,255,255,0.50), transparent 62%),
-        radial-gradient(1.6px 1.6px at 70px 140px, rgba(255,255,255,0.46), transparent 62%),
-        radial-gradient(1.6px 1.6px at 210px 40px, rgba(255,255,255,0.58), transparent 62%);
+        radial-gradient(1.6px 1.6px at 120px 90px, rgba(255,255,255,0.56), transparent 62%),
+        radial-gradient(1.6px 1.6px at 180px 140px, rgba(255,255,255,0.52), transparent 62%),
+        radial-gradient(1.6px 1.6px at 70px 140px, rgba(255,255,255,0.48), transparent 62%),
+        radial-gradient(1.6px 1.6px at 210px 40px, rgba(255,255,255,0.60), transparent 62%);
       background-size: 320px 260px;
       animation: drift2 52s linear infinite;
-      filter: drop-shadow(0 0 10px rgba(255,255,255,0.14));
+      filter: drop-shadow(0 0 14px rgba(255,255,255,0.18));
     }
-
-    /* parlak yıldızlar + ışıma */
     .stars3{
-      opacity:0.80;
+      opacity:0.82;
       background-image:
-        radial-gradient(2.6px 2.6px at 60px 40px, rgba(255,255,255,0.90), transparent 64%),
-        radial-gradient(2.6px 2.6px at 160px 120px, rgba(255,255,255,0.72), transparent 64%),
-        radial-gradient(2.6px 2.6px at 220px 70px, rgba(255,255,255,0.65), transparent 64%),
-        radial-gradient(2.6px 2.6px at 90px 180px, rgba(255,255,255,0.78), transparent 64%),
-        radial-gradient(2.6px 2.6px at 260px 150px, rgba(255,255,255,0.62), transparent 64%);
+        radial-gradient(3px 3px at 60px 40px, rgba(255,255,255,0.95), transparent 64%),
+        radial-gradient(2.8px 2.8px at 160px 120px, rgba(255,255,255,0.78), transparent 64%),
+        radial-gradient(2.8px 2.8px at 220px 70px, rgba(255,255,255,0.72), transparent 64%),
+        radial-gradient(3px 3px at 90px 180px, rgba(255,255,255,0.86), transparent 64%),
+        radial-gradient(2.8px 2.8px at 260px 150px, rgba(255,255,255,0.68), transparent 64%);
       background-size: 420px 340px;
       animation: drift3 76s linear infinite, twinkle3 3.6s ease-in-out infinite;
-      filter: blur(0.25px) drop-shadow(0 0 14px rgba(255,255,255,0.22));
+      filter: blur(0.2px) drop-shadow(0 0 18px rgba(255,255,255,0.26));
     }
-
     @keyframes drift1{ 0%{transform:translate3d(0,0,0)} 100%{transform:translate3d(-120px,80px,0)} }
     @keyframes drift2{ 0%{transform:translate3d(0,0,0)} 100%{transform:translate3d(-90px,60px,0)} }
     @keyframes drift3{ 0%{transform:translate3d(0,0,0)} 100%{transform:translate3d(-60px,40px,0)} }
     @keyframes twinkle3{ 0%,100%{ opacity:0.72 } 50%{ opacity:0.98 } }
 
-    /* nebula */
     .nebula{
-      position:fixed; inset:-180px;
-      pointer-events:none; z-index:0;
+      position:fixed; inset:-180px; pointer-events:none; z-index:0;
       background:
         radial-gradient(340px 260px at 18% 28%, rgba(255,210,140,0.16), transparent 72%),
         radial-gradient(420px 320px at 78% 22%, rgba(var(--accent),0.18), transparent 72%),
@@ -101,195 +84,69 @@
       opacity:0.95;
       animation: floatNebula 10s ease-in-out infinite;
     }
-    @keyframes floatNebula{
-      0%{ transform: translate3d(0,0,0) scale(1); }
-      50%{ transform: translate3d(-18px, 10px,0) scale(1.02); }
-      100%{ transform: translate3d(0,0,0) scale(1); }
-    }
+    @keyframes floatNebula{ 0%{transform:translate3d(0,0,0) scale(1)} 50%{transform:translate3d(-18px,10px,0) scale(1.02)} 100%{transform:translate3d(0,0,0) scale(1)} }
 
-    /* ===== KAPAK ===== */
+    /* cover + card (shortened, same as before) */
     .cover{
-      position:fixed; inset:0;
-      display:flex; align-items:center; justify-content:center;
-      padding:22px;
-      z-index:999;
-      transition: opacity 380ms ease, transform 380ms ease;
-      background:
-        radial-gradient(900px 520px at 15% 20%, rgba(160,180,255,0.16), transparent 60%),
-        radial-gradient(700px 420px at 80% 15%, rgba(255,210,120,0.12), transparent 62%),
-        linear-gradient(180deg, rgba(5,11,22,0.94), rgba(10,19,48,0.94));
+      position:fixed; inset:0; display:flex; align-items:center; justify-content:center; padding:22px;
+      z-index:999; transition: opacity 380ms ease, transform 380ms ease;
+      background: linear-gradient(180deg, rgba(5,11,22,0.94), rgba(10,19,48,0.94));
       backdrop-filter: blur(10px);
-      overflow:hidden;
     }
     .cover.hidden{ opacity:0; pointer-events:none; transform: translateY(-6px); }
     .cover-card{
-      width:min(520px, 100%);
-      border-radius:26px;
-      border:1px solid rgba(255,255,255,0.12);
-      background: rgba(10, 20, 38, 0.62);
-      box-shadow: 0 26px 90px rgba(0,0,0,0.45);
-      padding:18px;
-      text-align:center;
-      position:relative;
-      overflow:hidden;
-      backdrop-filter: blur(14px);
-      color:#eef3fb;
-      z-index:1;
+      width:min(520px, 100%); border-radius:26px; border:1px solid rgba(255,255,255,0.12);
+      background: rgba(10,20,38,0.62); box-shadow: 0 26px 90px rgba(0,0,0,0.45);
+      padding:18px; text-align:center; position:relative; overflow:hidden; backdrop-filter: blur(14px); z-index:1;
     }
-    .cover-card::before{
-      content:"";
-      position:absolute; inset:-80px;
-      background: radial-gradient(520px 320px at 50% 30%, rgba(var(--accent),0.22), transparent 70%);
-      filter: blur(20px);
-      pointer-events:none;
-      opacity:0.9;
+    .badge{ display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
+      border:1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.06);
+      color: rgba(238,243,251,0.78); font-size:12px;
     }
-    .badge{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:8px 12px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.06);
-      color: rgba(238,243,251,0.78);
-      font-size:12px;
-      position:relative; z-index:1;
-    }
-    .title{ margin:14px 0 6px; font-size:26px; letter-spacing:-0.02em; position:relative; z-index:1; }
-    .subtitle{ margin:0 0 14px; color: rgba(238,243,251,0.62); font-size:14px; position:relative; z-index:1; }
+    .title{ margin:14px 0 6px; font-size:26px; letter-spacing:-0.02em; }
+    .subtitle{ margin:0 0 14px; color: rgba(238,243,251,0.62); font-size:14px; }
     .open-btn{
-      width:100%;
-      border:1px solid rgba(255,255,255,0.14);
-      background: rgba(var(--accent),0.18);
-      color:#eef3fb;
-      border-radius:16px;
-      padding:12px 14px;
-      cursor:pointer;
-      font-weight:800;
-      font-size:15px;
-      transition: background 160ms ease, transform 120ms ease;
-      position:relative; z-index:1;
-    }
-    .open-btn:hover{ background: rgba(var(--accent),0.26); }
-    .open-btn:active{ transform: scale(0.99); }
-
-    /* ===== KONFETİ ===== */
-    .confetti{ position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index: 998; display:none; }
-    .confetti.show{ display:block; }
-    .piece{
-      position:absolute; width:10px; height:14px; border-radius:3px;
-      background: rgb(var(--accent)); opacity:0.9;
-      animation: fall 1400ms ease-in forwards;
-    }
-    @keyframes fall{
-      0%{ transform: translateY(-20px) rotate(0deg); opacity:0; }
-      10%{ opacity:1; }
-      100%{ transform: translateY(110vh) rotate(420deg); opacity:0.0; }
+      width:100%; border:1px solid rgba(255,255,255,0.14); background: rgba(var(--accent),0.18); color:#eef3fb;
+      border-radius:16px; padding:12px 14px; cursor:pointer; font-weight:800; font-size:15px;
     }
 
-    /* ===== ASIL SAYFA ===== */
     .card{
-      width:min(560px, 100%);
-      border-radius:22px;
-      padding:16px;
-      background: rgba(10, 20, 38, 0.56);
-      border:1px solid rgba(255,255,255,0.12);
-      box-shadow:0 24px 85px rgba(0,0,0,0.50);
-      backdrop-filter: blur(14px);
-      opacity:0;
-      transform: translateY(6px);
-      transition: opacity 420ms ease, transform 420ms ease;
-      position:relative;
-      z-index:1;
+      width:min(560px, 100%); border-radius:22px; padding:16px;
+      background: rgba(10, 20, 38, 0.56); border:1px solid rgba(255,255,255,0.12);
+      box-shadow:0 24px 85px rgba(0,0,0,0.50); backdrop-filter: blur(14px);
+      opacity:0; transform: translateY(6px); transition: opacity 420ms ease, transform 420ms ease;
+      position:relative; z-index:1;
     }
     .card.ready{ opacity:1; transform: translateY(0); }
 
-    .topbar{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:10px; margin-bottom:10px; flex-wrap:wrap;
-    }
-    .pill{
-      font-size:12px;
-      color: rgba(238,243,251,0.74);
-      background: rgba(255,255,255,0.06);
-      border:1px solid rgba(255,255,255,0.12);
-      padding:6px 10px;
-      border-radius:999px;
-      box-shadow: 0 10px 28px rgba(0,0,0,0.25);
-      user-select:none;
-      display:flex; align-items:center; gap:8px; white-space:nowrap;
-    }
-    .dot{
-      width:10px;height:10px;border-radius:999px;
-      background: rgb(255,255,255);
-      box-shadow: 0 0 0 3px rgba(255,255,255,0.14);
-      flex:0 0 auto;
-    }
-
-    /* ===== FOTO ÇERÇEVE + PULSE + HUZME ===== */
     .photo-frame{
-      width:100%;
-      height: clamp(360px, 60vh, 600px);
-      border-radius:22px;
-      position:relative;
-      padding:10px;
-      overflow:hidden;
+      width:100%; height: clamp(360px, 60vh, 600px);
+      border-radius:22px; position:relative; padding:10px; overflow:hidden;
       background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
       border:1px solid rgba(255,255,255,0.14);
-      box-shadow:
-        0 18px 60px rgba(0,0,0,0.45),
-        0 0 0 1px rgba(255,255,255,0.06) inset;
+      box-shadow: 0 18px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.06) inset;
     }
     .photo-frame::before{
-      content:"";
-      position:absolute; inset:-54px; border-radius:32px;
-      background:
-        radial-gradient(520px 360px at 50% 30%, rgba(255,255,255,0.44), transparent 70%),
-        radial-gradient(720px 520px at 50% 70%, rgba(255,255,255,0.24), transparent 72%);
-      filter: blur(18px);
-      opacity:0.95;
-      pointer-events:none;
-      animation: glowPulse 3.2s ease-in-out infinite;
+      content:""; position:absolute; inset:-54px; border-radius:32px;
+      background: radial-gradient(520px 360px at 50% 30%, rgba(255,255,255,0.44), transparent 70%),
+                  radial-gradient(720px 520px at 50% 70%, rgba(255,255,255,0.24), transparent 72%);
+      filter: blur(18px); opacity:0.95; pointer-events:none; animation: glowPulse 3.2s ease-in-out infinite;
     }
     .photo-frame::after{
-      content:"";
-      position:absolute; inset:-40px; border-radius:30px;
+      content:""; position:absolute; inset:-40px; border-radius:30px;
       background:
-        repeating-linear-gradient(
-          110deg,
-          rgba(255,255,255,0.00) 0px,
-          rgba(255,255,255,0.14) 18px,
-          rgba(255,255,255,0.00) 36px
-        ),
-        linear-gradient(180deg,
-          rgba(255,255,255,0.26) 0%,
-          rgba(255,255,255,0.08) 35%,
-          rgba(255,255,255,0.00) 70%
-        ),
+        repeating-linear-gradient(110deg, rgba(255,255,255,0.00) 0px, rgba(255,255,255,0.14) 18px, rgba(255,255,255,0.00) 36px),
+        linear-gradient(180deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.08) 35%, rgba(255,255,255,0.00) 70%),
         radial-gradient(620px 380px at 50% 40%, rgba(var(--accent),0.18), transparent 70%);
-      filter: blur(20px);
-      opacity:0.86;
-      pointer-events:none;
-      transform: translateY(-10px);
-      animation: beamFlow 2.8s ease-in-out infinite;
+      filter: blur(20px); opacity:0.86; pointer-events:none; transform: translateY(-10px); animation: beamFlow 2.8s ease-in-out infinite;
     }
-    @keyframes glowPulse{
-      0%,100%{ opacity:0.78; transform: scale(1.00); }
-      50%{ opacity:1.00; transform: scale(1.03); }
-    }
-    @keyframes beamFlow{
-      0%{ opacity:0.55; transform: translateY(-22px) scale(1.00); }
-      50%{ opacity:0.95; transform: translateY(8px) scale(1.02); }
-      100%{ opacity:0.55; transform: translateY(-22px) scale(1.00); }
-    }
+    @keyframes glowPulse{ 0%,100%{opacity:0.78; transform:scale(1)} 50%{opacity:1; transform:scale(1.03)} }
+    @keyframes beamFlow{ 0%{opacity:0.55; transform:translateY(-22px) scale(1)} 50%{opacity:0.95; transform:translateY(8px) scale(1.02)} 100%{opacity:0.55; transform:translateY(-22px) scale(1)} }
 
     .photo{
-      width:100%; height:100%;
-      object-fit: contain; object-position:center;
-      border-radius:16px;
-      display:block;
-      user-select:none; -webkit-user-drag:none;
-      opacity:0; transform: scale(0.995);
-      transition: opacity 420ms ease, transform 420ms ease;
+      width:100%; height:100%; object-fit: contain; object-position:center; border-radius:16px;
+      display:block; user-select:none; -webkit-user-drag:none;
+      opacity:0; transform: scale(0.995); transition: opacity 420ms ease, transform 420ms ease;
       position:relative; z-index:1;
       filter: saturate(1.05) contrast(1.06) brightness(1.03);
       background: rgba(0,0,0,0.18);
@@ -297,242 +154,153 @@
     .photo.is-visible{ opacity:1; transform:scale(1); }
 
     .msg{ margin:14px 6px 0; font-size:1.10rem; line-height:1.45; min-height:3.2em; color: rgba(238,243,251,0.92); }
-    .cursor{
-      display:inline-block; width:0.55ch;
-      background: rgba(255,255,255,0.35);
-      margin-left:2px; border-radius:6px;
-      transform: translateY(2px);
-      animation: blink 1s infinite;
-    }
+    .cursor{ display:inline-block; width:0.55ch; background: rgba(255,255,255,0.35); margin-left:2px; border-radius:6px; transform: translateY(2px); animation: blink 1s infinite; }
     @keyframes blink{ 0%,49%{opacity:1} 50%,100%{opacity:0.15} }
-    .sub{ margin:8px 6px 0; font-size:0.9rem; color: var(--muted); }
 
-    .row{ display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
-    button{
-      flex:1;
-      border:1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.08);
-      color: rgba(238,243,251,0.92);
-      border-radius:12px;
-      padding:10px 12px;
-      cursor:pointer;
-      font-weight:650;
-      transition: background 160ms ease, transform 120ms ease;
-      min-width: 150px;
-    }
-    button:hover{ background: rgba(255,255,255,0.12); }
-    button:active{ transform: scale(0.99); }
-    .ghost{ background: rgba(255,255,255,0.06); }
-
-    /* ===== SOL ALT KAVANOZ (animasyonlu, emoji değil) ===== */
-    .jar-fab{
-      position:fixed;
-      left:16px;
-      bottom:16px;
-      z-index:1200;
-      width:92px;
-      height:112px;
-      cursor:pointer;
-      border:0;
-      background: transparent;
-      padding:0;
-      filter: drop-shadow(0 18px 35px rgba(0,0,0,0.55));
-      animation: jarFloat 4.2s ease-in-out infinite;
-    }
-    @keyframes jarFloat{
-      0%,100%{ transform: translateY(0) rotate(-1.2deg); }
-      50%{ transform: translateY(-6px) rotate(1.2deg); }
-    }
-    .jar-fab:active{ transform: scale(0.98); }
-
-    .jar-draw{
-      width:100%;
-      height:100%;
-      position:relative;
-    }
-    .jar-draw .lid{
-      position:absolute;
-      top:6px; left:50%;
-      transform: translateX(-50%);
-      width:78px; height:22px;
-      border-radius:10px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.22), rgba(255,255,255,0.08));
-      border:1px solid rgba(255,255,255,0.18);
-      box-shadow: 0 10px 18px rgba(0,0,0,0.35);
-    }
-    .jar-draw .glass{
-      position:absolute;
-      top:26px; left:50%;
-      transform: translateX(-50%);
-      width:86px; height:84px;
-      border-radius:20px 20px 24px 24px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));
-      border:1px solid rgba(255,255,255,0.16);
-      overflow:hidden;
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.05) inset;
-    }
-    .jar-draw .shine{
-      position:absolute; inset:-24px;
-      background: radial-gradient(120px 90px at 25% 20%, rgba(255,255,255,0.22), transparent 65%);
-      filter: blur(10px);
-      opacity:0.95;
-      pointer-events:none;
-    }
-    .jar-draw .lights{
-      position:absolute; inset:0;
-      background:
-        radial-gradient(10px 10px at 25% 40%, rgba(255,210,140,0.40), transparent 62%),
-        radial-gradient(12px 12px at 70% 55%, rgba(var(--accent),0.36), transparent 62%),
-        radial-gradient(10px 10px at 45% 68%, rgba(255,160,210,0.30), transparent 62%),
-        radial-gradient(9px 9px at 55% 35%, rgba(255,255,255,0.30), transparent 62%),
-        radial-gradient(8px 8px at 35% 55%, rgba(255,255,255,0.22), transparent 62%);
-      filter: blur(6px);
-      opacity:0.95;
-      animation: fairyTwinkle 3.2s ease-in-out infinite;
-      pointer-events:none;
-    }
-    @keyframes fairyTwinkle{
-      0%,100%{ opacity:0.72; transform: translateY(0); }
-      50%{ opacity:1; transform: translateY(-5px); }
-    }
-    .jar-draw .note{
-      position:absolute;
-      left:50%;
-      top:54px;
-      transform: translateX(-50%) rotate(-2deg);
-      width:54px; height:40px;
-      border-radius:10px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.86));
-      border:1px solid rgba(15,23,42,0.12);
-      box-shadow: 0 10px 22px rgba(0,0,0,0.26);
-      opacity:0.92;
-    }
-    .jar-draw .note::before{
-      content:"";
-      position:absolute; inset:8px;
-      border-radius:8px;
-      background: repeating-linear-gradient(180deg, rgba(0,0,0,0.00) 0px, rgba(0,0,0,0.00) 10px, rgba(0,0,0,0.07) 11px);
-      opacity:0.35;
-    }
-
-    .jar-fab .halo{
-      position:absolute;
-      inset:-20px;
-      border-radius:28px;
-      background:
-        radial-gradient(120px 90px at 45% 50%, rgba(255,255,255,0.18), transparent 70%),
-        radial-gradient(140px 110px at 55% 70%, rgba(255,255,255,0.10), transparent 72%);
-      filter: blur(16px);
-      opacity:0.85;
-      pointer-events:none;
-      animation: haloPulse 3.6s ease-in-out infinite;
-    }
-    @keyframes haloPulse{
-      0%,100%{ opacity:0.55; transform: scale(1); }
-      50%{ opacity:0.95; transform: scale(1.06); }
-    }
-
-    /* ===== MEKTUP MODAL ===== */
-    .letter-modal{
+    /* ===== BUNNY COUPLE START ===== */
+    .bunny-layer{
       position:fixed; inset:0;
-      display:none; align-items:center; justify-content:center;
-      padding:18px;
-      z-index:1300;
-      background: rgba(0,0,0,0.60);
-      backdrop-filter: blur(10px);
-    }
-    .letter-modal.show{ display:flex; }
-
-    .letter-stage{
-      width:min(560px, 100%);
-      position:relative;
-      border-radius:26px;
-      border:1px solid rgba(255,255,255,0.14);
-      background: rgba(8,14,28,0.74);
-      box-shadow: 0 30px 120px rgba(0,0,0,0.70);
-      padding:16px;
-      overflow:hidden;
-    }
-    .letter-stage::before{
-      content:"";
-      position:absolute; inset:-90px;
-      background:
-        radial-gradient(520px 320px at 20% 20%, rgba(255,210,140,0.16), transparent 72%),
-        radial-gradient(520px 320px at 80% 25%, rgba(var(--accent),0.18), transparent 72%),
-        radial-gradient(520px 320px at 50% 85%, rgba(255,160,210,0.14), transparent 72%);
-      filter: blur(18px);
-      opacity:0.95;
       pointer-events:none;
+      z-index:1100; /* card üstünde */
     }
-    .letter-top{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:10px;
-      position:relative; z-index:1;
-      margin-bottom:10px;
+    .bunny{
+      position:absolute;
+      width:72px; height:72px;
+      transform: translate3d(0,0,0);
+      will-change: transform;
+      filter: drop-shadow(0 16px 22px rgba(0,0,0,0.55));
     }
-    .letter-title{
-      font-weight:900;
-      letter-spacing:-0.02em;
-      font-size:14px;
-      color: rgba(238,243,251,0.88);
-      display:flex; align-items:center; gap:8px;
+    .bunny .body{
+      width:100%; height:100%;
+      border-radius:22px;
+      position:relative;
+      background: rgba(255,255,255,0.90);
+      border: 1px solid rgba(255,255,255,0.35);
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.08) inset;
     }
-    .close-btn{
-      border:1px solid rgba(255,255,255,0.14);
-      background: rgba(255,255,255,0.06);
-      color: rgba(238,243,251,0.9);
+    .bunny.pink .body{ background: rgba(255,220,235,0.92); }
+    .ear{
+      position:absolute; top:-18px; width:16px; height:34px;
       border-radius:12px;
-      padding:8px 10px;
-      cursor:pointer;
-      font-weight:900;
-      transition: background 160ms ease, transform 120ms ease;
-    }
-    .close-btn:hover{ background: rgba(255,255,255,0.10); }
-    .close-btn:active{ transform: scale(0.99); }
-
-    .paper{
-      position:relative;
-      z-index:1;
-      width: min(520px, 100%);
-      margin: 8px auto 0;
-      border-radius:18px;
       background: rgba(255,255,255,0.92);
-      color:#0f172a;
-      border:1px solid rgba(15,23,42,0.10);
-      box-shadow: 0 18px 70px rgba(0,0,0,0.35);
-      padding:16px 16px 14px;
-      transform-origin: 50% 0%;
-      transform: scaleY(0.06);
-      opacity:0;
+      border: 1px solid rgba(0,0,0,0.06);
+      transform-origin: 50% 90%;
+      animation: earWiggle 1.3s ease-in-out infinite;
     }
-    .letter-modal.show .paper{
-      animation: paperUnfold 720ms cubic-bezier(.2,.9,.1,1) 120ms forwards;
+    .pink .ear{ background: rgba(255,220,235,0.95); }
+    .ear.left{ left:16px; transform: rotate(-10deg); }
+    .ear.right{ right:16px; transform: rotate(10deg); animation-delay: 120ms; }
+    @keyframes earWiggle{
+      0%,100%{ transform: rotate(var(--rot, 0deg)); }
+      50%{ transform: rotate(calc(var(--rot,0deg) + 10deg)); }
     }
-    @keyframes paperUnfold{
-      0%{ opacity:0; transform: scaleY(0.06); }
-      35%{ opacity:1; }
-      100%{ opacity:1; transform: scaleY(1); }
-    }
-    .paper::before{
-      content:"";
-      position:absolute; inset:12px;
-      border-radius:14px;
-      background:
-        repeating-linear-gradient(180deg,
-          rgba(0,0,0,0.00) 0px,
-          rgba(0,0,0,0.00) 12px,
-          rgba(0,0,0,0.06) 13px
-        );
-      opacity:0.32;
-      pointer-events:none;
-    }
-    .letter-text{ position:relative; z-index:1; white-space:pre-wrap; line-height:1.55; font-size:15px; }
-    .sig{ position:relative; z-index:1; margin-top:12px; color: rgba(15,23,42,0.62); font-weight:900; font-size:13px; }
+    .bunny .ear.left{ --rot:-10deg; }
+    .bunny .ear.right{ --rot:10deg; }
 
-    /* küçük ekranlarda buton çakışmasın */
-    @media (max-width:420px){
-      .jar-fab{ left:12px; bottom:12px; transform: scale(0.92); }
+    .face{
+      position:absolute; inset:0;
     }
+    .eye{
+      position:absolute; top:26px; width:8px; height:10px; border-radius:6px;
+      background: rgba(10,20,38,0.85);
+    }
+    .eye.left{ left:22px; }
+    .eye.right{ right:22px; }
+    .nose{
+      position:absolute; top:40px; left:50%;
+      width:10px; height:8px;
+      transform: translateX(-50%);
+      border-radius:8px;
+      background: rgba(255,140,170,0.95);
+    }
+    .mouth{
+      position:absolute; top:48px; left:50%;
+      width:20px; height:12px;
+      transform: translateX(-50%);
+      border-bottom: 2px solid rgba(10,20,38,0.45);
+      border-radius: 0 0 12px 12px;
+      opacity:0.8;
+    }
+
+    .hop{
+      position:absolute; inset:0;
+      animation: hop 620ms ease-in-out infinite;
+    }
+    @keyframes hop{
+      0%,100%{ transform: translateY(0); }
+      50%{ transform: translateY(-3px); }
+    }
+
+    .carrot{
+      position:absolute;
+      width:20px; height:28px;
+      border-radius: 8px 8px 12px 12px;
+      background: rgba(255,160,90,0.95);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+      pointer-events:none;
+      opacity:0;
+      transform: translate3d(0,0,0) rotate(0deg);
+      will-change: transform, opacity;
+    }
+    .carrot::before{
+      content:"";
+      position:absolute;
+      top:-8px; left:50%;
+      width:14px; height:10px;
+      transform: translateX(-50%);
+      border-radius:10px;
+      background: rgba(120,220,140,0.95);
+      filter: drop-shadow(0 0 10px rgba(120,220,140,0.25));
+    }
+    .carrot.show{ opacity:1; }
+    .chomp{
+      animation: chomp 360ms ease-in-out infinite;
+    }
+    @keyframes chomp{
+      0%,100%{ transform: scale(1); }
+      50%{ transform: scale(0.92); }
+    }
+
+    .heart{
+      position:absolute;
+      width:18px; height:18px;
+      transform: rotate(45deg);
+      background: rgba(255,120,160,0.95);
+      border-radius: 4px;
+      opacity:0;
+      pointer-events:none;
+      filter: drop-shadow(0 0 10px rgba(255,120,160,0.25));
+    }
+    .heart::before, .heart::after{
+      content:"";
+      position:absolute;
+      width:18px; height:18px;
+      background: rgba(255,120,160,0.95);
+      border-radius: 50%;
+    }
+    .heart::before{ left:-9px; top:0; }
+    .heart::after{ left:0; top:-9px; }
+    .heart.pop{
+      animation: heartPop 900ms ease forwards;
+    }
+    @keyframes heartPop{
+      0%{ opacity:0; transform: translateY(0) rotate(45deg) scale(0.6); }
+      20%{ opacity:1; }
+      100%{ opacity:0; transform: translateY(-30px) rotate(45deg) scale(1.15); }
+    }
+    /* ===== BUNNY COUPLE END ===== */
+
+    /* letter modal minimal (optional) */
+    .letter-modal{ position:fixed; inset:0; display:none; align-items:center; justify-content:center; padding:18px; z-index:1300; background: rgba(0,0,0,0.60); backdrop-filter: blur(10px); }
+    .letter-modal.show{ display:flex; }
+    .letter-stage{ width:min(560px, 100%); border-radius:26px; border:1px solid rgba(255,255,255,0.14); background: rgba(8,14,28,0.74); box-shadow: 0 30px 120px rgba(0,0,0,0.70); padding:16px; }
+    .paper{ width:100%; border-radius:18px; background: rgba(255,255,255,0.92); color:#0f172a; border:1px solid rgba(15,23,42,0.10); box-shadow: 0 18px 70px rgba(0,0,0,0.35); padding:16px; transform-origin: 50% 0%; transform: scaleY(0.06); opacity:0; }
+    .letter-modal.show .paper{ animation: paperUnfold 720ms cubic-bezier(.2,.9,.1,1) 120ms forwards; }
+    @keyframes paperUnfold{ 0%{opacity:0; transform:scaleY(0.06)} 35%{opacity:1} 100%{opacity:1; transform:scaleY(1)} }
+    .letter-text{ white-space:pre-wrap; line-height:1.55; font-size:15px; }
+    .sig{ margin-top:12px; color: rgba(15,23,42,0.62); font-weight:900; font-size:13px; }
+    .close-btn{ border:1px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.06); color: rgba(238,243,251,0.9); border-radius:12px; padding:8px 10px; cursor:pointer; font-weight:900; }
+
   </style>
 </head>
 <body>
@@ -541,29 +309,16 @@
   <div class="stars3"></div>
   <div class="nebula"></div>
 
-  <div class="confetti" id="confetti"></div>
-
-  <!-- SOL ALT KAVANOZ -->
-  <button class="jar-fab" id="btnJar" title="Kavanozdaki mektup">
-    <div class="halo" aria-hidden="true"></div>
-    <div class="jar-draw" aria-hidden="true">
-      <div class="lid"></div>
-      <div class="glass">
-        <div class="shine"></div>
-        <div class="lights"></div>
-      </div>
-      <div class="note"></div>
-    </div>
-  </button>
+  <!-- ===== BUNNY COUPLE LAYER ===== -->
+  <div class="bunny-layer" id="bunnyLayer" aria-hidden="true"></div>
 
   <!-- MEKTUP MODAL -->
   <div class="letter-modal" id="letterModal" aria-hidden="true">
-    <div class="letter-stage" id="letterStage" role="dialog" aria-modal="true">
-      <div class="letter-top">
-        <div class="letter-title">🫙 Kavanozdaki Mektup</div>
+    <div class="letter-stage" role="dialog" aria-modal="true">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;">
+        <div style="font-weight:900;letter-spacing:-0.02em;font-size:14px;color:rgba(238,243,251,0.88);">🫙 Kavanozdaki Mektup</div>
         <button class="close-btn" id="btnLetterClose">Kapat</button>
       </div>
-
       <div class="paper" id="paper">
         <div class="letter-text" id="letterText"></div>
         <div class="sig" id="letterSig"></div>
@@ -571,7 +326,7 @@
     </div>
   </div>
 
-  <!-- KAPAK -->
+  <!-- COVER -->
   <div class="cover" id="cover">
     <div class="cover-card">
       <div class="badge">🎁 <span>Senin için küçük bir şey</span></div>
@@ -581,363 +336,297 @@
     </div>
   </div>
 
-  <!-- İÇERİK -->
+  <!-- CONTENT -->
   <div class="card" id="card">
-    <div class="topbar">
-      <div class="pill" id="pillLeft"><span class="dot" aria-hidden="true"></span><span>Mesaj: —</span></div>
-      <div class="pill" id="pillRight"><span>Foto: —</span></div>
-      <div class="pill" id="pillMusic"><span>🎵</span><span>Müzik: Kapalı</span></div>
-    </div>
-
     <div class="photo-frame">
       <img id="photo" class="photo" alt="fotoğraf" />
     </div>
-
     <div class="msg" id="message"></div>
-    <div class="sub">Yenileyince yeni mesaj + foto gelir.</div>
-
-    <div class="row">
-      <button id="btnNew">Yeni getir</button>
-      <button id="btnMusic" class="ghost">🎵 Müzik aç</button>
-      <button id="btnReset" class="ghost">Listeyi sıfırla</button>
-      <button id="btnShare" class="ghost">Paylaş</button>
-    </div>
   </div>
 
   <script>
-    // === SEN BURAYI DÜZENLE ===
+    // ===== MEKTUP METNİ =====
     const LETTER_TEXT =
 `Yunisim,
 
 Bunu okurken nerede olursan ol, bil ki aklımın bir köşesinde hep sen varsın.
-Bazen günler karışıyor, bazen ben dağılıyorum ama seninle toparlanmayı seviyorum.
-
-Bu kavanozun içinde sakladığım şey bir “mektup” gibi dursa da aslında:
-Benim içimde büyüyen “iyi ki”lerin toplamı.
-
 Seni seviyorum.`;
-
     const LETTER_SIGN = "— Dammy";
 
-    // ====== AYARLAR ======
+    // ===== MESAJ+FOTO (min) =====
     const MESSAGES = [
       "Bugün de seni seviyorum.",
       "Kalbimden geçenler: iyi ki varsın.",
       "Biraz susup sarılasım var.",
-      "Gülüşün dünyayı düzeltemiyor ama beni düzeltiyor.",
-      "Yanındayım. Nokta.",
-      "İçimden sana bir cümle düşüyor: özledim."
+      "Gülüşün dünyayı düzeltemiyor ama beni düzeltiyor."
     ];
+    const PHOTO_DIR="assets/yunis/", PHOTO_START=1, PHOTO_END=119;
 
-    const PHOTO_DIR   = "assets/yunis/";
-    const PHOTO_START = 1;
-    const PHOTO_END   = 119;
+    function pad4(n){ return String(n).padStart(4,"0"); }
+    const PHOTO_LIST = (() => {
+      const arr = [];
+      for(let i=PHOTO_START;i<=PHOTO_END;i++) arr.push(PHOTO_DIR + pad4(i) + ".jpg");
+      return arr;
+    })();
 
-    const MUSIC_SRC = "assets/music.mp3";
-
-    // ====== STORAGE ======
-    function storageOK(){
-      try{ const k="__t"; localStorage.setItem(k,"1"); localStorage.removeItem(k); return true; }
-      catch(e){ return false; }
-    }
+    function storageOK(){ try{ const k="__t"; localStorage.setItem(k,"1"); localStorage.removeItem(k); return true; }catch(e){ return false; } }
     const HAS_LS = storageOK();
     const memStore = new Map();
-
     function lsGet(key, fallback){
-      try{
-        const raw = HAS_LS ? localStorage.getItem(key) : memStore.get(key);
-        return raw ? JSON.parse(raw) : fallback;
-      }catch(e){ return fallback; }
+      try{ const raw = HAS_LS ? localStorage.getItem(key) : memStore.get(key); return raw ? JSON.parse(raw) : fallback; }
+      catch(e){ return fallback; }
     }
     function lsSet(key, value){
       const raw = JSON.stringify(value);
-      if(HAS_LS) localStorage.setItem(key, raw);
-      else memStore.set(key, raw);
+      if(HAS_LS) localStorage.setItem(key, raw); else memStore.set(key, raw);
     }
-    function lsDel(key){
-      if(HAS_LS) localStorage.removeItem(key);
-      else memStore.delete(key);
-    }
-
-    function shuffle(arr){
-      for(let i=arr.length-1;i>0;i--){
-        const j = Math.floor(Math.random()*(i+1));
-        [arr[i],arr[j]] = [arr[j],arr[i]];
-      }
-      return arr;
-    }
+    function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
     function getNextFromPool(poolKey, sourceArray){
       let pool = lsGet(poolKey, null);
-      if(!Array.isArray(pool) || pool.length === 0){
-        pool = shuffle([...sourceArray]);
-      }
+      if(!Array.isArray(pool) || pool.length===0) pool = shuffle([...sourceArray]);
       const next = pool.pop();
       lsSet(poolKey, pool);
       return next;
     }
-    function resetPool(poolKey){ lsDel(poolKey); }
-
-    // ====== FOTO LİSTESİ ======
-    function pad4(n){ return String(n).padStart(4,"0"); }
-    const PHOTO_LIST = (() => {
-      const arr = [];
-      for(let i=PHOTO_START;i<=PHOTO_END;i++){
-        arr.push(PHOTO_DIR + pad4(i) + ".jpg");
+    function nextDifferent(poolKey, sourceArray, lastKey, tries=10){
+      const last = lsGet(lastKey, null);
+      let chosen=null;
+      for(let t=0;t<tries;t++){
+        chosen = getNextFromPool(poolKey, sourceArray);
+        if(chosen !== last) break;
       }
-      return arr;
-    })();
+      lsSet(lastKey, chosen);
+      return chosen;
+    }
 
-    // ====== TYPEWRITER ======
-    let twTimer = null;
+    let twTimer=null;
     function typewriter(el, text, speed=16){
       if(twTimer) clearInterval(twTimer);
-      el.innerHTML = "";
-      const span = document.createElement("span");
-      const cur = document.createElement("span");
-      cur.className = "cursor";
-      el.appendChild(span);
-      el.appendChild(cur);
-
-      let i = 0;
-      twTimer = setInterval(() => {
-        i++;
-        span.textContent = text.slice(0, i);
-        if(i >= text.length){
-          clearInterval(twTimer);
-          twTimer = null;
-        }
-      }, speed);
+      el.innerHTML="";
+      const span=document.createElement("span");
+      const cur=document.createElement("span");
+      cur.className="cursor";
+      el.appendChild(span); el.appendChild(cur);
+      let i=0;
+      twTimer=setInterval(()=>{ i++; span.textContent=text.slice(0,i); if(i>=text.length){ clearInterval(twTimer); twTimer=null; } }, speed);
     }
 
-    // ====== TEMA (HER FOTO) ======
     function setAccent(rgb){ document.documentElement.style.setProperty("--accent", rgb); }
     function accentFromString(str){
-      let h = 2166136261;
-      for(let i=0;i<str.length;i++){
-        h ^= str.charCodeAt(i);
-        h = Math.imul(h, 16777619);
-      }
-      const r = 70 + (h & 0x7F);
-      const g = 70 + ((h>>8) & 0x7F);
-      const b = 70 + ((h>>16) & 0x7F);
+      let h=2166136261;
+      for(let i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,16777619); }
+      const r=70+(h&0x7F), g=70+((h>>8)&0x7F), b=70+((h>>16)&0x7F);
       return `${r},${g},${b}`;
     }
-    function tryAccentFromImage(img){
-      try{
-        const c = document.createElement("canvas");
-        const ctx = c.getContext("2d", { willReadFrequently:true });
-        const w = 28, h = 28;
-        c.width = w; c.height = h;
-        ctx.drawImage(img, 0, 0, w, h);
-        const data = ctx.getImageData(0,0,w,h).data;
 
-        let r=0,g=0,b=0,count=0;
-        for(let i=0;i<data.length;i+=4){
-          const a = data[i+3];
-          if(a < 120) continue;
-          r += data[i]; g += data[i+1]; b += data[i+2];
-          count++;
-        }
-        if(count < 10) return null;
-
-        r = Math.round(r/count);
-        g = Math.round(g/count);
-        b = Math.round(b/count);
-
-        const max = Math.max(r,g,b), min = Math.min(r,g,b);
-        if((max-min) < 10) return null;
-
-        return `${r},${g},${b}`;
-      }catch(e){ return null; }
-    }
-
-    // ====== GARANTİ FARKLI SEÇİM ======
-    function nextMessageDifferent(){
-      const last = lsGet("last_msg", null);
-      let chosen = null;
-      for(let t=0;t<8;t++){
-        chosen = getNextFromPool("msg_pool", MESSAGES);
-        if(chosen !== last) break;
-      }
-      lsSet("last_msg", chosen);
-      return chosen;
-    }
-    function nextPhotoDifferent(){
-      const last = lsGet("last_photo", null);
-      let chosen = null;
-      for(let t=0;t<12;t++){
-        chosen = getNextFromPool("photo_pool", PHOTO_LIST);
-        if(chosen !== last) break;
-      }
-      lsSet("last_photo", chosen);
-      return chosen;
-    }
-
-    function updatePills(){
-      const msgPool = lsGet("msg_pool", []);
-      const photoPool = lsGet("photo_pool", []);
-      const left = document.getElementById("pillLeft");
-      const right = document.getElementById("pillRight");
-      left.querySelector("span:last-child").textContent = `Mesaj kaldı: ${msgPool.length || MESSAGES.length}`;
-      right.textContent = `Foto kaldı: ${photoPool.length || PHOTO_LIST.length}`;
-    }
-
-    // ====== MÜZİK ======
-    const audio = new Audio(MUSIC_SRC);
-    audio.loop = true;
-    audio.preload = "auto";
-    audio.volume = lsGet("music_vol", 0.35);
-
-    function setMusicUI(isOn){
-      document.getElementById("pillMusic").lastElementChild.textContent = `Müzik: ${isOn ? "Açık" : "Kapalı"}`;
-      document.getElementById("btnMusic").textContent = isOn ? "🔇 Müzik kapat" : "🎵 Müzik aç";
-    }
-    async function musicOn(){
-      try{
-        await audio.play();
-        lsSet("music_on", true);
-        setMusicUI(true);
-      }catch(e){
-        lsSet("music_on", false);
-        setMusicUI(false);
-      }
-    }
-    function musicOff(){
-      audio.pause();
-      audio.currentTime = 0;
-      lsSet("music_on", false);
-      setMusicUI(false);
-    }
-    async function toggleMusic(){
-      if(!audio.paused) musicOff();
-      else await musicOn();
-    }
-
-    // ====== KONFETİ ======
-    function popConfetti(){
-      const layer = document.getElementById("confetti");
-      layer.innerHTML = "";
-      layer.classList.add("show");
-      const n = 22;
-      for(let i=0;i<n;i++){
-        const p = document.createElement("div");
-        p.className = "piece";
-        p.style.left = (Math.random()*100) + "vw";
-        p.style.animationDelay = (Math.random()*120) + "ms";
-        p.style.opacity = (0.6 + Math.random()*0.4).toFixed(2);
-        p.style.background = `rgba(var(--accent),${(0.75+Math.random()*0.25).toFixed(2)})`;
-        layer.appendChild(p);
-      }
-      setTimeout(() => {
-        layer.classList.remove("show");
-        layer.innerHTML = "";
-      }, 1600);
-    }
-
-    // ====== RENDER ======
     function renderNew(){
-      const msg = nextMessageDifferent();
-      const photoPath = nextPhotoDifferent();
+      const msg = nextDifferent("msg_pool", MESSAGES, "last_msg", 8);
+      const photoPath = nextDifferent("photo_pool", PHOTO_LIST, "last_photo", 12);
       typewriter(document.getElementById("message"), msg, 16);
-
       setAccent(accentFromString(photoPath));
 
       const img = document.getElementById("photo");
       img.classList.remove("is-visible");
-      img.crossOrigin = "anonymous";
-
-      img.onload = () => {
-        const fromCanvas = tryAccentFromImage(img);
-        if(fromCanvas) setAccent(fromCanvas);
-        img.classList.add("is-visible");
-        updatePills();
-      };
-
-      img.onerror = () => {
-        img.onerror = null;
-        img.src = PHOTO_DIR + "0001.jpg?v=" + Date.now();
-      };
-
+      img.onload = ()=> img.classList.add("is-visible");
+      img.onerror = ()=>{ img.onerror=null; img.src = PHOTO_DIR+"0001.jpg?v="+Date.now(); };
       img.src = photoPath + "?v=" + Date.now();
     }
 
-    // ====== KAPAK AÇ ======
+    // ===== MEKTUP MODAL =====
+    const letterModal = document.getElementById("letterModal");
+    document.getElementById("letterText").textContent = LETTER_TEXT;
+    document.getElementById("letterSig").textContent = LETTER_SIGN;
+    document.getElementById("btnLetterClose").addEventListener("click", ()=>{
+      letterModal.classList.remove("show");
+    });
+
+    // ===== BUNNY COUPLE START =====
+    const layer = document.getElementById("bunnyLayer");
+
+    function makeBunny(isPink=false){
+      const el = document.createElement("div");
+      el.className = "bunny" + (isPink ? " pink" : "");
+      el.innerHTML = `
+        <div class="hop">
+          <div class="body">
+            <div class="ear left"></div>
+            <div class="ear right"></div>
+            <div class="face">
+              <div class="eye left"></div>
+              <div class="eye right"></div>
+              <div class="nose"></div>
+              <div class="mouth"></div>
+            </div>
+          </div>
+        </div>
+      `;
+      layer.appendChild(el);
+      return el;
+    }
+
+    const bunnyA = makeBunny(false);
+    const bunnyB = makeBunny(true);
+
+    const carrot = document.createElement("div");
+    carrot.className = "carrot";
+    layer.appendChild(carrot);
+
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    layer.appendChild(heart);
+
+    const state = {
+      active:false,
+      w: window.innerWidth,
+      h: window.innerHeight,
+      a: { x: 80, y: 120, vx: 1.35, vy: 1.05, target:null, eating:false },
+      b: { x: 220, y: 200, vx:-1.10, vy: 1.20, target:null, eating:false },
+      carrot: { show:false, x: 0, y: 0, born:0 },
+      lastCarrotAt: 0,
+      lastHeartAt: 0
+    };
+
+    function clamp(v, min, max){ return Math.max(min, Math.min(max, v)); }
+
+    function spawnCarrot(){
+      const margin = 60;
+      state.carrot.x = margin + Math.random()*(state.w - margin*2);
+      state.carrot.y = margin + Math.random()*(state.h - margin*2);
+      state.carrot.show = true;
+      state.carrot.born = performance.now();
+      carrot.classList.add("show");
+      carrot.style.transform = `translate3d(${state.carrot.x}px, ${state.carrot.y}px, 0) rotate(${(Math.random()*30-15).toFixed(1)}deg)`;
+      // rastgele birine hedef ver
+      if(Math.random() < 0.5){
+        state.a.target = { x: state.carrot.x, y: state.carrot.y };
+        state.b.target = null;
+      }else{
+        state.b.target = { x: state.carrot.x, y: state.carrot.y };
+        state.a.target = null;
+      }
+      state.a.eating = false; state.b.eating = false;
+      bunnyA.classList.remove("chomp");
+      bunnyB.classList.remove("chomp");
+    }
+
+    function popHeart(x,y){
+      const now = performance.now();
+      if(now - state.lastHeartAt < 2500) return;
+      state.lastHeartAt = now;
+      heart.classList.remove("pop");
+      heart.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(45deg) scale(0.6)`;
+      void heart.offsetHeight;
+      heart.classList.add("pop");
+      heart.style.left = "0px";
+      heart.style.top = "0px";
+    }
+
+    function stepBunny(obj, el){
+      const size = 72;
+      let vx = obj.vx, vy = obj.vy;
+
+      if(obj.target){
+        const dx = obj.target.x - obj.x;
+        const dy = obj.target.y - obj.y;
+        const d = Math.hypot(dx,dy) || 1;
+        vx += (dx/d) * 0.06;
+        vy += (dy/d) * 0.06;
+
+        // hedefe varınca "ye"
+        if(d < 18 && state.carrot.show){
+          obj.eating = true;
+          el.classList.add("chomp");
+          state.carrot.show = false;
+          carrot.classList.remove("show");
+          obj.target = null;
+          // yedikten sonra biraz hız değiştir
+          obj.vx = (Math.random()<0.5?-1:1) * (0.8 + Math.random()*1.2);
+          obj.vy = (Math.random()<0.5?-1:1) * (0.8 + Math.random()*1.2);
+          return;
+        }
+      }
+
+      // hızları kıs
+      vx = clamp(vx, -2.2, 2.2);
+      vy = clamp(vy, -2.0, 2.0);
+
+      obj.x += vx; obj.y += vy;
+
+      // duvar sekişi
+      if(obj.x < 10){ obj.x = 10; vx = Math.abs(vx); }
+      if(obj.x > state.w - size - 10){ obj.x = state.w - size - 10; vx = -Math.abs(vx); }
+      if(obj.y < 10){ obj.y = 10; vy = Math.abs(vy); }
+      if(obj.y > state.h - size - 10){ obj.y = state.h - size - 10; vy = -Math.abs(vy); }
+
+      obj.vx = vx; obj.vy = vy;
+
+      // yön
+      const flip = vx < 0 ? "scaleX(-1)" : "scaleX(1)";
+      el.style.transform = `translate3d(${obj.x}px, ${obj.y}px, 0) ${flip}`;
+    }
+
+    function loop(){
+      if(!state.active) return;
+
+      // periyodik havuç
+      const now = performance.now();
+      if(now - state.lastCarrotAt > 4500 + Math.random()*4500){
+        state.lastCarrotAt = now;
+        spawnCarrot();
+      }
+
+      stepBunny(state.a, bunnyA);
+      stepBunny(state.b, bunnyB);
+
+      // yakınlaşınca kalp
+      const dx = (state.a.x+36) - (state.b.x+36);
+      const dy = (state.a.y+36) - (state.b.y+36);
+      const dist = Math.hypot(dx,dy);
+      if(dist < 90){
+        popHeart((state.a.x+state.b.x)/2 + 36, (state.a.y+state.b.y)/2 + 10);
+      }
+
+      requestAnimationFrame(loop);
+    }
+
+    function startBunnies(){
+      if(state.active) return;
+      state.active = true;
+      state.w = window.innerWidth;
+      state.h = window.innerHeight;
+      // başlangıç konumlarını ekranın altlarına yakın at
+      state.a.x = 20 + Math.random()*(state.w*0.35);
+      state.a.y = state.h*0.55 + Math.random()*(state.h*0.35);
+      state.b.x = state.w*0.55 + Math.random()*(state.w*0.35);
+      state.b.y = state.h*0.55 + Math.random()*(state.h*0.35);
+
+      state.a.vx = 1.1 + Math.random()*1.2; state.a.vy = (Math.random()<0.5?-1:1) * (0.7 + Math.random()*1.0);
+      state.b.vx = -1.0 - Math.random()*1.2; state.b.vy = (Math.random()<0.5?-1:1) * (0.7 + Math.random()*1.0);
+
+      state.lastCarrotAt = performance.now() - 2000;
+      spawnCarrot();
+      requestAnimationFrame(loop);
+    }
+
+    window.addEventListener("resize", ()=>{
+      state.w = window.innerWidth; state.h = window.innerHeight;
+    });
+
+    // ===== BUNNY COUPLE END =====
+
+    // Cover açılınca içerik + bunnies
     const cover = document.getElementById("cover");
     const card = document.getElementById("card");
     document.getElementById("btnOpen").addEventListener("click", () => {
       cover.classList.add("hidden");
       card.classList.add("ready");
-      popConfetti();
       renderNew();
-      musicOn();
+      startBunnies();
     });
 
-    // ====== MEKTUP ======
-    const letterModal = document.getElementById("letterModal");
-    const letterStage = document.getElementById("letterStage");
-    const btnJar = document.getElementById("btnJar");
-    const btnLetterClose = document.getElementById("btnLetterClose");
-
-    document.getElementById("letterText").textContent = LETTER_TEXT;
-    document.getElementById("letterSig").textContent = LETTER_SIGN;
-
-    function openLetter(){
-      letterModal.classList.add("show");
-      letterModal.setAttribute("aria-hidden", "false");
-      // animasyon reset
-      const paper = document.getElementById("paper");
-      paper.style.animation = "none";
-      void paper.offsetHeight;
-      paper.style.animation = "";
-    }
-    function closeLetter(){
-      letterModal.classList.remove("show");
-      letterModal.setAttribute("aria-hidden", "true");
-    }
-
-    btnJar.addEventListener("click", openLetter);
-    btnLetterClose.addEventListener("click", closeLetter);
-
-    letterModal.addEventListener("click", (e) => {
-      if(e.target === letterModal) closeLetter();
-    });
-    window.addEventListener("keydown", (e) => {
-      if(e.key === "Escape" && letterModal.classList.contains("show")) closeLetter();
-    });
-
-    // ====== BUTONLAR ======
-    updatePills();
-    setMusicUI(lsGet("music_on", false));
-
-    document.getElementById("btnNew").addEventListener("click", () => {
-      renderNew();
-      if(lsGet("music_on", false) && audio.paused) musicOn();
-    });
-    document.getElementById("btnMusic").addEventListener("click", toggleMusic);
-
-    document.getElementById("btnReset").addEventListener("click", () => {
-      resetPool("msg_pool");
-      resetPool("photo_pool");
-      lsDel("last_photo");
-      lsDel("last_msg");
-      renderNew();
-    });
-
-    document.getElementById("btnShare").addEventListener("click", async () => {
-      const msg = document.getElementById("message").innerText.trim();
-      if(navigator.share){
-        try{ await navigator.share({ title:"Bir mesaj", text:msg, url:location.href }); }catch(e){}
-      }else{
-        try{ await navigator.clipboard.writeText(msg + "\n" + location.href); alert("Kopyalandı."); }
-        catch(e){ alert("Bu cihaz paylaşım/kopyalama konusunda dramayı seçmiş."); }
-      }
-    });
-
-    window.addEventListener("pageshow", (e) => {
-      if(e.persisted){
-        if(card.classList.contains("ready")) renderNew();
-      }
-    });
+    // (isteğe bağlı) bunnies tıklayınca mektup aç
+    // pointer-events:none olduğu için layer tıklanmaz.
+    // Sen istersen sol alt kavanozla açıyorsun zaten.
   </script>
 </body>
 </html>
