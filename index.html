@@ -6,14 +6,16 @@
   <title>NFC Sayfa</title>
   <style>
     :root{
-      --bg1:#07111f;
-      --bg2:#0b1a33;
-      --card:rgba(12, 25, 46, 0.74);
-      --text:#eef3fb;
-      --muted:rgba(238,243,251,0.55);
-      --shadow:rgba(0,0,0,0.55);
-      --border:rgba(255,255,255,0.10);
-      --glow:rgba(140,180,255,0.18);
+      /* 🌤 AÇIK TEMA */
+      --bg1:#f6f8ff;
+      --bg2:#eef2ff;
+
+      --card:rgba(255,255,255,0.82);
+      --text:#0f172a;      /* slate-900 */
+      --muted:#475569;     /* slate-600 */
+      --border:rgba(15,23,42,0.10);
+      --shadow:rgba(2,6,23,0.12);
+      --glow:rgba(99,102,241,0.18); /* indigo */
     }
 
     *{ box-sizing:border-box; }
@@ -25,33 +27,37 @@
       justify-content:center;
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       color:var(--text);
-      background: radial-gradient(1200px 600px at 20% 10%, rgba(140,180,255,0.12), transparent 60%),
-                  linear-gradient(180deg, var(--bg1), var(--bg2));
       padding:18px;
+
+      /* açık, modern */
+      background:
+        radial-gradient(900px 420px at 20% 15%, rgba(99,102,241,0.14), transparent 60%),
+        radial-gradient(700px 340px at 80% 20%, rgba(56,189,248,0.14), transparent 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
     }
 
     .card{
       width:min(520px, 100%);
       background:var(--card);
       border:1px solid var(--border);
-      border-radius:18px;
+      border-radius:20px;
       box-shadow:0 18px 55px var(--shadow);
       padding:16px;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
     }
 
     .photo-frame{
-      /* 👇 ÇERÇEVEYİ BÜYÜT + UZAT */
       width:100%;
-      height: clamp(340px, 58vh, 560px); /* uzun */
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,0.12);
+      height: clamp(340px, 58vh, 560px);
+      border-radius:18px;
+      border:1px solid rgba(15,23,42,0.10);
       overflow:hidden;
-      background:
-        radial-gradient(700px 260px at 50% 30%, rgba(140,180,255,0.18), transparent 70%),
-        rgba(255,255,255,0.04);
-      box-shadow: 0 14px 40px rgba(0,0,0,0.35);
-      padding:10px; /* fotoğraf kenara yapışmasın */
+
+      /* açık çerçeve */
+      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.65));
+      box-shadow: 0 14px 34px rgba(2,6,23,0.14);
+      padding:10px;
+
       display:flex;
       align-items:center;
       justify-content:center;
@@ -60,13 +66,15 @@
     .photo-frame img{
       width:100%;
       height:100%;
-      /* 👇 KIRPMA YOK: FOTOĞRAF ÇERÇEVEYE ORANLA SIĞ */
       object-fit: contain;
-      object-position: center;
-      border-radius:12px; /* padding içinde daha tatlı görünür */
+      object-position:center;
+      border-radius:14px;
       display:block;
       user-select:none;
       -webkit-user-drag:none;
+
+      /* foto daha “canlı” dursun */
+      filter: saturate(1.05) contrast(1.02);
     }
 
     .msg{
@@ -90,15 +98,16 @@
 
     button{
       flex:1;
-      border:1px solid rgba(255,255,255,0.14);
-      background: rgba(255,255,255,0.06);
+      border:1px solid rgba(15,23,42,0.12);
+      background: rgba(99,102,241,0.10);
       color: var(--text);
       border-radius:12px;
       padding:10px 12px;
       cursor:pointer;
+      font-weight:600;
     }
     button:hover{
-      background: rgba(255,255,255,0.10);
+      background: rgba(99,102,241,0.16);
     }
   </style>
 </head>
@@ -120,12 +129,8 @@
   <script>
     // =======================
     //  MEVCUT MANTIĞI BOZMADAN
-    //  - localStorage shuffle / tekrarsız mesaj
-    //  - tekrarsız foto
-    //  - assets/yunis/0001.jpg formatı
     // =======================
 
-    // Örnek mesaj listesi (senin gerçek listen burada olacak)
     const MESSAGES = [
       "Bugün de seni seviyorum.",
       "Kalbimden geçenler: iyi ki varsın.",
@@ -133,12 +138,10 @@
       "Gülüşün dünyayı düzeltemiyor ama beni düzeltiyor."
     ];
 
-    // Foto ayarları: assets/yunis/0001.jpg ... 00NN.jpg
     const PHOTO_DIR = "assets/yunis/";
     const PHOTO_START = 1;
-    const PHOTO_END = 120; // sende kaç foto varsa o sayı
+    const PHOTO_END = 60;
 
-    // ---------- helpers ----------
     function pad4(n){ return String(n).padStart(4,"0"); }
 
     function lsGet(key, fallback){
@@ -155,7 +158,6 @@
     }
 
     function shuffle(arr){
-      // Fisher–Yates
       for(let i=arr.length-1;i>0;i--){
         const j = Math.floor(Math.random()*(i+1));
         [arr[i],arr[j]] = [arr[j],arr[i]];
@@ -163,7 +165,6 @@
       return arr;
     }
 
-    // ---------- tekrarsız havuz sistemi ----------
     function getNextFromPool(poolKey, sourceArray){
       let pool = lsGet(poolKey, null);
       if(!Array.isArray(pool) || pool.length === 0){
@@ -178,12 +179,10 @@
       localStorage.removeItem(poolKey);
     }
 
-    // ---------- mesaj ----------
     function nextMessage(){
       return getNextFromPool("msg_pool", MESSAGES);
     }
 
-    // ---------- foto ----------
     function buildPhotoList(){
       const arr = [];
       for(let i=PHOTO_START;i<=PHOTO_END;i++){
@@ -197,7 +196,6 @@
       return getNextFromPool("photo_pool", PHOTO_LIST);
     }
 
-    // ---------- render ----------
     function renderNew(){
       const msg = nextMessage();
       const photoPath = nextPhoto();
@@ -206,26 +204,20 @@
 
       const img = document.getElementById("photo");
       img.src = photoPath;
-
-      // kırpma artık yok ama yine de yüklenmezse fallback
       img.onerror = () => {
         img.onerror = null;
         img.src = PHOTO_DIR + "0001.jpg";
       };
     }
 
-    // init
     renderNew();
 
-    // actions
     document.getElementById("btnNew").addEventListener("click", renderNew);
     document.getElementById("btnReset").addEventListener("click", () => {
       resetPool("msg_pool");
       resetPool("photo_pool");
       renderNew();
     });
-
-    // Yenilemede otomatik zaten çalışır (renderNew init'te)
   </script>
 </body>
 </html>
