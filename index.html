@@ -24,7 +24,7 @@
         #skyCanvas{
 position:fixed;
 inset:0;
-z-index:-1;
+z-index:0;
 pointer-events:none;
 
     }
@@ -1152,17 +1152,16 @@ Seni seviyorum.`;
 
     document.getElementById("btnQAdd").addEventListener("click", addQuote);
     document.getElementById("btnQRefresh").addEventListener("click", refreshQuotes);
-    /* ================= REAL SKY ================= */
+  /* ================= REAL SKY ================= */
 
 const SKY_LAT = 41.0082;   // İstanbul default
 const SKY_LON = 28.9784;
 
-const SKY_DATE = new Date(); 
+const SKY_DATE = new Date();
 // özel tarih için:
 // const SKY_DATE = new Date("2024-02-14T22:00:00");
 
 (async () => {
-
   const canvas = document.getElementById("skyCanvas");
 
   const stel = await StellariumWebEngine({
@@ -1171,7 +1170,7 @@ const SKY_DATE = new Date();
     show_credit: false,
     allow_pan: false,
     allow_zoom: false
-
+  });
 
   stel.setLocation({
     latitude: SKY_LAT,
@@ -1194,15 +1193,12 @@ const SKY_DATE = new Date();
   stel.setSetting("milky_way/visible", true);
   stel.setSetting("milky_way/brightness", 0.6);
 
-  /* kamera sabit yukarı baksın */
-
-   stel.core.selectObjectByName("Moon");
-stel.core.centerOnSelectedObject();
-stel.core.zoomTo(1.5, 1);
-
-
-
+  /* ay'a odaklan */
+  stel.core.selectObjectByName("Moon");
+  stel.core.centerOnSelectedObject();
+  stel.core.zoomTo(1.5, 1);
 })();
+
 
   </script>
 </body>
