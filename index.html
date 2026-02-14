@@ -1195,10 +1195,11 @@ const SKY_DATE = new Date();
   stel.setSetting("milky_way/brightness", 0.6);
 
   /* kamera sabit yukarı baksın */
-  stel.lookAt({
-    azimuth: 180,
-    altitude: 80,
-    fov: 120
+
+   stel.core.selectObjectByName("Moon");
+stel.core.centerOnSelectedObject();
+stel.core.zoomTo(1.5, 1);
+
   });
 
 })();
